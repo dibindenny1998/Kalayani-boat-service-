@@ -183,7 +183,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 {ld}
 </head>
 <body>
@@ -192,8 +192,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=7"></script>
-<script src="assets/js/main.js?v=7" defer></script>
+<script src="assets/js/data.js?v=8"></script>
+<script src="assets/js/main.js?v=8" defer></script>
 {scripts}
 </body>
 </html>
@@ -312,14 +312,14 @@ def home():
 </div></section>
 
 <section class="sec"><div class="wrap split split--top">
-  <div class="sticky rv"><h2>The <span class="grad grad--pulari">route.</span></h2>
+  <div class="sticky rv"><h2>The <span class="grad grad--anthi">route.</span></h2>
     <p class="lede">Every tour starts and ends at Rajiv Boat Jetty. The Half Day and Full Day tours go further, to the villages, canals and paddy fields.</p>
     <div class="photo rv">{img("shikara-sunset-bow", sizes="(max-width:900px) 100vw, 560px")}</div></div>
   {route_block(TOUR["sunrise-cruise"])}
 </div></section>
 
 <section class="sec band band--soft"><div class="wrap">
-  <div class="head"><h2 class="rv">On <span class="grad grad--pakal">board.</span></h2><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
+  <div class="head"><h2 class="rv">On <span class="grad grad--kayal">board.</span></h2><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
   <div class="bento">
     <figure class="b1 rv">{img("guests-bow", sizes="(max-width:760px) 100vw, 50vw", pos="50% 35%")}</figure>
     <figure class="b2 rv">{img("deck-sofa", sizes="(max-width:760px) 50vw, 25vw")}</figure>
@@ -344,7 +344,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 "Shikara tours from Rajiv Boat Jetty, Alleppey: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600, for two. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=7" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=8" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -384,7 +384,7 @@ def tour_page(t):
 </div></section>
 
 <section class="sec"><div class="wrap split split--top">
-  <div class="rv"><h2>The <span class="grad grad--{t["sky"]}">route.</span></h2><p class="lede">{route_note}</p>
+  <div class="rv"><h2>The <span class="grad grad--anthi">route.</span></h2><p class="lede">{route_note}</p>
     <h3 style="margin-top:36px">Included</h3><ul class="ticks">{inc}</ul></div>
   {route_block(t)}
 </div></section>
@@ -425,7 +425,7 @@ def gallery():
              "kayak-sunset-solo", "chairs-green", "deck-front", "kayak-canal", "deck-yellow", "chairs-pink", "kayak-sunrise-group", "deck-pink"]
     figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order)
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
-  <h1 class="rv">Gallery<span class="grad grad--pulari">.</span></h1></div></section>
+  <h1 class="rv">Gallery<span class="grad grad--anthi">.</span></h1></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{figs}</div></div></section>'''
     return page("gallery.html", "Gallery | Kalyani Boat Service, Alleppey", "Photos of Kalyani shikaras and kayaking in Alleppey.", body, "gallery.html")
 

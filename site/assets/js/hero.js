@@ -11,8 +11,9 @@
   const MIN = +input.min, MAX = +input.max, LOOP = 30;
   const hh = v => { const H = Math.floor(v), M = Math.floor((v - H) * 60 + 1e-6); return String(H).padStart(2, "0") + ":" + String(M).padStart(2, "0"); };
   /* colour wash through the day, from the four skies */
-  const WASH = [[5, "linear-gradient(180deg,#5B5BB8,#FF9EC0)"], [6.5, "linear-gradient(180deg,#FF9EC0,#FFB38A)"], [8.5, "linear-gradient(180deg,#FFE29A,transparent)"],
-    [10.5, "linear-gradient(180deg,#7FD0FF,transparent)"], [15, "linear-gradient(180deg,#FFD24A,transparent)"], [17, "linear-gradient(180deg,#FF8A4C,#FF4E6A)"], [18.8, "linear-gradient(180deg,#3A2A7A,#E8418A)"]];
+  /* each step is shades of one colour: dawn pink, morning gold, day blue, afternoon gold, sunset coral, dusk violet */
+  const WASH = [[5, "linear-gradient(180deg,#FF8FB0,#FFD3E1)"], [7.5, "linear-gradient(180deg,#FFD36E,#FFF1C9)"], [10.5, "linear-gradient(180deg,#7FC8F2,#D5EEFC)"],
+    [15, "linear-gradient(180deg,#FFC94A,#FFE7A8)"], [17, "linear-gradient(180deg,#F2542D,#FF9A80)"], [18.8, "linear-gradient(180deg,#5A3D9A,#9C83D6)"]];
   let hour = 5.6, playing = !still, resumeAt = 0, last = performance.now();
   const tours = K.tours.filter(t => t.start !== null);
 
