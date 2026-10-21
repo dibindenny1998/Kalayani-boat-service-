@@ -7,16 +7,14 @@ It's a static site (HTML, CSS, JavaScript) plus one small PHP file for the enqui
 
 ## What's in it
 
-Design concept: **"Kalyani, by the hour"**. The site is built like a ferry timetable. A sun dial picks the hour, the departures read like a jetty board, and every tour is a boarding pass. It shares no layout, type or wording with the agency's houseboat sites.
+Modern, minimal design on a light base, using the four time-of-day gradients (dawn, day, dusk, backwater) as accents. All text comes from the client's price sheet and contact details; nothing unconfirmed is on the site.
 
 | Page | File |
 |---|---|
-| Home: sun dial hero, live departure board, route, on-deck hotspots, kayak hour, boatman Q&A, boarding-pass booking | `site/index.html` |
-| Hours: timetable, live board, boarding pass for every tour, fares | `site/hours.html` |
-| One boarding-pass page per tour (7) | `site/sunrise-cruise.html`, `half-day-tour.html`, `full-day-tour.html`, `breakfast-cruise.html`, `lunch-cruise.html`, `sunset-cruise.html`, `regular-cruise.html` |
-| On deck (the boat) | `site/the-boat.html` |
-| Kayak hour | `site/kayak.html` |
-| Gallery (logbook), Book | `site/gallery.html`, `site/book.html` |
+| Home: hero that plays the day (photo and colour follow the hour), tours with time filters, sunrise/sunset compare, route, on-board photos, kayaking, price and booking | `site/index.html` |
+| Tours list | `site/tours.html` |
+| One page per tour (7) | `site/sunrise-cruise.html`, `half-day-tour.html`, `full-day-tour.html`, `breakfast-cruise.html`, `lunch-cruise.html`, `sunset-cruise.html`, `regular-cruise.html` |
+| Kayaking, Gallery, Contact | `site/kayaking.html`, `site/gallery.html`, `site/contact.html` |
 | Booking terms, Privacy, Thank you, 404 | `site/terms.html`, `privacy.html`, `thank-you.html`, `404.html` |
 
 Review copy (temporary domain): https://mediumseagreen-monkey-262172.hostingersite.com

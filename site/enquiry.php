@@ -19,13 +19,13 @@ function finish($ok, $error = '')
         http_response_code($ok ? 200 : 400);
         echo json_encode($ok ? ['ok' => true] : ['ok' => false, 'error' => $error]);
     } else {
-        header('Location: ' . ($ok ? 'thank-you.html' : 'book.html?error=1'), true, 303);
+        header('Location: ' . ($ok ? 'thank-you.html' : 'contact.html?error=1'), true, 303);
     }
     exit;
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    header('Location: book.html', true, 303);
+    header('Location: contact.html', true, 303);
     exit;
 }
 

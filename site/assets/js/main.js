@@ -7,119 +7,83 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const inr = v => "₹" + v.toLocaleString("en-IN");
   const waLink = msg => "https://wa.me/" + K.whatsapp + "?text=" + encodeURIComponent(msg);
-  const hh = v => { v = ((v % 24) + 24) % 24; const H = Math.floor(v), M = Math.floor((v - H) * 60 + 1e-6); return String(H).padStart(2, "0") + ":" + String(M).padStart(2, "0"); };
-  const ist = () => { const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date());
-    const g = t => +p.find(x => x.type === t).value; return (g("hour") % 24) + g("minute") / 60; };
-  window.KALYANI_IST = ist;
 
-  /* header and menu */
-  const top = $(".top");
-  const onScroll = () => top.classList.toggle("scrolled", scrollY > 30);
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  /* mobile menu */
   const menu = $(".menu"), nav = $(".nav");
   if (menu) {
-    const set = o => { nav.classList.toggle("open", o); menu.setAttribute("aria-expanded", o); menu.textContent = o ? "Close" : "Menu"; document.body.style.overflow = o ? "hidden" : ""; };
+    const set = o => { nav.classList.toggle("open", o); menu.setAttribute("aria-expanded", o); };
     menu.onclick = () => set(!nav.classList.contains("open"));
     nav.addEventListener("click", e => { if (e.target.closest("a")) set(false); });
+    document.addEventListener("click", e => { if (!e.target.closest(".bar")) set(false); });
   }
 
   /* every [data-wa] link opens WhatsApp with its own message */
-  $$("[data-wa]").forEach(a => { a.href = waLink(a.dataset.wa || "Hi Kalyani Boat Service! I'd like to book a shikara ride."); a.target = "_blank"; a.rel = "noopener"; });
+  $$("[data-wa]").forEach(a => { a.href = waLink(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
 
-  /* the page sky: pre-dawn at the top of the page, sunset at the bottom */
-  const sky = $("#pagesky");
-  const STOPS = [[0, "#11163A", "255,150,120"], [.2, "#2E2160", "255,140,150"], [.38, "#5A2B5E", "255,170,110"], [.55, "#0E4F5C", "120,230,210"], [.72, "#0B4352", "255,210,120"], [.88, "#7A2A22", "255,150,70"], [1, "#2A1430", "255,110,80"]];
-  const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
-  const paint = () => {
-    const max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-    let i = 0; while (i < STOPS.length - 2 && p > STOPS[i + 1][0]) i++;
-    const a = STOPS[i], b = STOPS[i + 1], t = (p - a[0]) / (b[0] - a[0]), ca = rgb(a[1]), cb = rgb(b[1]);
-    sky.style.backgroundColor = `rgb(${ca.map((v, k) => Math.round(v + (cb[k] - v) * t)).join(",")})`;
-    sky.style.setProperty("--sx", (15 + 70 * p) + "%"); sky.style.setProperty("--sy", (100 - Math.sin(Math.PI * p) * 70) + "%");
-    sky.style.setProperty("--glow", `rgba(${(t < .5 ? a : b)[2]},.32)`);
-  };
-  if (sky) { addEventListener("scroll", paint, { passive: true }); addEventListener("resize", paint); paint(); }
-
-  /* reveals */
-  const rv = $$(".rv,.rise");
+  /* reveals: anything on screen shows at once, the rest fades up on scroll */
+  const rv = $$(".rv");
   if (still || !("IntersectionObserver" in window)) rv.forEach(e => e.classList.add("in"));
   else {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .1, rootMargin: "0px 0px -5% 0px" });
-    rv.forEach(e => { if (e.getBoundingClientRect().top < innerHeight) requestAnimationFrame(() => e.classList.add("in")); else io.observe(e); });
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12, rootMargin: "0px 0px -6% 0px" });
+    rv.forEach((e, i) => { if (e.getBoundingClientRect().top < innerHeight) setTimeout(() => e.classList.add("in"), 80 * (i % 6)); else io.observe(e); });
   }
 
-  /* departure boards: live Alleppey clock, status per departure, split-flap letters */
-  $$(".board").forEach(b => {
-    const clockEl = $(".board__clock", b), rows = $$(".row", b);
-    const tick = () => {
-      const now = ist(); if (clockEl) clockEl.textContent = hh(now);
-      const upcoming = rows.filter(r => r.dataset.start !== "" && +r.dataset.start > now).sort((x, y) => x.dataset.start - y.dataset.start)[0];
-      rows.forEach(r => {
-        const st = $(".st", r); if (r.dataset.start === "") return;
-        const s = +r.dataset.start, e = +r.dataset.end;
-        let cls = "", txt = "Tomorrow";
-        if (now >= s && now < e) { cls = "on"; txt = "On the water"; }
-        else if (now < s && s - now <= .5) { cls = "boarding"; txt = "Boarding"; }
-        else if (r === upcoming) { cls = "next"; txt = "Next out"; }
-        else if (now < s) { txt = "Today"; }
-        st.className = "st " + cls; st.textContent = txt;
-      });
-    };
-    tick(); setInterval(tick, 30000);
-    if (still || !("IntersectionObserver" in window)) return;
-    const CH = "0123456789:ANY";
-    const flip = el => { const final = el.dataset.text; let n = 0; const id = setInterval(() => {
-      n++; el.textContent = [...final].map((c, i) => (n > 6 + i * 2 || c === ":") ? c : CH[Math.floor(Math.random() * CH.length)]).join("");
-      if (n > 6 + final.length * 2) clearInterval(id); }, 55); };
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { $$(".flip", b).forEach((f, i) => setTimeout(() => flip(f), i * 120)); io.disconnect(); } }), { threshold: .3 });
-    io.observe(b);
-  });
-
-  /* route: the dotted line draws down as you scroll */
-  $$(".stops").forEach(r => {
-    if (still) return;
-    const draw = () => { const b = r.getBoundingClientRect(); r.style.setProperty("--p", Math.min(1, Math.max(0, (innerHeight * .8 - b.top) / b.height)).toFixed(3)); };
-    addEventListener("scroll", draw, { passive: true }); draw();
-  });
-
-  /* on deck: markers open a note */
-  const DECK = [["Coir canopy", "A woven coconut-fibre roof keeps the deck shaded through the day."], ["Life buoys", "Rings hang under the canopy, within reach of every seat."],
-    ["Cane chairs", "Covered cane chairs for groups, facing the water on both sides."], ["Turned teak pillars", "Carved wooden pillars hold up the canopy along the length of the boat."], ["Open water", "Low rails, so the backwater is at eye level from your seat."]];
-  $$("[data-deck]").forEach(d => {
-    let tip = null;
-    d.addEventListener("click", e => {
-      const s = e.target.closest(".spot"); if (!s) return;
-      const open = s.getAttribute("aria-expanded") === "true";
-      $$(".spot", d).forEach(x => x.setAttribute("aria-expanded", "false")); if (tip) { tip.remove(); tip = null; }
-      if (open) return;
-      s.setAttribute("aria-expanded", "true");
-      const [n, txt] = DECK[+s.dataset.i];
-      tip = document.createElement("div"); tip.className = "tip"; tip.style.cssText = s.getAttribute("style"); tip.innerHTML = `<b>${n}</b>${txt}`; d.appendChild(tip);
+  /* tours: filter by time of day */
+  $$(".filters").forEach(f => {
+    const rail = f.nextElementSibling;
+    f.addEventListener("click", e => {
+      const b = e.target.closest(".filter"); if (!b) return;
+      $$(".filter", f).forEach(x => x.classList.toggle("on", x === b));
+      $$(".card", rail).forEach(c => { c.hidden = !(b.dataset.f === "all" || c.dataset.part === b.dataset.f); if (!c.hidden) c.classList.add("in"); });
+      rail.scrollTo({ left: 0, behavior: still ? "auto" : "smooth" });
     });
   });
 
-  /* boarding pass: fare for two, plus each extra guest per hour */
+  /* rails can be dragged with a mouse */
+  $$(".rail").forEach(r => {
+    let down = false, x0 = 0, s0 = 0, moved = false;
+    r.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") return; down = true; moved = false; x0 = e.clientX; s0 = r.scrollLeft; });
+    addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - x0; if (Math.abs(dx) > 4) { moved = true; r.classList.add("drag"); } r.scrollLeft = s0 - dx; });
+    addEventListener("pointerup", () => { down = false; r.classList.remove("drag"); });
+    r.addEventListener("click", e => { if (moved) { e.preventDefault(); moved = false; } }, true);
+  });
+
+  /* sunrise / sunset compare: sweeps on its own until someone drags it */
+  const cmp = $("#compare");
+  if (cmp) {
+    const input = $("input", cmp); let touched = false; const t0 = performance.now();
+    const set = v => cmp.style.setProperty("--c", v + "%");
+    input.addEventListener("input", () => { touched = true; set(input.value); });
+    const sweep = n => { if (touched) return; const v = 50 + 30 * Math.sin((n - t0) / 1800); set(v.toFixed(1)); input.value = v; requestAnimationFrame(sweep); };
+    if (!still && "IntersectionObserver" in window) { let running = false; new IntersectionObserver(e => { if (e[0].isIntersecting && !running) { running = true; requestAnimationFrame(sweep); } }).observe(cmp); }
+  }
+
+  /* route line draws as it scrolls into view */
+  $$(".route").forEach(r => {
+    if (still) return;
+    const draw = () => { const b = r.getBoundingClientRect(); r.style.setProperty("--p", Math.min(1, Math.max(0, (innerHeight * .85 - b.top) / b.height)).toFixed(3)); };
+    addEventListener("scroll", draw, { passive: true }); draw();
+  });
+
+  /* booking: price for two, plus each extra guest per hour */
   const price = (t, g) => t.price + Math.max(0, g - 2) * t.extra * t.hours;
   $$("[data-calc]").forEach(form => {
     const sel = $("[name=tour]", form), out = $("output", form), sum = $(".sum", form), note = $(".sumnote", form), date = $("[name=date]", form);
     let guests = 2, shown = 0, raf;
     const tour = () => K.tours.find(t => t.slug === sel.value) || K.tours[0];
-    const stub = (cls, v) => { const el = $(cls, form); if (el) el.textContent = v; };
     const update = () => {
       const t = tour(), v = price(t, guests), extra = Math.max(0, guests - 2);
       out.value = guests; out.textContent = guests; $("[name=guests]", form).value = guests;
-      stub(".s-tour", t.name); stub(".s-time", t.time); stub(".s-guests", guests);
-      stub(".s-date", date.value ? new Date(date.value + "T00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }) : "Choose a date");
-      note.textContent = extra ? `${inr(t.price)} for two + ${extra} × ₹${t.extra} × ${t.hours} hrs` : "Fare covers two guests";
+      note.textContent = extra ? `${inr(t.price)} for two + ${extra} × ₹${t.extra} × ${t.hours} hours` : "Price for two guests";
       cancelAnimationFrame(raf);
       if (still || !shown) { shown = v; sum.textContent = inr(v); return; }
       const from = shown, st = performance.now();
-      const step = n => { const k = Math.min(1, (n - st) / 600), e = 1 - Math.pow(1 - k, 3); shown = Math.round(from + (v - from) * e); sum.textContent = inr(shown); if (k < 1) raf = requestAnimationFrame(step); };
+      const step = n => { const k = Math.min(1, (n - st) / 500), e = 1 - Math.pow(1 - k, 3); shown = Math.round(from + (v - from) * e); sum.textContent = inr(shown); if (k < 1) raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
     };
     $("[data-step='-1']", form).onclick = () => { if (guests > 1) { guests--; update(); } };
     $("[data-step='1']", form).onclick = () => { if (guests < 30) { guests++; update(); } };
-    sel.addEventListener("change", update); date.addEventListener("change", update);
+    sel.addEventListener("change", update);
     const want = new URLSearchParams(location.search).get("tour");
     if (want && K.tours.some(t => t.slug === want)) sel.value = want;
     date.min = new Date().toISOString().slice(0, 10);
@@ -129,64 +93,32 @@
     const say = (msg, kind) => { status.hidden = false; status.className = "status " + (kind || ""); status.textContent = msg; };
     const summary = () => {
       const f = new FormData(form), t = tour();
-      return [`Hi Kalyani Boat Service! Boarding pass request:`, `Departure: ${t.name} (${t.time})`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`,
-        `Fare shown: ${inr(price(t, guests))}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
+      return [`Hi Kalyani Boat Service! I'd like to book:`, `Tour: ${t.name} (${t.time})`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`,
+        `Price shown: ${inr(price(t, guests))}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
     };
-    $("[data-send=wa]", form).onclick = () => { if (!still) { form.classList.remove("printing"); void form.offsetWidth; form.classList.add("printing"); } window.open(waLink(summary()), "_blank", "noopener"); };
+    $("[data-send=wa]", form).onclick = () => window.open(waLink(summary()), "_blank", "noopener");
     form.addEventListener("submit", async e => {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      const btn = $("[type=submit]", form); btn.disabled = true; say("Sending your pass…");
+      const btn = $("[type=submit]", form); btn.disabled = true; say("Sending…");
       try {
         const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
         const data = await res.json().catch(() => ({}));
-        if (res.ok && data.ok) { say("Pass received. We will confirm on WhatsApp or by phone shortly.", "ok"); form.reset(); guests = 2; update(); }
-        else say(data.error || "Sorry, that did not go through. Please send the pass on WhatsApp or call us.", "err");
-      } catch { say("Sorry, that did not go through. Please send the pass on WhatsApp or call us.", "err"); }
+        if (res.ok && data.ok) { say("Request sent. We will confirm on WhatsApp or by phone.", "ok"); form.reset(); guests = 2; update(); }
+        else say(data.error || "Sorry, that did not go through. Please use WhatsApp or call us.", "err");
+      } catch { say("Sorry, that did not go through. Please use WhatsApp or call us.", "err"); }
       btn.disabled = false;
     });
     $("[name=started]", form).value = Date.now();
-    if (new URLSearchParams(location.search).get("error")) say("Sorry, that did not go through. Please check the pass, or send it on WhatsApp.", "err");
+    if (new URLSearchParams(location.search).get("error")) say("Sorry, that did not go through. Please check the form, or use WhatsApp.", "err");
   });
 
-
-  /* departure board: a photo of the boat follows the cursor over each row */
-  if (matchMedia("(pointer: fine)").matches) $$(".board").forEach(b => {
-    const peek = $(".peek", b); if (!peek) return;
-    b.addEventListener("pointermove", e => { const r = e.target.closest(".row"); if (!r) { peek.classList.remove("on"); return; }
-      if (peek.dataset.src !== r.dataset.img) { peek.src = r.dataset.img; peek.dataset.src = r.dataset.img; }
-      peek.style.left = (e.clientX + 150) + "px"; peek.style.top = e.clientY + "px"; peek.classList.add("on"); });
-    b.addEventListener("pointerleave", () => peek.classList.remove("on"));
-  });
-
-  /* sunrise / sunset slider: sweeps by itself until someone drags it */
-  const cmp = $("#compare");
-  if (cmp) {
-    const input = $("input", cmp); let touched = false, t0 = performance.now();
-    const set = v => cmp.style.setProperty("--c", v + "%");
-    input.addEventListener("input", () => { touched = true; set(input.value); });
-    const sweep = n => { if (touched) return; const v = 50 + 32 * Math.sin((n - t0) / 1600); set(v.toFixed(1)); input.value = v; requestAnimationFrame(sweep); };
-    if (!still) requestAnimationFrame(sweep);
+  /* mobile booking dock: hidden over the home hero and the footer */
+  const dock = $("#dock"), hero = $("#hero"), foot = $(".foot");
+  if (dock && "IntersectionObserver" in window) {
+    const seen = new Set();
+    const io = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); dock.classList.toggle("off", seen.size > 0); }, { threshold: .15 });
+    [hero, foot].filter(Boolean).forEach(el => io.observe(el));
   }
-
-  /* route: the porthole photo changes as you pass each stop */
-  $$(".journey").forEach(j => {
-    const imgs = $$(".port.swap img", j), lis = $$(".stops li", j); if (!imgs.length) return;
-    let cur = 0;
-    const pick = () => { let best = 0, bd = 1e9; lis.forEach((li, i) => { const r = li.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - innerHeight / 2); if (d < bd) { bd = d; best = i; } });
-      const k = best % imgs.length; if (k !== cur) { imgs[cur].classList.remove("on"); imgs[k].classList.add("on"); cur = k; } };
-    addEventListener("scroll", pick, { passive: true }); pick();
-  });
-
-  /* photos tilt toward the cursor */
-  if (!still && matchMedia("(pointer: fine)").matches) $$(".tilt").forEach(el => {
-    el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      el.style.transform = `perspective(800px) rotateY(${(x * 10).toFixed(2)}deg) rotateX(${(-y * 10).toFixed(2)}deg) scale(1.02)`; });
-    el.addEventListener("pointerleave", () => { el.style.transform = ""; });
-  });
-
-  /* floating WhatsApp hides over the home hero */
-  const wa = $(".wa"), hero = $("#hour");
-  if (wa && hero && "IntersectionObserver" in window) new IntersectionObserver(e => wa.classList.toggle("off", e[0].isIntersecting), { threshold: .4 }).observe(hero);
   const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 })();
