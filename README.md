@@ -7,14 +7,19 @@ It's a static site (HTML, CSS, JavaScript) plus one small PHP file for the enqui
 
 ## What's in it
 
+Design concept: **"Kalyani, by the hour"**. The site is built like a ferry timetable. A sun dial picks the hour, the departures read like a jetty board, and every tour is a boarding pass. It shares no layout, type or wording with the agency's houseboat sites.
+
 | Page | File |
 |---|---|
-| Home, with the animated sky that follows Alleppey time | `site/index.html` |
-| Shikara tours: timeline, all tours, price calculator | `site/shikara-tours.html` |
-| One page per tour (7) | `site/sunrise-cruise.html`, `half-day-tour.html`, `full-day-tour.html`, `breakfast-cruise.html`, `lunch-cruise.html`, `sunset-cruise.html`, `regular-cruise.html` |
-| Kayaking | `site/kayaking.html` |
-| Gallery, About, Contact | `site/gallery.html`, `about.html`, `contact.html` |
+| Home: sun dial hero, live departure board, route, on-deck hotspots, kayak hour, boatman Q&A, boarding-pass booking | `site/index.html` |
+| Hours: timetable, live board, boarding pass for every tour, fares | `site/hours.html` |
+| One boarding-pass page per tour (7) | `site/sunrise-cruise.html`, `half-day-tour.html`, `full-day-tour.html`, `breakfast-cruise.html`, `lunch-cruise.html`, `sunset-cruise.html`, `regular-cruise.html` |
+| On deck (the boat) | `site/the-boat.html` |
+| Kayak hour | `site/kayak.html` |
+| Gallery (logbook), Book | `site/gallery.html`, `site/book.html` |
 | Booking terms, Privacy, Thank you, 404 | `site/terms.html`, `privacy.html`, `thank-you.html`, `404.html` |
+
+Review copy (temporary domain): https://mediumseagreen-monkey-262172.hostingersite.com
 
 Bookings work two ways:
 - **WhatsApp:** every Book button opens WhatsApp with a ready-made message. The enquiry form's **Send on WhatsApp** button adds the tour, date, guests and estimated price.
@@ -27,7 +32,7 @@ Bookings work two ways:
 3. Upload **everything inside `site/`** (not the `site` folder itself), including the hidden `.htaccess` file. `index.html` must be directly inside `public_html`.
 4. In hPanel, open **Security → SSL** and make sure SSL is active, so `.htaccess` can send everyone to `https://`.
 5. In hPanel, open **Emails** and create `noreply@alleppeyshikaratours.com`. `enquiry.php` sends from that address; without it, Gmail may reject the enquiry emails.
-6. Send a test enquiry from the Contact page and check that it arrives in `alleppeyshikaratours@gmail.com`, including the spam folder.
+6. Send a test booking from the Book page and check that it arrives in `alleppeyshikaratours@gmail.com`, including the spam folder.
 7. Add the site to Google Search Console and submit `https://alleppeyshikaratours.com/sitemap.xml`.
 
 ## Changing prices, times or contact details

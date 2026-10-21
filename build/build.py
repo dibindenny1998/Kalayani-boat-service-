@@ -132,45 +132,45 @@ def fig(name, cls="", alt=None, sizes="(max-width: 820px) 100vw, 50vw", eager=Fa
 
 # ---------------------------------------------------------------- shared pieces
 WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
-WAVES = '<svg class="waves" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50Q150 10 300 50T600 50T900 50T1200 50"/><path d="M0 90Q150 50 300 90T600 90T900 90T1200 90"/></svg>'
-SKY_COLOR = {"pulari": "#FF7A59", "pakal": "#0FA3A3", "anthi": "#FF4E6A", "kayal": "#2FA35A"}
+BOAT = '<svg class="boat" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h44q8 0 10-12 3 2 2 8-2 12-14 12H16Q7 28 4 20z"/><path d="M12 19v-7q14-8 28 0v7"/></svg>'
+ARR = '<span class="arr" aria-hidden="true">→</span>'
+BOOK = "Hi Kalyani Boat Service! I'd like to book a shikara ride."
 
-NAV = [("index.html", "Home"), ("shikara-tours.html", "Shikara tours"), ("kayaking.html", "Kayaking"),
-       ("gallery.html", "Gallery"), ("about.html", "About"), ("contact.html", "Contact")]
+NAV = [("hours.html", "Hours"), ("index.html#route", "Route"), ("the-boat.html", "On deck"), ("kayak.html", "Kayak"), ("gallery.html", "Gallery")]
 
 
-def wa(msg, label="Book on WhatsApp", cls="btn btn--coral"):
-    return f'<a class="{cls}" href="contact.html" data-wa="{escape(msg)}">{WA_ICON}{label}</a>'
+def wa(msg, label="Book on WhatsApp", cls="ticket ticket--red"):
+    return f'<a class="{cls}" href="book.html" data-wa="{escape(msg)}">{WA_ICON}{label}</a>'
 
 
 def header(current):
     cur = ' aria-current="page"'
     links = "".join(f'<a href="{h}"{cur if h == current else ""}>{n}</a>' for h, n in NAV)
+    book_cur = cur if current == "book.html" else ""
     return f'''<a class="skip" href="#main">Skip to content</a>
+<div class="sky" id="pagesky" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
 <header class="top"><div class="wrap">
-  <a class="logo" href="index.html" aria-label="Kalyani Boat Service, home">Kalyani <em>Boat Service</em></a>
-  <button class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
-  <nav class="nav" id="nav" aria-label="Main">{links}{wa("Hi Kalyani Boat Service! I'd like to book a shikara ride.", "Book a ride", "btn btn--dark btn--sm")}</nav>
+  <a class="logo" href="index.html" aria-label="Kalyani Boat Service, home"><span class="script">Kalyani</span><small>Boat service<br>Alleppey</small></a>
+  <button class="menu" aria-label="Menu" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav class="nav" id="nav" aria-label="Main">{links}<a class="ticket ticket--sm" href="book.html"{book_cur}>Book a pass {ARR}</a></nav>
 </div></header>'''
 
 
 def footer():
-    tours = "".join(f'<li><a href="{t["slug"]}.html">{t["name"]}</a></li>' for t in TOURS)
+    tours = "".join(f'<li><a href="{t["slug"]}.html">{t["hhmm"]} · {t["name"]}</a></li>' for t in TOURS)
     phones = "".join(f'<li><a href="tel:{p.replace(" ", "")}">{p}</a></li>' for p in SITE["phones"])
-    return f'''<footer class="foot"><div class="wrap">
-  <div class="big">Kalyani <em>on the water.</em></div>
+    return f'''<footer class="foot"><div class="scallop"></div><div class="wrap">
+  <div class="big" aria-hidden="true">Kalyani</div>
   <div class="grid">
-    <div style="display:grid;gap:16px;align-content:start">
-      <p style="max-width:34ch">Shikara cruises and kayaking on the Alleppey backwaters, from sunrise to sunset. Every tour starts at {SITE["jetty"]}.</p>
-      <div class="btns">{wa("Hi Kalyani Boat Service! I'd like to book a shikara ride.", "Chat on WhatsApp", "btn btn--mango btn--sm")}</div>
-    </div>
-    <div><h4>Shikara tours</h4><ul>{tours}</ul></div>
-    <div><h4>Explore</h4><ul><li><a href="kayaking.html">Kayaking</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact &amp; booking</a></li><li><a href="terms.html">Booking terms</a></li><li><a href="privacy.html">Privacy</a></li></ul></div>
-    <div><h4>Contact</h4><ul>{phones}<li><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["jetty"]}</a></li></ul></div>
+    <div style="display:grid;gap:16px;align-content:start"><p style="color:var(--dim);max-width:36ch">Shikara and kayak hours on the Alleppey backwater. Every departure leaves from {SITE["jetty"]}.</p>
+      <div class="acts">{wa(BOOK, "WhatsApp us", "ticket ticket--sm")}</div></div>
+    <div><h4>Departures</h4><ul>{tours}</ul></div>
+    <div><h4>More</h4><ul><li><a href="hours.html">All hours &amp; fares</a></li><li><a href="the-boat.html">On deck</a></li><li><a href="kayak.html">Kayak hour</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="book.html">Book a pass</a></li><li><a href="terms.html">Booking terms</a></li><li><a href="privacy.html">Privacy</a></li></ul></div>
+    <div><h4>Jetty desk</h4><ul>{phones}<li><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["jetty"]} ↗</a></li></ul></div>
   </div>
-  <div class="base"><span>© <span id="year">2026</span> Kalyani Boat Service, Alleppey</span><span lang="ml" class="ml">കല്യാണി</span></div>
+  <div class="base"><span>© <span id="year">2026</span> Kalyani Boat Service</span><span>09°29′N 76°20′E · Alappuzha</span></div>
 </div></footer>
-<a class="wa" href="contact.html" data-wa="Hi Kalyani Boat Service! I have a question about your boat tours.">{WA_ICON}<span>Chat on WhatsApp</span></a>'''
+<a class="wa" href="book.html" data-wa="Hi Kalyani Boat Service! I have a question about your boat tours." aria-label="Chat on WhatsApp">{WA_ICON}</a>'''
 
 
 def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-image.jpg", noindex=False, base=False):
@@ -189,11 +189,11 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <meta property="og:type" content="website"><meta property="og:site_name" content="Kalyani Boat Service">
 <meta property="og:title" content="{escape(title)}"><meta property="og:description" content="{escape(desc)}">
 <meta property="og:url" content="{url}"><meta property="og:image" content="{SITE["url"]}/assets/img/{og}">
-<meta name="theme-color" content="#0FA3A3">
+<meta name="theme-color" content="#11163A">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@1&family=Manjari:wght@400;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700&family=Yellowtail&family=Manjari:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css?v=4">
 {ld}
 </head>
 <body>
@@ -202,353 +202,346 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="assets/js/data.js?v=2"></script>
-<script src="assets/js/main.js?v=2" defer></script>
+<script src="assets/js/data.js?v=4"></script>
+<script src="assets/js/main.js?v=4" defer></script>
 {scripts}
 </body>
 </html>
 '''
 
 
-def chip(t):
-    return f'<span class="tchip {t["sky"]}">{t["time"]} · {t["hours"]} hrs</span>'
+def rise(*lines):
+    return "".join(f'<span class="ln"><span>{l}</span></span>' for l in lines)
 
 
-def card(t):
-    return f'''<a class="card rv" href="{t["slug"]}.html">
-  {fig(t["img"], sizes="(max-width: 700px) 100vw, 400px")}
-  <div class="body">{chip(t)}<h3>{t["name"]}</h3><p class="mut">{escape(t["lead"])}</p>
-  <div class="row"><span><span class="amt">{inr(t["price"])}</span> <span class="per">for two</span></span><span class="go" aria-hidden="true">→</span></div></div>
-</a>'''
-
-
-def slots():
-    out = ""
+def board(title="Departures · Rajiv Boat Jetty"):
+    rows = ""
     for t in TOURS:
-        out += f'''<a class="slot" href="{t["slug"]}.html" style="--sc:{SKY_COLOR[t["sky"]]}">
-  {fig(t["img"], sizes="360px")}<span class="sky" style="background:var(--{t["sky"]})"></span>
-  <time>{t["hhmm"]}</time><h3>{t["name"]}</h3><p>{t["time"]} · {escape(", ".join(t["includes"]))}</p>
-  <p class="price"><b>{inr(t["price"])}</b> for two</p></a>'''
-    return f'<div class="day__scroller"><div class="day__track" id="track">{out}</div></div>'
+        rows += f'''<a class="row" href="{t["slug"]}.html" data-start="{t["start"] if t["start"] is not None else ""}" data-end="{t["end"] if t["end"] is not None else ""}">
+  <span class="flip" data-text="{t["hhmm"].upper()}">{t["hhmm"].upper()}</span>
+  <span class="nm">{t["name"]}<small>{escape(", ".join(t["includes"]))}</small></span>
+  <span class="du">{t["hours"]} HRS</span><span class="fa"><b>{inr(t["price"])}</b> / 2</span>
+  <span class="st">{"On request" if t["start"] is None else "Scheduled"}</span><span class="go" aria-hidden="true">→</span></a>'''
+    return f'''<div class="board rv"><div class="board__top"><span class="tag">{title}</span><span class="board__clock" id="bclock" aria-label="Time in Alleppey">--:--</span></div>
+  <div class="rows">{rows}</div>
+  <p class="board__foot">Fares are for two guests · each extra guest ₹100–₹150 per hour · times in IST</p></div>'''
 
 
-def route_list(t):
-    stops, extra = ROUTES[t["route"]]
-    lis = "".join(f'<li class="{"extra" if s in extra else ""}">{escape(s)}{"<small>Added on this tour</small>" if s in extra else ""}</li>' for s in stops)
-    return f'<ol class="route">{lis}</ol>'
+def stops(t):
+    lst, extra = ROUTES[t["route"]]
+    lis = "".join(f'<li class="{"x" if s in extra else ""}"><span>{escape(s)}{"<small>Added on this route</small>" if s in extra else ""}</span></li>' for s in lst)
+    return f'<ol class="stops">{lis}</ol>'
 
 
-def enquiry(selected="sunrise-cruise", heading="Check the price and book"):
-    opts = "".join(f'<option value="{t["slug"]}"{" selected" if t["slug"] == selected else ""}>{t["name"]} · {t["time"]}</option>' for t in TOURS)
-    return f'''<form class="calc rv" data-calc data-email action="enquiry.php" method="post">
-  <div><div class="eyebrow">Price &amp; booking</div><h3>{heading}</h3></div>
-  <label class="field"><span>Tour</span><select name="tour">{opts}</select></label>
-  <div class="fields">
-    <label class="field"><span>Date</span><input type="date" name="date" required></label>
-    <div class="field"><span id="g-label">Guests</span>
-      <div class="step" role="group" aria-labelledby="g-label"><button type="button" data-step="-1" aria-label="Fewer guests">−</button><output aria-live="polite">2</output><button type="button" data-step="1" aria-label="More guests">+</button></div>
-      <input type="hidden" name="guests" value="2">
+def journey(t, heading, lede, photo="shikara-sunset-bow"):
+    return f'''<section class="sec wrap" id="route"><div class="journey">
+  <div class="stick"><span class="tag">The route</span><h2 class="rise">{heading}</h2><p class="lede">{lede}</p>
+    <figure class="port">{img(photo, sizes="420px")}</figure></div>
+  {stops(t)}
+</div></section>'''
+
+
+def chat(qas):
+    items = "".join(f'<details{" open" if i == 0 else ""}><summary>{q}</summary><div class="a"><p>{a}</p></div></details>' for i, (q, a) in enumerate(qas))
+    return f'<div class="chat">{items}</div>'
+
+
+def bookpass(selected="sunrise-cruise", heading="Book a boarding pass"):
+    opts = "".join(f'<option value="{t["slug"]}"{" selected" if t["slug"] == selected else ""}>{t["hhmm"]} · {t["name"]}</option>' for t in TOURS)
+    t = TOUR[selected]
+    return f'''<form class="pass rv" data-calc data-email action="enquiry.php" method="post">
+  <div class="pass__main">
+    <div class="ptop"><span class="script">Kalyani</span><span class="tag">{heading}</span></div>
+    <label class="field"><span>Departure</span><select name="tour">{opts}</select></label>
+    <div class="fields">
+      <label class="field"><span>Date</span><input type="date" name="date" required></label>
+      <div class="field"><span id="g-label">Guests</span>
+        <div class="step" role="group" aria-labelledby="g-label"><button type="button" data-step="-1" aria-label="Fewer guests">−</button><output aria-live="polite">2</output><button type="button" data-step="1" aria-label="More guests">+</button></div>
+        <input type="hidden" name="guests" value="2"></div>
+      <label class="field"><span>Name on the pass</span><input name="name" autocomplete="name" required></label>
+      <label class="field"><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" required></label>
+      <label class="field"><span>Email (optional)</span><input name="email" type="email" autocomplete="email"></label>
+      <label class="field"><span>Start time or a note</span><input name="message" placeholder="Needed for the Regular Cruise"></label>
     </div>
+    <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+    <input type="hidden" name="started" value="">
+    <div class="acts"><button type="button" class="ticket ticket--red" data-send="wa">{WA_ICON}Send pass on WhatsApp</button><button type="submit" class="ticket ticket--line">Email it to us</button></div>
+    <p class="status" role="status" hidden></p>
   </div>
-  <div class="total"><span class="sum">{inr(TOUR[selected]["price"])}</span><p class="sumnote">Base price, covers up to two guests</p></div>
-  <div class="fields">
-    <label class="field"><span>Your name</span><input name="name" autocomplete="name" required></label>
-    <label class="field"><span>Phone or WhatsApp</span><input name="phone" type="tel" autocomplete="tel" required></label>
-  </div>
-  <label class="field"><span>Email (optional)</span><input name="email" type="email" autocomplete="email"></label>
-  <label class="field"><span>Preferred start time or a note (optional)</span><textarea name="message" placeholder="For the Regular Cruise, tell us the start time you'd like."></textarea></label>
-  <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
-  <input type="hidden" name="started" value="">
-  <div class="btns"><button type="button" class="btn btn--coral" data-send="wa">{WA_ICON}Send on WhatsApp</button><button type="submit" class="btn btn--ghost">Send by email</button></div>
-  <p class="status" role="status" hidden></p>
-  <p class="per">We confirm every booking personally on WhatsApp or by phone.</p>
+  <aside class="pass__stub" aria-live="polite">
+    <span class="tag">Fare for your group</span>
+    <span class="stub-total sum">{inr(t["price"])}</span>
+    <div class="stubline"><span>Departure <b class="s-tour">{t["name"]}</b></span><span>Time <b class="s-time">{t["time"]}</b></span><span>Date <b class="s-date">Choose a date</b></span><span>Guests <b class="s-guests">2</b></span></div>
+    <p class="sumnote" style="font:500 11px var(--mono);color:var(--ink-soft)">Fare covers two guests</p>
+    <div class="code" aria-hidden="true"></div>
+    <span class="tag" style="font-size:10px">Gate · Rajiv Boat Jetty</span>
+  </aside>
 </form>'''
 
 
-def glow(kind, h2, p, buttons, pics=None, extra=""):
-    right = (f'<div class="pics">{fig(pics[0], "p1", sizes="420px")}{fig(pics[1], "p2", sizes="320px")}</div>' if pics else extra)
-    return f'''<section class="glow glow--{kind} rv">{WAVES}<div class="wrap inner">
-  <div style="display:grid;gap:22px;justify-items:start"><h2>{h2}</h2><p class="lead">{p}</p><div class="btns">{buttons}</div></div>
-  {right}
-</div></section>'''
-
-
-def phero(img_name, crumbs, h1, lead, buttons="", top="", sticker="", pos=None):
-    return f'''<section class="phero"><div class="stage">
-  {img(img_name, sizes="100vw", eager=True, pos=pos)}<div class="stage__shade"></div>{sticker}
-  <div class="txt wrap"><p class="crumbs">{crumbs}</p>{top}<h1>{h1}</h1><p class="lead">{lead}</p>{f'<div class="btns">{buttons}</div>' if buttons else ""}</div>
-</div></section>'''
-
-
-def final(h2, p, buttons, photo="shikara-sunset-bow"):
-    return f'''<section class="final rv">{img(photo, sizes="100vw")}<div class="wrap"><h2>{h2}</h2><p class="lead" style="color:#fff">{p}</p><div class="btns">{buttons}</div></div></section>'''
+def pcard(t):
+    return f'''<a class="pcard rv" href="{t["slug"]}.html">
+  <div class="m"><span class="tag">{t["time"]} · {t["hours"]} hrs</span><h3>{t["name"]}</h3><p>{escape(t["lead"])}</p><div class="pp">{img(t["img"], sizes="80px")}</div></div>
+  <div class="s sky-{t["sky"]}"><small>Fare / 2</small><b>{t["hhmm"]}</b><span class="fare">{inr(t["price"])}</span></div>
+</a>'''
 
 
 BUSINESS = {
     "@context": "https://schema.org", "@type": "LocalBusiness", "name": SITE["name"], "url": SITE["url"],
     "image": SITE["url"] + "/assets/img/og-image.jpg", "telephone": SITE["phones"][0], "email": SITE["email"],
     "priceRange": f"{inr(min(t['price'] for t in TOURS))} – {inr(max(t['price'] for t in TOURS))}",
-    "address": {"@type": "PostalAddress", "streetAddress": "Rajiv Boat Jetty", "addressLocality": "Alappuzha",
-                "addressRegion": "Kerala", "addressCountry": "IN"},
+    "address": {"@type": "PostalAddress", "streetAddress": "Rajiv Boat Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "addressCountry": "IN"},
 }
-BOOK = "Hi Kalyani Boat Service! I'd like to book a shikara ride."
+
+# photos shown by the home page dial, by hour
+DIAL_PHOTOS = [("kayak-sunrise-group", 0, 7.5, "50% 62%"), ("deck-front", 7.5, 10, "50% 55%"), ("shikara-kalyani", 10, 13, "50% 62%"),
+               ("chairs-green", 13, 15.5, "50% 50%"), ("shikara-sunset-bow", 15.5, 18.6, "50% 55%"), ("kayak-sunset-group", 18.6, 24, "50% 60%")]
+DECK = [("Coir canopy", "A woven coconut-fibre roof keeps the deck shaded through the day.", "30%", "10%"),
+        ("Life buoys", "Rings hang under the canopy, within reach of every seat.", "47%", "14%"),
+        ("Cane chairs", "Covered cane chairs for groups, facing the water on both sides.", "38%", "64%"),
+        ("Turned teak pillars", "Carved wooden pillars hold up the canopy along the length of the boat.", "80%", "40%"),
+        ("Open water", "Low rails, so the backwater is at eye level from your seat.", "10%", "38%")]
 
 
 # ---------------------------------------------------------------- pages
 def home():
-    marquee = "".join(f"<span>{s}</span>" for s in ["Sunrise cruise", "Kerala breakfast on board", "Snake Boat Race track", "Vembanad Lake", "Village canals", "Kayaking", "Sunset cruise"] * 2)
-    body = f'''<section class="hero" aria-label="Introduction">
-  <div class="stage" id="stage">
-    <canvas id="sky" aria-hidden="true"></canvas>
-    <div class="stage__shade"></div>
-    <div class="birds" aria-hidden="true"><svg class="bird b1" viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg><svg class="bird b2" viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg><svg class="bird b3" viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg></div>
-    <div class="hero__content wrap">
-      <div class="hero__text">
-        <div class="chip"><span class="dot"></span>Shikara · Kayaking · Rajiv Boat Jetty, Alleppey</div>
-        <h1><span class="line">Alleppey from</span><span class="line">the water, <span class="rotator" id="rotator"><span>at sunrise</span></span></span><span class="line"><em class="serif">on a Kalyani shikara.</em></span></h1>
-        <p class="hero__lead">Seven shikara tours from first light to sunset, across Vembanad Lake, past the Snake Boat Race track and into the village canals. From {inr(1500)} for two.</p>
-        <div class="btns"><a class="btn btn--coral" href="shikara-tours.html">See shikara tours</a>{wa(BOOK, "Book on WhatsApp", "btn btn--light")}</div>
-        <div class="player" id="player">
-      <button type="button" id="playbtn" aria-label="Pause the day">❚❚</button>
-      <span class="clock" id="clock">06:00</span>
-      <span class="what" id="now">Sunrise Cruise on the water</span>
-      <button type="button" class="live" id="livebtn">Now in Alleppey</button>
-      <input type="range" id="hour" min="5" max="19.6" step="0.01" value="6" aria-label="Time of day on the water">
-        </div>
-      </div>
-      <div class="hero__floats" aria-hidden="true">
-        {fig("shikara-sunset-bow", "float float--a")}
-        {fig("guests-bow", "float float--b")}
-        <div class="badge"><b>From {inr(1500)}</b><span>for two, tea on board</span></div>
-      </div>
+    pics = "".join(f'<img src="assets/img/{n}-lg.webp" alt="" data-from="{a}" data-to="{b}" style="object-position:{p}"{" class=\"on\"" if i == 0 else ""} {"fetchpriority=\"high\"" if i == 0 else "loading=\"lazy\""}>' for i, (n, a, b, p) in enumerate(DIAL_PHOTOS))
+    sunrise = TOUR["sunrise-cruise"]
+    body = f'''<section class="hour" id="hour" aria-label="Pick your hour">
+  <div class="pics" aria-hidden="true">{pics}</div><div class="tint" aria-hidden="true"></div><div class="shade" aria-hidden="true"></div>
+  <div class="copy wrap">
+    <div class="coords"><span>Alleppey · Kerala</span><span>09°29′N 76°20′E</span><span>Rajiv Boat Jetty</span></div>
+    <h1 class="rise">{rise('Pick your', 'hour<span class="script">on the backwater</span>')}</h1>
+    <p class="lede">Shikara rides and kayaking from Rajiv Boat Jetty. First boat at six in the morning, last one out at half past three for the sunset.</p>
+  </div>
+  <div class="dialbox">
+    <svg class="dial" id="dial" viewBox="0 0 1000 300" role="slider" aria-label="Hour of the day" aria-valuemin="5" aria-valuemax="20" aria-valuenow="6" tabindex="0">
+      <line class="hz" x1="0" y1="290" x2="1000" y2="290"/>
+      <path class="arc" d="M60 290 A440 260 0 0 1 940 290"/>
+      <path class="done" id="dialdone" d="M60 290 A440 260 0 0 1 60 290"/>
+      <g id="ticks"></g><circle class="halo" id="halo" r="30"/><circle class="sun" id="sun" r="16"/>
+    </svg>
+    <div class="readout">
+      <span class="t" id="rt">06:00</span>
+      <a class="n" id="rn" href="{sunrise["slug"]}.html">{sunrise["name"]}</a>
+      <span class="f" id="rf">{inr(sunrise["price"])} for two · drag the sun</span>
+      <div class="ctl"><button type="button" id="rplay">Pause</button><button type="button" id="rnow">Now in Alleppey</button></div>
     </div>
-    <a class="spinner" href="#day" aria-label="See the tours of the day"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="circ" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs><text><textPath href="#circ">SHIKARA ✿ KAYAKING ✿ ALLEPPEY ✿ SUNRISE TO SUNSET ✿ </textPath></text></svg><span class="spinner__arrow">↓</span></a>
-  </div>
-  <div class="rates wrap">
-    <a class="rate rate--coral" href="sunrise-cruise.html"><span>Sunrise cruise</span><b>{inr(1500)}</b><small>6:00 am · for two</small><i>→</i></a>
-    <a class="rate rate--lagoon" href="full-day-tour.html"><span>Full day with lunch</span><b>{inr(4600)}</b><small>8 hours · for two</small><i>→</i></a>
-    <a class="rate rate--mango" href="sunset-cruise.html"><span>Sunset cruise</span><b>{inr(1600)}</b><small>3:30 pm · for two</small><i>→</i></a>
   </div>
 </section>
 
-<div class="marquee-wrap" aria-hidden="true"><div class="marquee"><div class="marquee__track">{marquee}</div></div></div>
+<section class="sec wrap" id="departures">
+  <div class="head"><div><span class="tag">Today at the jetty</span><h2 class="rise">{rise("Seven", 'departures<span class="script" style="font-size:.5em">a day</span>')}</h2></div>
+    <p class="lede">Every shikara tour leaves from Rajiv Boat Jetty and comes back there. The board shows what is on the water right now in Alleppey.</p></div>
+  {board()}
+  <div class="acts" style="margin-top:28px"><a class="ticket" href="hours.html">All hours &amp; fares {ARR}</a></div>
+</section>
 
-<section class="statement wrap" aria-label="About shikaras">
-  <div class="eyebrow">Shikara: the small boat of the backwaters</div>
-  <p id="scrub">A shikara sits low on the water and slips into village canals the big houseboats can't reach. You lie back on the deck and Alleppey drifts past.</p>
-  <div class="story">
-    <div>
-      <p><b>Kalyani Boat Service</b> runs shikara cruises and kayaking from Rajiv Boat Jetty in Alappuzha. Our shikaras have a cushioned front deck, cane chairs and a woven coir canopy, and every tour passes the Snake Boat Race track before crossing Vembanad Lake.</p>
-      <blockquote>“Pick your hour. The backwater looks different at every one.”</blockquote>
-      <div class="btns" style="margin-top:22px"><a class="btn btn--ghost btn--sm" href="about.html">About Kalyani →</a></div>
-    </div>
-    <dl class="facts">
-      <div class="fact fact--lagoon"><dt>Shikara tours a day</dt><dd>7</dd></div>
-      <div class="fact fact--mango"><dt>First cruise leaves</dt><dd>6 am</dd></div>
-      <div class="fact fact--coral"><dt>For two guests, from</dt><dd>{inr(1500)}</dd></div>
-      <div class="fact fact--leaf"><dt>Boarding point</dt><dd>1 jetty</dd></div>
-    </dl>
+{journey(TOUR["sunrise-cruise"], rise("Jetty to", "lake and back"), "The classic three-hour loop: out past the Snake Boat Race course, across Vembanad Lake and home through Vilakkumaram. Longer tours add villages, canals and paddy fields.")}
+
+<div class="scallop"></div>
+<section class="sec paper"><div class="wrap">
+  <div class="head"><div><span class="tag">On deck</span><h2 class="rise">{rise("Your seat", 'for <span class="script">three hours</span>')}</h2></div>
+    <p class="lede">Tap the gold markers to look around a Kalyani shikara.</p></div>
+  <div class="deck rv" data-deck>{img("chairs-green", sizes="(max-width:1480px) 100vw, 1400px")}
+    {"".join(f'<button class="spot" type="button" style="--x:{x};--y:{y}" aria-expanded="false" data-i="{i}">{i + 1}</button>' for i, (n, d, x, y) in enumerate(DECK))}
   </div>
-</section>
+  <div class="acts" style="margin-top:28px"><a class="ticket ticket--line" href="the-boat.html">Walk the whole boat {ARR}</a></div>
+</div></section>
+<div class="scallop" style="transform:scaleY(-1)"></div>
 
-<section class="day" id="day" aria-labelledby="day-title">
-  <div class="day__intro wrap sec__head" style="margin-bottom:0"><div><div class="eyebrow">A day on the water</div><h2 id="day-title">From first light <em class="serif">to the last.</em></h2></div>
-    <p>Seven tours through the day, each priced for two guests. Scroll along the day and pick your hour.</p></div>
-  {slots()}
-</section>
-
-<section class="sec wrap" aria-labelledby="mo-title">
-  <div class="sec__head"><div><div class="eyebrow">On board</div><h2 id="mo-title">Your seat <em class="serif">on the backwaters.</em></h2></div>
-    <p>Real photos from Kalyani's shikaras and kayaking trips on Vembanad Lake.</p></div>
-  <div class="mosaic">
-    <figure class="ph m1 rv">{img("shikara-sunset-bow", sizes="(max-width:760px) 100vw, 50vw")}<span class="mtag">Sunset cruise</span></figure>
-    <figure class="ph m2 rv">{img("chairs-green", sizes="50vw")}<span class="mtag">Cane chairs</span></figure>
-    <figure class="ph m3 rv">{img("deck-sofa", sizes="33vw")}<span class="mtag">The front deck</span></figure>
-    <figure class="ph m4 rv">{img("kayak-trees", sizes="17vw")}<span class="mtag">Canals</span></figure>
-    <figure class="ph m5 rv">{img("kayak-sunset-group", sizes="50vw")}<span class="mtag">Kayaking</span></figure>
-    <figure class="ph m6 rv">{img("guests-bow", sizes="50vw", pos="50% 35%")}<span class="mtag">Guests on board</span></figure>
-  </div>
-</section>
-
-{glow("dusk", 'Snake Boat Race track <em class="serif">to Vembanad Lake.</em>', "Our classic three-hour route. The half-day and full-day tours go further, to Kainakary, Chavara Bhavan, Vattakayal, Pallathurthi and the paddy fields farmed below sea level.", '<a class="btn btn--mango" href="shikara-tours.html">Compare all tours</a>', extra=route_list(TOUR["sunrise-cruise"]))}
-
-{glow("kayal", 'Kayaking <em class="serif">at sunrise &amp; sunset.</em>', "Small groups, single and double kayaks, guided through the canals. Message us for this week's timings and rates.", wa("Hi Kalyani Boat Service! I'd like to know about kayaking timings and rates.", "Ask about kayaking", "btn btn--light") + '<a class="btn btn--ghost" style="color:#fff" href="kayaking.html">See kayaking</a>', pics=["kayak-sunset-solo", "kayak-rainbow"])}
-
-{final('Catch the sunset <em class="serif">on Vembanad Lake.</em>', f"The Sunset Cruise leaves Rajiv Boat Jetty at 3:30 pm with tea and snacks on board. {inr(1600)} for two.", wa("Hi Kalyani Boat Service! I'd like to book the Sunset Cruise.", "Book the Sunset Cruise", "btn btn--mango") + '<a class="btn btn--light" href="sunset-cruise.html">See details</a>')}
-'''
-    return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
-                "Shikara cruises and kayaking on the Alleppey backwaters, from ₹1,500 for two. Sunrise, sunset, breakfast, half-day and full-day tours from Rajiv Boat Jetty.",
-                body, "index.html", '<script src="assets/js/hero.js?v=2" defer></script>', BUSINESS)
-
-
-def shikara_tours():
-    body = f'''{phero("shikara-kalyani", '<a href="index.html">Home</a> / Shikara tours', 'Seven ways to spend <em class="serif">a day on the water.</em>',
-                 "From a 6 am sunrise to a 3:30 pm sunset cruise, every tour starts at Rajiv Boat Jetty and takes in the Snake Boat Race track and Vembanad Lake.",
-                 wa("Hi Kalyani Boat Service! I'd like to book a shikara tour.") + '<a class="btn btn--light" href="#price">Check the price</a>',
-                 sticker=f'<div class="sticker"><b>{inr(1500)}</b><span>from, for two</span></div>', pos="50% 62%")}
-
-<section class="day" id="day" aria-labelledby="day-title">
-  <div class="day__intro wrap sec__head" style="margin-bottom:0"><div><div class="eyebrow">Tours by time of day</div><h2 id="day-title">From first light <em class="serif">to sunset.</em></h2></div><p>Tap a tour for its route, what's included and the price for your group.</p></div>
-  {slots()}
-</section>
+<section class="sec kayak"><div class="wrap grid">
+  <div style="display:grid;gap:22px;justify-items:start"><span class="tag" style="color:#FFE27A">Kayak hour</span><h2 class="rise">{rise("Paddle the", 'canals <span class="script">yourself</span>')}</h2>
+    <p class="lede">Swap the cushions for a paddle. Kayak sessions go into the narrow village canals and out onto the lake at sunrise and at sunset.</p>
+    <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask for kayak times", "ticket ticket--cream")}<a class="ticket ticket--line" href="kayak.html">Kayak hour {ARR}</a></div></div>
+  <div class="ports" aria-hidden="true"><figure class="port k1">{img("kayak-sunset-solo", sizes="320px")}</figure><figure class="port k2">{img("kayak-trees", sizes="240px")}</figure><figure class="port k3">{img("kayak-rainbow", sizes="220px")}</figure>
+    <svg class="paddle" viewBox="0 0 40 160" fill="currentColor"><rect x="18" y="20" width="4" height="120" rx="2"/><ellipse cx="20" cy="14" rx="10" ry="16"/><ellipse cx="20" cy="146" rx="10" ry="16"/></svg></div>
+</div></section>
 
 <section class="sec wrap">
-  <div class="sec__head"><div><div class="eyebrow">All tours</div><h2>Choose <em class="serif">your cruise.</em></h2></div><p>Prices are for two guests. Extra guests pay ₹100 to ₹150 for each hour of the tour.</p></div>
-  <div class="cards">{"".join(card(t) for t in TOURS)}</div>
+  <div class="head"><div><span class="tag">Ask the boatman</span><h2 class="rise">{rise("Questions", 'from the <span class="script">jetty</span>')}</h2></div><p class="lede">What people ask us most before they step on board.</p></div>
+  {chat(HOME_QA)}
 </section>
 
-<section class="sec band" id="price"><div class="wrap split">
-  <div style="display:grid;gap:18px;align-content:start"><div class="eyebrow">How pricing works</div><h2>One price for two, <em class="serif">then per hour.</em></h2>
-    <p class="lead">Each tour has a price for two guests. Every extra guest adds a fixed amount for each hour: ₹100 per hour on the three-hour cruises and ₹150 per hour on the half-day and full-day tours.</p>
-    <p class="mut">Example: the Sunrise Cruise for four guests is {inr(1500)} + 2 × ₹100 × 3 hrs = <b>{inr(2100)}</b>.</p></div>
-  {enquiry()}
-</div></section>
+<section class="sec wrap" id="book">
+  <div class="head"><div><span class="tag">Book</span><h2 class="rise">{rise("Print your", '<span class="script">boarding pass</span>')}</h2></div><p class="lede">Pick a departure, a date and how many of you are coming. The fare updates as you go, and the pass goes to us on WhatsApp.</p></div>
+  {bookpass()}
+</section>
 '''
+    return page("index.html", "Kalyani Boat Service | Shikara Rides & Kayaking by the Hour, Alleppey",
+                "Pick your hour on the Alleppey backwater: shikara rides from Rajiv Boat Jetty at 6 am, 8 am, 9 am, 1 pm and 3:30 pm, from ₹1,500 for two. Kayaking at sunrise and sunset.",
+                body, "index.html", '<script src="assets/js/hero.js?v=4" defer></script>', BUSINESS)
+
+
+HOME_QA = [
+    ("Where do we get on the boat?", f"At {SITE['jetty']}. Every departure starts and ends there. We send the exact spot on WhatsApp when we confirm."),
+    ("Which hour should we pick?", "For soft light and a quiet lake, the 6:00 Sunrise Cruise. For food on board, a breakfast departure or the full day. For colour in the sky, the 3:30 Sunset Cruise."),
+    ("How does the fare work?", "Each fare covers two people. Every extra guest adds ₹100 an hour on the three-hour rides and ₹150 an hour on the half day and full day."),
+    ("Can we go at our own time?", "Yes. The Regular Cruise is any three hours you like, at the same fare as the sunrise ride. Tell us your start time when you book."),
+    ("How do we book?", "Fill in the boarding pass on this page and send it on WhatsApp, or call the jetty desk. We reply to confirm the slot."),
+]
+
+
+def hours():
+    body = f'''<section class="phero">{img("shikara-sunset-bow", sizes="100vw", eager=True)}<div class="wrap">
+  <p class="crumbs"><a href="index.html">Home</a> / Hours</p><span class="tag">The timetable</span>
+  <h1 class="rise">{rise("Hours", 'on the <span class="script">water</span>')}</h1>
+  <p class="lede">Six fixed departures and one you time yourself. All from Rajiv Boat Jetty, all priced for two.</p>
+  <div class="acts"><a class="ticket ticket--red" href="#book">Book a pass {ARR}</a><a class="ticket ticket--line" href="#passes">See every pass</a></div>
+</div></section>
+
+<section class="sec wrap">{board("Live departures · IST")}</section>
+
+<section class="sec wrap" id="passes" style="padding-top:0">
+  <div class="head"><div><span class="tag">Boarding passes</span><h2 class="rise">{rise("Choose a", 'departure')}</h2></div><p class="lede">Open a pass for the route, what is served on board and the fare for your group.</p></div>
+  <div class="passes">{"".join(pcard(t) for t in TOURS)}</div>
+</section>
+
+<section class="sec wrap" style="padding-top:0">
+  <div class="head"><div><span class="tag">Fares</span><h2 class="rise">{rise("Two aboard,", 'then by the hour')}</h2></div>
+    <p class="lede">The fare covers two people. Each extra guest pays per hour of the ride: ₹100 on the three-hour departures, ₹150 on the half day and full day. Four people on the Sunrise Cruise: {inr(1500)} + 2 × ₹100 × 3 = {inr(2100)}.</p></div>
+</section>
+
+<section class="sec wrap" id="book" style="padding-top:0">{bookpass()}</section>'''
     schema = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "url": f'{SITE["url"]}/{t["slug"]}.html', "name": t["name"]} for i, t in enumerate(TOURS)]}
-    return page("shikara-tours.html", "Shikara Tours in Alleppey | Prices & Timings | Kalyani Boat Service",
-                "All Kalyani shikara tours with timings and prices: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600 for two.",
-                body, "shikara-tours.html", schema=schema)
+    return page("hours.html", "Shikara Timings & Fares in Alleppey | Kalyani Boat Service",
+                "Kalyani shikara departures from Rajiv Boat Jetty: Sunrise 6 am ₹1,500, Half Day 8 am ₹2,300, Full Day 8 am ₹4,600, Breakfast 9 am ₹1,800, Lunch 1 pm ₹1,800, Sunset 3:30 pm ₹1,600, for two.",
+                body, "hours.html", schema=schema)
 
 
 def tour_page(t):
-    others = [o for o in TOURS if o is not t][:3]
+    end_stop = "Vembanad Lake" if t["route"] == "base" else ("Pallathurthi" if t["route"] == "half" else "Kainakary")
+    when = (f"Boarding at {clock(t['start'])}, back at {clock(t['end'])}." if t["start"] is not None
+            else "You pick the start time. Tell us when you book.")
+    qas = [
+        ("What is included in the fare?", f"{', '.join(t['includes'])}, and the boat for {t['hours']} hours with our crew. The fare of {inr(t['price'])} covers two guests."),
+        ("What if we are more than two?", f"Each extra guest adds ₹{t['extra']} for every hour, so ₹{t['extra'] * t['hours']} per person on this {t['hours']}-hour ride."),
+        ("What time should we reach the jetty?", f"{when} Please be at Rajiv Boat Jetty ten minutes early."),
+        ("What should we bring?", "Sunglasses, a hat and sunscreen for daytime rides, and a light layer for the early morning."),
+    ]
+    other = [o for o in TOURS if o is not t][:3]
     inc = "".join(f"<li>{escape(i)}</li>" for i in t["includes"])
-    when = (f"Starts at {clock(t['start'])} and returns at {clock(t['end'])}." if t["start"] is not None
-            else "You choose the start time. Tell us your preferred time when you book.")
-    faqs = [
-        ("Where do we board the shikara?", f"All tours start and end at {SITE['jetty']}. We share the exact meeting point on WhatsApp when we confirm your booking."),
-        ("How is the price worked out?", f"{inr(t['price'])} covers two guests. Each extra guest adds ₹{t['extra']} for each hour of the tour, so ₹{t['extra'] * t['hours']} per extra guest on this {t['hours']}-hour tour."),
-        ("What time does the tour run?", when),
-        ("How do I book?", "Send us your date and number of guests on WhatsApp or with the form on this page. We reply to confirm availability and the booking details."),
-    ]
-    faq = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs)
-    words = t["name"].split(" ")
-    h1 = " ".join(words[:-1]) + f' <em class="serif">{words[-1]}</em>' if len(words) > 1 else t["name"]
-    kind = {"pulari": "pulari", "pakal": "pakal", "anthi": "dusk", "kayal": "kayal"}[t["sky"]]
-    body = f'''{phero(t["img"], f'<a href="index.html">Home</a> / <a href="shikara-tours.html">Shikara tours</a> / {t["name"]}', h1, escape(t["lead"]),
-                 wa(f"Hi Kalyani Boat Service! I'd like to book the {t['name']} ({t['time']}).") + '<a class="btn btn--light" href="#price">Price for your group</a>',
-                 top=chip(t), sticker=f'<div class="sticker"><b>{inr(t["price"])}</b><span>for two guests</span></div>')}
-
-<section class="wrap"><dl class="kfacts">
-  <div><dt>Time</dt><dd>{t["time"]}</dd></div><div><dt>Duration</dt><dd>{t["hours"]} hours</dd></div>
-  <div><dt>Price for two</dt><dd>{inr(t["price"])}</dd></div><div><dt>Extra guest</dt><dd>₹{t["extra"]} / hr</dd></div>
-</dl></section>
-
-<section class="sec wrap split">
-  <div class="rv" style="display:grid;gap:16px"><div class="eyebrow">Included</div><h2>On <em class="serif">board.</em></h2><ul class="ticks">{inc}<li>Pick up and drop at Rajiv Boat Jetty</li></ul>
-    <div class="eyebrow" style="margin-top:26px">Good to know</div><ul class="ticks"><li>{when}</li><li>The price covers two guests. Extra guests are charged per hour.</li><li>Bring sunglasses, a hat and sunscreen for daytime tours.</li></ul></div>
-  {fig(t["img"], "rv tilt-r", sizes="(max-width:860px) 100vw, 50vw")}
-</section>
-
-{glow(kind, 'Where <em class="serif">you\'ll go.</em>', "From Rajiv Boat Jetty and back again. Stops marked in colour are added on this tour.", wa(f"Hi Kalyani Boat Service! I'd like to book the {t['name']}.", "Book this tour", "btn btn--light"), extra=route_list(t))}
-
-<section class="sec wrap split" id="price">
-  <div style="display:grid;gap:16px;align-content:start"><div class="eyebrow">Questions</div><h2>Before <em class="serif">you go.</em></h2><div class="faq">{faq}</div></div>
-  {enquiry(t["slug"], "Price for your group")}
-</section>
-
-<section class="sec band" style="padding-top:clamp(70px,9vw,120px)"><div class="wrap">
-  <div class="sec__head"><div><div class="eyebrow">More tours</div><h2>You might <em class="serif">also like.</em></h2></div><a class="btn btn--ghost" href="shikara-tours.html">All shikara tours</a></div>
-  <div class="cards">{"".join(card(o) for o in others)}</div>
+    body = f'''<section class="phero">{img(t["img"], sizes="100vw", eager=True)}<div class="wrap">
+  <p class="crumbs"><a href="index.html">Home</a> / <a href="hours.html">Hours</a> / {t["name"]}</p><span class="tag">Departure {t["hhmm"]} · {t["hours"]} hours</span>
+  <h1 class="rise">{rise(*t["name"].split(" with ")) if " with " in t["name"] else rise(t["name"])}</h1>
+  <p class="lede">{escape(t["lead"])}</p>
 </div></section>
-'''
-    schema = [
-        {"@context": "https://schema.org", "@type": "TouristTrip", "name": t["name"], "description": t["lead"],
-         "touristType": "Backwater cruise", "provider": {"@type": "LocalBusiness", "name": SITE["name"], "telephone": SITE["phones"][0]},
-         "itinerary": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": s} for i, s in enumerate(ROUTES[t["route"]][0])]},
-         "offers": {"@type": "Offer", "price": t["price"], "priceCurrency": "INR", "description": "Price for two guests", "url": f'{SITE["url"]}/{t["slug"]}.html'}},
-        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
-    ]
-    return page(f'{t["slug"]}.html', f'{t["title"]} | {inr(t["price"])} for two | Kalyani',
-                f'{t["name"]} from Rajiv Boat Jetty, Alleppey: {t["time"]}, {t["hours"]} hours, {inr(t["price"])} for two. Includes {", ".join(t["includes"]).lower()}. Book on WhatsApp.',
-                body, "shikara-tours.html", schema=schema)
 
+<section class="wrap tourpass">
+  <div class="pass rv">
+    <div class="pass__main"><div class="ptop"><span class="script">Kalyani</span><span class="tag">Boarding pass · {t["name"]}</span></div>
+      <div class="fromto"><div><small>From</small><b>Rajiv Jetty</b></div>{BOAT}<div style="text-align:right"><small>Out to</small><b>{end_stop}</b></div></div>
+      <dl class="kv"><div><dt>Departs</dt><dd>{t["hhmm"]}</dd></div><div><dt>Duration</dt><dd>{t["hours"]} hrs</dd></div><div><dt>Fare for two</dt><dd class="money">{inr(t["price"])}</dd></div><div><dt>Extra guest</dt><dd>₹{t["extra"]}/hr</dd></div><div><dt>Gate</dt><dd>Rajiv Jetty</dd></div></dl></div>
+    <aside class="pass__stub"><span class="tag">Admit two</span><span class="stub-total">{inr(t["price"])}</span><div class="stubline"><span>Time <b>{t["time"]}</b></span><span>On board <b>{escape(", ".join(t["includes"]))}</b></span></div>
+      <div class="code" aria-hidden="true"></div>{wa(f"Hi Kalyani Boat Service! I'd like to book the {t['name']} ({t['time']}).", "Book this pass", "ticket ticket--red ticket--sm")}</aside>
+  </div>
+</section>
 
-def kayaking():
-    photos = "".join(f'<figure>{fig(n, "rv", sizes="(max-width: 700px) 100vw, 400px")}<figcaption>{CAPTIONS[n]}</figcaption></figure>'
-                     for n in ["kayak-trees", "kayak-sunset-solo", "kayak-rainbow", "kayak-canal", "kayak-sunrise-group"])
-    body = f'''{phero("kayak-sunset-group", '<a href="index.html">Home</a> / Kayaking', 'Paddle where <em class="serif">big boats can\'t go.</em>',
-                 "Kayak through the narrow village canals and out onto Vembanad Lake at sunrise or sunset. Message us for this week's timings and rates.",
-                 wa("Hi Kalyani Boat Service! I'd like to know about kayaking timings and rates.", "Ask about kayaking") + '<a class="btn btn--light" href="shikara-tours.html">See shikara tours</a>',
-                 sticker='<div class="sticker"><b>Sunrise</b><span>&amp; sunset sessions</span></div>')}
+{journey(t, rise("The", "route"), "From the jetty and back. Stops in red are added on this departure.", photo=t["img"])}
+
+<div class="scallop"></div>
+<section class="sec paper"><div class="wrap head" style="margin-bottom:0">
+  <div><span class="tag">On board</span><h2 class="rise">{rise("In the", '<span class="script">fare</span>')}</h2></div>
+  <ul class="ticks">{inc}<li>The shikara and crew for {t["hours"]} hours</li><li>Boarding at Rajiv Boat Jetty</li></ul>
+</div></section>
+<div class="scallop" style="transform:scaleY(-1)"></div>
 
 <section class="sec wrap">
-  <div class="sec__head"><div><div class="eyebrow">On the water</div><h2>Canals, lakes <em class="serif">&amp; long light.</em></h2></div><p>Photos from Kalyani kayaking trips.</p></div>
-  <div class="gal">{photos}</div>
+  <div class="head"><div><span class="tag">Ask the boatman</span><h2 class="rise">{rise("Before", "you board")}</h2></div></div>
+  {chat(qas)}
 </section>
 
-{glow("kayal", 'Plan your <em class="serif">kayaking session.</em>', "Tell us your date, the time of day you prefer and how many people are coming. We'll reply with timings, rates and the meeting point.", wa("Hi Kalyani Boat Service! I'd like to book kayaking. Date: , People: ", "Ask on WhatsApp", "btn btn--light"), pics=["kayak-canal", "kayak-sunrise-group"])}
-'''
-    return page("kayaking.html", "Kayaking in Alleppey | Sunrise & Sunset Kayak Tours | Kalyani",
-                "Sunrise and sunset kayaking through the Alleppey village canals and on Vembanad Lake with Kalyani Boat Service. Message us for timings and rates.",
-                body, "kayaking.html", schema=BUSINESS)
+<section class="sec wrap" id="book" style="padding-top:0">{bookpass(t["slug"], "Your pass for this ride")}</section>
+
+<section class="sec wrap" style="padding-top:0">
+  <div class="head"><div><span class="tag">Other departures</span><h2 class="rise">{rise("Another", "hour?")}</h2></div><a class="ticket ticket--line" href="hours.html">Full timetable {ARR}</a></div>
+  <div class="passes">{"".join(pcard(o) for o in other)}</div>
+</section>'''
+    schema = [
+        {"@context": "https://schema.org", "@type": "TouristTrip", "name": t["name"], "description": t["lead"], "touristType": "Backwater cruise",
+         "provider": {"@type": "LocalBusiness", "name": SITE["name"], "telephone": SITE["phones"][0]},
+         "itinerary": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": s} for i, s in enumerate(ROUTES[t["route"]][0])]},
+         "offers": {"@type": "Offer", "price": t["price"], "priceCurrency": "INR", "description": "Fare for two guests", "url": f'{SITE["url"]}/{t["slug"]}.html'}},
+        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qas]},
+    ]
+    return page(f'{t["slug"]}.html', f'{t["title"]} | {t["hhmm"]} · {inr(t["price"])} for two | Kalyani',
+                f'{t["name"]} from Rajiv Boat Jetty, Alleppey. Departs {t["time"]}, {t["hours"]} hours, {inr(t["price"])} for two. {", ".join(t["includes"])} on board.',
+                body, "hours.html", schema=schema)
+
+
+def kayak():
+    ports = "".join(f'<figure class="rv"><div class="port" style="width:min(100%,340px);margin-inline:auto">{img(n, sizes="340px")}</div><p class="cap" style="text-align:center">{CAPTIONS[n]}</p></figure>'
+                    for n in ["kayak-trees", "kayak-sunrise-group", "kayak-canal", "kayak-rainbow", "kayak-sunset-solo", "kayak-sunset-group"])
+    qas = [("When do kayak sessions run?", "At sunrise and at sunset, when the water is calm and the light is soft. Message us for this week's times."),
+           ("Where do we start?", "We share the meeting point when we confirm your session."),
+           ("How much does it cost?", "Rates depend on the session and group size. Send us your date and number of people and we reply with the rate."),
+           ("Single or double kayaks?", "Tell us who is coming and we suggest the right boats for your group.")]
+    body = f'''<section class="phero">{img("kayak-sunset-group", sizes="100vw", eager=True)}<div class="wrap">
+  <p class="crumbs"><a href="index.html">Home</a> / Kayak</p><span class="tag">Kayak hour</span>
+  <h1 class="rise">{rise("Paddle", 'your <span class="script">own way</span>')}</h1>
+  <p class="lede">Kayak through the narrow village canals and out onto Vembanad Lake, at sunrise or at sunset.</p>
+  <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask for kayak times")}<a class="ticket ticket--line" href="hours.html">Shikara hours</a></div>
+</div></section>
+<section class="sec wrap"><div class="head"><div><span class="tag">Through the porthole</span><h2 class="rise">{rise("Canals,", "lake, light")}</h2></div><p class="lede">From our kayak trips.</p></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:40px 30px">{ports}</div></section>
+<section class="sec kayak"><div class="wrap"><div class="head"><div><span class="tag" style="color:#FFE27A">Ask the boatman</span><h2 class="rise">{rise("Kayak", "questions")}</h2></div></div>{chat(qas)}</div></section>'''
+    return page("kayak.html", "Kayaking in Alleppey at Sunrise & Sunset | Kalyani Boat Service",
+                "Kayak the Alleppey village canals and Vembanad Lake at sunrise or sunset with Kalyani Boat Service. Message us for times and rates.", body, "kayak.html", schema=BUSINESS)
+
+
+def the_boat():
+    lst = "".join(f'<li data-n="{i + 1:02d}"><div><b>{n}</b><span>{d}</span></div></li>' for i, (n, d, x, y) in enumerate(DECK))
+    body = f'''<section class="phero">{img("shikara-kalyani", sizes="100vw", eager=True, pos="50% 62%")}<div class="wrap">
+  <p class="crumbs"><a href="index.html">Home</a> / On deck</p><span class="tag">The boat</span>
+  <h1 class="rise">{rise("On deck", 'of the <span class="script">Kalyani</span>')}</h1>
+  <p class="lede">A shikara is the small covered boat of Kerala's backwater: low in the water, shaded, built for sitting back and watching the banks go by.</p>
+</div></section>
+<section class="sec wrap"><div class="head"><div><span class="tag">Look around</span><h2 class="rise">{rise("Tap the", "markers")}</h2></div></div>
+  <div class="deck rv" data-deck>{img("chairs-green", sizes="(max-width:1480px) 100vw, 1400px")}
+    {"".join(f'<button class="spot" type="button" style="--x:{x};--y:{y}" aria-expanded="false" data-i="{i}">{i + 1}</button>' for i, (n, d, x, y) in enumerate(DECK))}</div>
+  <ul class="decklist" style="margin-top:40px">{lst}</ul></section>
+<section class="sec wrap" style="padding-top:0"><div class="head"><div><span class="tag">The front deck</span><h2 class="rise">{rise("Lie back,", 'look <span class="script">up</span>')}</h2></div>
+  <p class="lede">At the bow, a cushioned platform under the canopy. Most guests end up here.</p></div>
+  <div class="gal">{"".join(f'<figure class="rv"><div class="frame">{img(n, sizes="(max-width:700px) 100vw, 460px")}</div><p class="cap">{CAPTIONS[n]}</p></figure>' for n in ["deck-sofa", "guests-bow", "deck-yellow", "deck-pink", "chairs-pink", "deck-front"])}</div></section>
+<section class="sec wrap" style="padding-top:0">{bookpass()}</section>'''
+    return page("the-boat.html", "On Deck: Inside a Kalyani Shikara | Alleppey", "Look around a Kalyani shikara: cushioned front deck, cane chairs, coir canopy and life buoys on board.", body, "the-boat.html", schema=BUSINESS)
 
 
 def gallery():
     order = ["shikara-sunset-bow", "kayak-sunset-group", "guests-bow", "kayak-trees", "deck-sofa", "kayak-rainbow", "shikara-kalyani",
              "kayak-sunset-solo", "chairs-green", "deck-front", "kayak-canal", "deck-yellow", "chairs-pink", "kayak-sunrise-group", "deck-pink"]
-    figs = "".join(f'<figure>{fig(n, "rv", sizes="(max-width: 700px) 100vw, 400px")}<figcaption>{CAPTIONS[n]}</figcaption></figure>' for n in order)
-    body = f'''{phero("kayak-sunset-solo", '<a href="index.html">Home</a> / Gallery', 'Moments from <em class="serif">the backwater.</em>', "Our shikaras, our guests and the light on Vembanad Lake.", pos="50% 45%")}
-<section class="sec wrap"><div class="gal">{figs}</div></section>'''
-    return page("gallery.html", "Photo Gallery | Kalyani Boat Service, Alleppey",
-                "Photos of Kalyani shikaras, sunset cruises and kayaking on the Alleppey backwaters and Vembanad Lake.", body, "gallery.html")
+    figs = "".join(f'<figure class="rv"><div class="frame">{img(n, sizes="(max-width:700px) 100vw, 460px")}</div><p class="cap">{i + 1:02d} · {CAPTIONS[n]}</p></figure>' for i, n in enumerate(order))
+    body = f'''<section class="phero phero--plain"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p><span class="tag">Logbook</span>
+  <h1 class="rise">{rise("From the", '<span class="script">logbook</span>')}</h1><p class="lede">Photos from the boats, the lake and the people who came aboard.</p></div></section>
+<section class="sec wrap" style="padding-top:40px"><div class="gal">{figs}</div></section>'''
+    return page("gallery.html", "Photos | Kalyani Boat Service, Alleppey", "Photos of Kalyani shikaras, sunset rides and kayaking on Vembanad Lake, Alleppey.", body, "gallery.html")
 
 
-def about():
-    body = f'''{phero("shikara-kalyani", '<a href="index.html">Home</a> / About', 'Kalyani <em class="serif">Boat Service.</em>',
-                 "Shikara cruises and kayaking on the Alleppey backwaters, from Rajiv Boat Jetty in Alappuzha.", pos="50% 66%")}
-
-<section class="sec wrap split">
-  <div class="prose rv">
-    <div class="eyebrow">Our shikaras</div><h2>Built for <em class="serif">slow afternoons.</em></h2>
-    <p>A shikara is a small, covered Kerala boat built for slow cruising. Ours have a cushioned front deck for lying back and watching the water, cane chairs for groups and a woven coir canopy for shade. Life buoys are kept on board.</p>
-    <h2 style="margin-top:20px">Our <em class="serif">tours.</em></h2>
-    <p>We run seven shikara tours through the day, from a 6 am Sunrise Cruise to a 3:30 pm Sunset Cruise, plus kayaking on the lake and in the village canals. Every shikara tour passes the Snake Boat Race track and crosses Vembanad Lake. The longer tours go on to Kainakary, Chavara Bhavan, Vattakayal, Pallathurthi and the paddy fields farmed below sea level.</p>
-    <div class="btns">{wa(BOOK)}<a class="btn btn--ghost" href="shikara-tours.html">See all tours</a></div>
-  </div>
-  <div class="mosaic" style="grid-template-columns:1fr 1fr;grid-auto-rows:200px">
-    <figure class="ph rv" style="grid-row:span 2">{img("deck-sofa", sizes="300px")}</figure>
-    <figure class="ph rv">{img("chairs-green", sizes="300px")}</figure>
-    <figure class="ph rv">{img("deck-yellow", sizes="300px")}</figure>
-  </div>
-</section>
-{final('Come aboard <em class="serif">the Kalyani.</em>', "Every tour leaves from Rajiv Boat Jetty, from 6 am to 3:30 pm.", wa(BOOK, "Book on WhatsApp", "btn btn--mango"), photo="guests-bow")}'''
-    return page("about.html", "About Kalyani Boat Service | Shikara Tours from Rajiv Boat Jetty",
-                "Kalyani Boat Service runs shikara cruises and kayaking on the Alleppey backwaters from Rajiv Boat Jetty, Alappuzha.", body, "about.html", schema=BUSINESS)
-
-
-def contact():
+def book():
     phones = "".join(f'<li><b>Phone / WhatsApp</b><a href="tel:{p.replace(" ", "")}">{p}</a></li>' for p in SITE["phones"])
-    body = f'''{phero("deck-front", '<a href="index.html">Home</a> / Contact', 'Let\'s get you <em class="serif">on the water.</em>', "The quickest way to book is WhatsApp. Or fill in the form and we'll get back to you.", wa(BOOK, "Chat on WhatsApp"), pos="50% 55%")}
-<section class="sec wrap split">
-  <div style="display:grid;gap:22px;align-content:start"><div class="eyebrow">Contact &amp; booking</div><h2>Call, message <em class="serif">or email.</em></h2>
-    <ul class="contact-list">{phones}
-      <li><b>Email</b><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li>
-      <li><b>Boarding point</b><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["jetty"]} ↗</a></li></ul></div>
-  {enquiry(heading="Send an enquiry")}
-</section>'''
-    return page("contact.html", "Contact & Book | Kalyani Boat Service, Alleppey",
-                "Book a shikara cruise or kayaking in Alleppey. WhatsApp +91 98473 86262 or +91 97477 98412, or send an enquiry online.",
-                body, "contact.html", schema=BUSINESS)
+    body = f'''<section class="phero phero--plain"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><span class="tag">Jetty desk</span>
+  <h1 class="rise">{rise("Book a", '<span class="script">pass</span>')}</h1><p class="lede">Fill in the pass and send it on WhatsApp, or call the jetty desk. We confirm every booking ourselves.</p></div></section>
+<section class="sec wrap" style="padding-top:40px">{bookpass(heading="Booking request")}</section>
+<section class="sec wrap" style="padding-top:0"><div class="head"><div><span class="tag">Reach us</span><h2 class="rise">{rise("Jetty", "desk")}</h2></div></div>
+  <ul class="lines">{phones}<li><b>Email</b><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><b>Boarding</b><a href="{SITE["maps"]}" target="_blank" rel="noopener">Rajiv Boat Jetty ↗</a></li></ul></section>'''
+    return page("book.html", "Book a Shikara Ride | Kalyani Boat Service, Alleppey",
+                "Book a Kalyani shikara ride or kayak session in Alleppey. WhatsApp +91 98473 86262 or +91 97477 98412.", body, "book.html", schema=BUSINESS)
 
 
 def simple(path, title, desc, h1, html, noindex=False, base=False):
-    body = f'''<section class="phero phero--plain"><div class="stage" style="--g:var(--kayal)"><div class="txt wrap"><p class="crumbs"><a href="index.html">Home</a> / {h1}</p><h1>{h1}</h1></div></div></section>
-<section class="sec wrap"><div class="prose">{html}</div></section>'''
+    body = f'''<section class="phero phero--plain"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / {h1}</p><h1>{h1}</h1></div></section>
+<section class="sec wrap" style="padding-top:40px"><div class="prose">{html}</div></section>'''
     return page(path, title, desc, body, noindex=noindex, base=base)
 
 
-TERMS = f'''<p class="lead">Simple terms for booking a Kalyani shikara tour or kayaking session.</p>
+TERMS = f'''<p class="lede">Simple terms for booking a Kalyani shikara tour or kayaking session.</p>
 <h2>Prices</h2><ul><li>Each shikara tour has a price for two guests.</li><li>Each extra guest is charged per hour: ₹100 per hour on three-hour cruises and ₹150 per hour on the half-day and full-day tours.</li><li>Prices on this website are in Indian Rupees.</li></ul>
 <h2>Booking</h2><ul><li>A booking is confirmed only when we confirm it to you on WhatsApp or by phone.</li><li>Advance payment, payment methods and cancellation terms are shared with you when we confirm your booking.</li></ul>
 <h2>On the day</h2><ul><li>All tours start and end at {SITE["jetty"]}. Please arrive 10 minutes before your start time.</li><li>Timings can change because of weather or water conditions. We will contact you if this happens.</li></ul>
 <p>Questions? Call {SITE["phones"][0]} or WhatsApp us.</p>'''
 
-PRIVACY = f'''<p class="lead">How we handle the details you send us.</p>
+PRIVACY = f'''<p class="lede">How we handle the details you send us.</p>
 <h2>What we collect</h2><p>When you send an enquiry we receive your name, phone number, optional email, tour, date, number of guests and any note you add.</p>
 <h2>How we use it</h2><p>Only to reply to your enquiry and arrange your booking. We do not sell or share your details. Enquiries sent by email arrive in our inbox at {SITE["email"]}. Messages sent on WhatsApp are handled by WhatsApp.</p>
 <h2>Cookies</h2><p>This website does not use tracking or advertising cookies.</p>
@@ -557,14 +550,14 @@ PRIVACY = f'''<p class="lead">How we handle the details you send us.</p>
 
 def build():
     pages = {
-        "index.html": home(), "shikara-tours.html": shikara_tours(), "kayaking.html": kayaking(),
-        "gallery.html": gallery(), "about.html": about(), "contact.html": contact(),
-        "terms.html": simple("terms.html", "Booking Terms | Kalyani Boat Service", "Booking terms for Kalyani Boat Service shikara tours in Alleppey.", "Booking terms", TERMS),
-        "privacy.html": simple("privacy.html", "Privacy | Kalyani Boat Service", "How Kalyani Boat Service handles enquiry details.", "Privacy", PRIVACY),
-        "thank-you.html": simple("thank-you.html", "Thank you | Kalyani Boat Service", "Your enquiry has been sent.", "Thank you",
-                                 f'<p class="lead">Your enquiry has been sent. We will reply on WhatsApp or by phone shortly.</p><div class="btns">{wa("Hi Kalyani Boat Service! I just sent an enquiry on your website.", "Message us on WhatsApp")}<a class="btn btn--ghost" href="index.html">Back to home</a></div>', noindex=True),
-        "404.html": simple("404.html", "Page not found | Kalyani Boat Service", "This page could not be found.", "Page not found",
-                           '<p class="lead">This page has drifted off. Try one of these instead.</p><div class="btns"><a class="btn btn--coral" href="shikara-tours.html">Shikara tours</a><a class="btn btn--ghost" href="index.html">Home</a></div>', noindex=True, base=True),
+        "index.html": home(), "hours.html": hours(), "kayak.html": kayak(), "the-boat.html": the_boat(),
+        "gallery.html": gallery(), "book.html": book(),
+        "terms.html": simple("terms.html", "Booking Terms | Kalyani Boat Service", "Booking terms for Kalyani Boat Service shikara rides in Alleppey.", "Booking terms", TERMS),
+        "privacy.html": simple("privacy.html", "Privacy | Kalyani Boat Service", "How Kalyani Boat Service handles booking details.", "Privacy", PRIVACY),
+        "thank-you.html": simple("thank-you.html", "Pass received | Kalyani Boat Service", "Your booking request has been sent.", "Pass received",
+                                 f'<p class="lede">Your booking request reached the jetty desk. We will confirm on WhatsApp or by phone shortly.</p><div class="acts">{wa("Hi Kalyani Boat Service! I just sent a booking request on your website.", "Message us on WhatsApp")}<a class="ticket ticket--line" href="index.html">Back to the jetty</a></div>', noindex=True),
+        "404.html": simple("404.html", "Page not found | Kalyani Boat Service", "This page could not be found.", "Off the map",
+                           '<p class="lede">This page has drifted off the route.</p><div class="acts"><a class="ticket ticket--red" href="hours.html">See today\'s departures</a><a class="ticket ticket--line" href="index.html">Home</a></div>', noindex=True, base=True),
     }
     for t in TOURS:
         pages[f'{t["slug"]}.html'] = tour_page(t)
