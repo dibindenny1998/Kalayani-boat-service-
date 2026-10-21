@@ -149,6 +149,42 @@
     if (new URLSearchParams(location.search).get("error")) say("Sorry, that did not go through. Please check the pass, or send it on WhatsApp.", "err");
   });
 
+
+  /* departure board: a photo of the boat follows the cursor over each row */
+  if (matchMedia("(pointer: fine)").matches) $$(".board").forEach(b => {
+    const peek = $(".peek", b); if (!peek) return;
+    b.addEventListener("pointermove", e => { const r = e.target.closest(".row"); if (!r) { peek.classList.remove("on"); return; }
+      if (peek.dataset.src !== r.dataset.img) { peek.src = r.dataset.img; peek.dataset.src = r.dataset.img; }
+      peek.style.left = (e.clientX + 150) + "px"; peek.style.top = e.clientY + "px"; peek.classList.add("on"); });
+    b.addEventListener("pointerleave", () => peek.classList.remove("on"));
+  });
+
+  /* sunrise / sunset slider: sweeps by itself until someone drags it */
+  const cmp = $("#compare");
+  if (cmp) {
+    const input = $("input", cmp); let touched = false, t0 = performance.now();
+    const set = v => cmp.style.setProperty("--c", v + "%");
+    input.addEventListener("input", () => { touched = true; set(input.value); });
+    const sweep = n => { if (touched) return; const v = 50 + 32 * Math.sin((n - t0) / 1600); set(v.toFixed(1)); input.value = v; requestAnimationFrame(sweep); };
+    if (!still) requestAnimationFrame(sweep);
+  }
+
+  /* route: the porthole photo changes as you pass each stop */
+  $$(".journey").forEach(j => {
+    const imgs = $$(".port.swap img", j), lis = $$(".stops li", j); if (!imgs.length) return;
+    let cur = 0;
+    const pick = () => { let best = 0, bd = 1e9; lis.forEach((li, i) => { const r = li.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - innerHeight / 2); if (d < bd) { bd = d; best = i; } });
+      const k = best % imgs.length; if (k !== cur) { imgs[cur].classList.remove("on"); imgs[k].classList.add("on"); cur = k; } };
+    addEventListener("scroll", pick, { passive: true }); pick();
+  });
+
+  /* photos tilt toward the cursor */
+  if (!still && matchMedia("(pointer: fine)").matches) $$(".tilt").forEach(el => {
+    el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      el.style.transform = `perspective(800px) rotateY(${(x * 10).toFixed(2)}deg) rotateX(${(-y * 10).toFixed(2)}deg) scale(1.02)`; });
+    el.addEventListener("pointerleave", () => { el.style.transform = ""; });
+  });
+
   /* floating WhatsApp hides over the home hero */
   const wa = $(".wa"), hero = $("#hour");
   if (wa && hero && "IntersectionObserver" in window) new IntersectionObserver(e => wa.classList.toggle("off", e[0].isIntersecting), { threshold: .4 }).observe(hero);

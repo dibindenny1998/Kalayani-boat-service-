@@ -134,6 +134,17 @@ def fig(name, cls="", alt=None, sizes="(max-width: 820px) 100vw, 50vw", eager=Fa
 WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
 BOAT = '<svg class="boat" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h44q8 0 10-12 3 2 2 8-2 12-14 12H16Q7 28 4 20z"/><path d="M12 19v-7q14-8 28 0v7"/></svg>'
 ARR = '<span class="arr" aria-hidden="true">→</span>'
+WAVE = '<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path class="fill" d="M0 60V30Q180 0 360 30T720 30T1080 30T1440 30V60z"/><path class="line" d="M0 30Q180 0 360 30T720 30T1080 30T1440 30"/></svg>'
+WAVE_DOWN = WAVE.replace('class="wave"', 'class="wave down"')
+FILM = ["shikara-sunset-bow", "kayak-rainbow", "deck-sofa", "kayak-trees", "guests-bow", "kayak-sunset-group", "shikara-kalyani", "chairs-pink", "kayak-sunset-solo", "deck-front", "kayak-canal", "deck-yellow"]
+
+
+def film():
+    frames = "".join(f"<figure>{img(n, sizes='300px')}<figcaption>{CAPTIONS[n]}</figcaption></figure>" for n in FILM)
+    copy = frames.replace("<figure>", '<figure aria-hidden="true">')
+    return f'<div class="film" aria-label="Photos from Kalyani boats"><div class="film__track">{frames}{copy}</div></div>'
+
+
 BOOK = "Hi Kalyani Boat Service! I'd like to book a shikara ride."
 
 NAV = [("hours.html", "Hours"), ("index.html#route", "Route"), ("the-boat.html", "On deck"), ("kayak.html", "Kayak"), ("gallery.html", "Gallery")]
@@ -193,7 +204,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700&family=Yellowtail&family=Manjari:wght@400;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=4">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
 {ld}
 </head>
 <body>
@@ -202,8 +213,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=4"></script>
-<script src="assets/js/main.js?v=4" defer></script>
+<script src="assets/js/data.js?v=6"></script>
+<script src="assets/js/main.js?v=6" defer></script>
 {scripts}
 </body>
 </html>
@@ -217,14 +228,15 @@ def rise(*lines):
 def board(title="Departures · Rajiv Boat Jetty"):
     rows = ""
     for t in TOURS:
-        rows += f'''<a class="row" href="{t["slug"]}.html" data-start="{t["start"] if t["start"] is not None else ""}" data-end="{t["end"] if t["end"] is not None else ""}">
+        rows += f"""<a class="row" href="{t["slug"]}.html" data-img="assets/img/{t["img"]}-sm.webp" data-start="{t["start"] if t["start"] is not None else ""}" data-end="{t["end"] if t["end"] is not None else ""}">
   <span class="flip" data-text="{t["hhmm"].upper()}">{t["hhmm"].upper()}</span>
+  <span class="th">{img(t["img"], sizes="64px")}</span>
   <span class="nm">{t["name"]}<small>{escape(", ".join(t["includes"]))}</small></span>
   <span class="du">{t["hours"]} HRS</span><span class="fa"><b>{inr(t["price"])}</b> / 2</span>
-  <span class="st">{"On request" if t["start"] is None else "Scheduled"}</span><span class="go" aria-hidden="true">→</span></a>'''
-    return f'''<div class="board rv"><div class="board__top"><span class="tag">{title}</span><span class="board__clock" id="bclock" aria-label="Time in Alleppey">--:--</span></div>
+  <span class="st">{"On request" if t["start"] is None else "Scheduled"}</span><span class="go" aria-hidden="true">→</span></a>"""
+    return f"""<div class="board rv"><div class="board__top"><span class="tag">{title}</span><span class="board__clock" aria-label="Time in Alleppey">--:--</span></div>
   <div class="rows">{rows}</div>
-  <p class="board__foot">Fares are for two guests · each extra guest ₹100–₹150 per hour · times in IST</p></div>'''
+  <p class="board__foot">Fares are for two guests · each extra guest ₹100–₹150 per hour · times in IST</p><img class="peek" alt="" aria-hidden="true"></div>"""
 
 
 def stops(t):
@@ -233,12 +245,16 @@ def stops(t):
     return f'<ol class="stops">{lis}</ol>'
 
 
+ROUTE_PHOTOS = ["deck-front", "shikara-kalyani", "deck-sofa", "guests-bow", "shikara-sunset-bow", "chairs-green", "deck-yellow", "chairs-pink", "kayak-sunset-group"]
+
+
 def journey(t, heading, lede, photo="shikara-sunset-bow"):
-    return f'''<section class="sec wrap" id="route"><div class="journey">
+    swaps = "".join(f'<img src="assets/img/{n}-sm.webp" alt="" loading="lazy" data-k="{i}"' + (' class="on"' if i == 0 else "") + ">" for i, n in enumerate(ROUTE_PHOTOS))
+    return f"""{WAVE}<section class="sec lite day" id="route"><div class="wrap journey">
   <div class="stick"><span class="tag">The route</span><h2 class="rise">{heading}</h2><p class="lede">{lede}</p>
-    <figure class="port">{img(photo, sizes="420px")}</figure></div>
+    <figure class="port swap" aria-hidden="true">{swaps}</figure><p class="cap">Seen from on board</p></div>
   {stops(t)}
-</div></section>'''
+</div></section>{WAVE_DOWN}"""
 
 
 def chat(qas):
@@ -314,6 +330,9 @@ def home():
     <h1 class="rise">{rise('Pick your', 'hour<span class="script">on the backwater</span>')}</h1>
     <p class="lede">Shikara rides and kayaking from Rajiv Boat Jetty. First boat at six in the morning, last one out at half past three for the sunset.</p>
   </div>
+  <svg class="xboat" viewBox="0 0 160 60" aria-hidden="true"><path d="M8 40h104q18 0 24-26 6 3 4 16-4 24-30 24H38Q16 54 8 40z" fill="#0A0D24"/><path d="M26 39V27q36-18 72 0v12" fill="none" stroke="#0A0D24" stroke-width="5"/><path d="M118 38q8-10 10-24" fill="none" stroke="#E8B54A" stroke-width="3"/></svg>
+  <div class="birds" aria-hidden="true"><svg viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg><svg viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg><svg viewBox="0 0 40 16"><path d="M2 10 Q11 0 20 9 Q29 0 38 10"/></svg></div>
+  <a class="cue" href="#departures" aria-label="Scroll to departures"><span></span>Scroll</a>
   <div class="dialbox">
     <svg class="dial" id="dial" viewBox="0 0 1000 300" role="slider" aria-label="Hour of the day" aria-valuemin="5" aria-valuemax="20" aria-valuenow="6" tabindex="0">
       <line class="hz" x1="0" y1="290" x2="1000" y2="290"/>
@@ -330,47 +349,67 @@ def home():
   </div>
 </section>
 
-<section class="sec wrap" id="departures">
-  <div class="head"><div><span class="tag">Today at the jetty</span><h2 class="rise">{rise("Seven", 'departures<span class="script" style="font-size:.5em">a day</span>')}</h2></div>
-    <p class="lede">Every shikara tour leaves from Rajiv Boat Jetty and comes back there. The board shows what is on the water right now in Alleppey.</p></div>
+<section class="sec lite dawn" id="departures"><div class="wrap">
+  <div class="head"><div><span class="tag">Today at the jetty</span><h2 class="rise">{rise("Seven", 'departures<span class="script" style="font-size:.5em"> a day</span>')}</h2></div>
+    <p class="lede">Every shikara ride leaves from Rajiv Boat Jetty and comes back there. The board shows what is on the water right now in Alleppey. Hover a departure to see the boat.</p></div>
   {board()}
-  <div class="acts" style="margin-top:28px"><a class="ticket" href="hours.html">All hours &amp; fares {ARR}</a></div>
+  <div class="acts" style="margin-top:28px"><a class="ticket ticket--red" href="hours.html">All hours &amp; fares {ARR}</a></div>
+</div></section>
+
+{film()}
+
+<section class="sec wrap" id="light">
+  <div class="head"><div><span class="tag">Same lake, two hours</span><h2 class="rise">{rise("Sunrise", 'or <span class="script">sunset?</span>')}</h2></div>
+    <p class="lede">Drag across the photo. Mornings are cool, still and pink. Evenings turn the whole lake gold.</p></div>
+  <div class="compare rv" id="compare">
+    {img("kayak-sunrise-group", sizes="(max-width:1480px) 100vw, 1400px", pos="50% 62%")}
+    <div class="compare__top">{img("shikara-sunset-bow", sizes="(max-width:1480px) 100vw, 1400px", pos="50% 55%")}</div>
+    <span class="compare__line" aria-hidden="true"><i>⇆</i></span>
+    <span class="compare__lab l">Sunrise · on the lake</span><span class="compare__lab r">Sunset · from the shikara</span>
+    <input type="range" min="0" max="100" value="50" aria-label="Compare sunrise and sunset">
+  </div>
+  <div class="acts" style="margin-top:24px;justify-content:center"><a class="ticket" href="sunrise-cruise.html">Sunrise · {inr(1500)} {ARR}</a><a class="ticket ticket--red" href="sunset-cruise.html">Sunset · {inr(1600)} {ARR}</a></div>
 </section>
 
 {journey(TOUR["sunrise-cruise"], rise("Jetty to", "lake and back"), "The classic three-hour loop: out past the Snake Boat Race course, across Vembanad Lake and home through Vilakkumaram. Longer tours add villages, canals and paddy fields.")}
 
-<div class="scallop"></div>
-<section class="sec paper"><div class="wrap">
+<section class="sec paper lite"><div class="wrap">
   <div class="head"><div><span class="tag">On deck</span><h2 class="rise">{rise("Your seat", 'for <span class="script">three hours</span>')}</h2></div>
     <p class="lede">Tap the gold markers to look around a Kalyani shikara.</p></div>
-  <div class="deck rv" data-deck>{img("chairs-green", sizes="(max-width:1480px) 100vw, 1400px")}
-    {"".join(f'<button class="spot" type="button" style="--x:{x};--y:{y}" aria-expanded="false" data-i="{i}">{i + 1}</button>' for i, (n, d, x, y) in enumerate(DECK))}
+  <div class="deckgrid">
+    <div class="deck rv" data-deck>{img("chairs-green", sizes="(max-width:900px) 100vw, 900px")}
+      {"".join(f'<button class="spot" type="button" style="--x:{x};--y:{y}" aria-expanded="false" data-i="{i}">{i + 1}</button>' for i, (n, d, x, y) in enumerate(DECK))}
+    </div>
+    <div class="deckside">
+      <figure class="frame rv tilt">{img("deck-sofa", sizes="400px")}</figure>
+      <figure class="frame rv tilt">{img("guests-bow", sizes="400px", pos="50% 30%")}</figure>
+    </div>
   </div>
   <div class="acts" style="margin-top:28px"><a class="ticket ticket--line" href="the-boat.html">Walk the whole boat {ARR}</a></div>
 </div></section>
-<div class="scallop" style="transform:scaleY(-1)"></div>
 
 <section class="sec kayak"><div class="wrap grid">
   <div style="display:grid;gap:22px;justify-items:start"><span class="tag" style="color:#FFE27A">Kayak hour</span><h2 class="rise">{rise("Paddle the", 'canals <span class="script">yourself</span>')}</h2>
     <p class="lede">Swap the cushions for a paddle. Kayak sessions go into the narrow village canals and out onto the lake at sunrise and at sunset.</p>
     <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask for kayak times", "ticket ticket--cream")}<a class="ticket ticket--line" href="kayak.html">Kayak hour {ARR}</a></div></div>
-  <div class="ports" aria-hidden="true"><figure class="port k1">{img("kayak-sunset-solo", sizes="320px")}</figure><figure class="port k2">{img("kayak-trees", sizes="240px")}</figure><figure class="port k3">{img("kayak-rainbow", sizes="220px")}</figure>
+  <div class="ports" aria-hidden="true"><figure class="port k1 tilt">{img("kayak-sunset-solo", sizes="320px")}</figure><figure class="port k2 tilt">{img("kayak-trees", sizes="240px")}</figure><figure class="port k3 tilt">{img("kayak-rainbow", sizes="220px")}</figure>
     <svg class="paddle" viewBox="0 0 40 160" fill="currentColor"><rect x="18" y="20" width="4" height="120" rx="2"/><ellipse cx="20" cy="14" rx="10" ry="16"/><ellipse cx="20" cy="146" rx="10" ry="16"/></svg></div>
 </div></section>
 
-<section class="sec wrap">
-  <div class="head"><div><span class="tag">Ask the boatman</span><h2 class="rise">{rise("Questions", 'from the <span class="script">jetty</span>')}</h2></div><p class="lede">What people ask us most before they step on board.</p></div>
-  {chat(HOME_QA)}
-</section>
+<section class="sec lite dawn2"><div class="wrap boatman">
+  <div><div class="head" style="grid-template-columns:1fr"><div><span class="tag">Ask the boatman</span><h2 class="rise">{rise("Questions", 'from the <span class="script">jetty</span>')}</h2></div><p class="lede">What people ask us most before they step on board.</p></div>
+  {chat(HOME_QA)}</div>
+  <figure class="boatpic rv">{img("shikara-kalyani", sizes="(max-width:900px) 100vw, 520px", pos="50% 62%")}<figcaption><span class="script">Kalyani</span> waiting at the jetty</figcaption></figure>
+</div></section>
 
-<section class="sec wrap" id="book">
+<section class="sec dusk" id="book"><div class="wrap">
   <div class="head"><div><span class="tag">Book</span><h2 class="rise">{rise("Print your", '<span class="script">boarding pass</span>')}</h2></div><p class="lede">Pick a departure, a date and how many of you are coming. The fare updates as you go, and the pass goes to us on WhatsApp.</p></div>
   {bookpass()}
-</section>
+</div></section>
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Rides & Kayaking by the Hour, Alleppey",
                 "Pick your hour on the Alleppey backwater: shikara rides from Rajiv Boat Jetty at 6 am, 8 am, 9 am, 1 pm and 3:30 pm, from ₹1,500 for two. Kayaking at sunrise and sunset.",
-                body, "index.html", '<script src="assets/js/hero.js?v=4" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=6" defer></script>', BUSINESS)
 
 
 HOME_QA = [
