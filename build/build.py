@@ -25,7 +25,11 @@ SITE = {
     "whatsapp": "919847386262",  # country code + number, no + or spaces
     "email": "alleppeyshikaratours@gmail.com",
     "jetty": "Rajiv Boat Jetty, Alappuzha",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Rajiv+Boat+Jetty+Alappuzha",
+    # from the client's old website, alleppeyboatcruise.com
+    "address": "Near Haveli Backwater Resort, Finishing Point Road, Boat Jetty Road, near Rajeev Jetty, Alappuzha, Kerala 688013",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Haveli+Backwater+Resort+Finishing+Point+Road+Alappuzha",
+    "facebook": "https://www.facebook.com/share/1GCZcRCwyP/",
+    "instagram": "https://www.instagram.com/k_a_lya_ni__",
 }
 
 # ---------------------------------------------------------------- routes (from the client's price sheet)
@@ -110,6 +114,14 @@ CAPTIONS = {
     "kayak-sunrise-group": "Kayaking at sunrise",
     "kayak-sunset-group": "Kayaks at sunset",
     "kayak-trees": "Kayaking",
+    "guests-seated": "Guests on board a Kalyani shikara",
+    "group-bow": "Guests on the front deck",
+    "family-sunset": "A family on the deck at sunset",
+    "lunch-banana-leaf": "Kerala lunch on a banana leaf",
+    "canoeing": "Canoeing in a village canal",
+    "speedboat": "Speedboat on the backwaters",
+    "shikara-jetty-wide": "Kalyani shikara at the jetty",
+    "seating-interior": "Seating under the canopy",
 }
 DIMS = {}
 for f in (OUT / "assets/img").glob("*-lg.webp"):
@@ -129,7 +141,7 @@ def img(name, alt=None, sizes="(max-width: 820px) 100vw, 50vw", eager=False, pos
 WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
 ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 BOOK = "Hi Kalyani Boat Service! I'd like to book a shikara ride."
-NAV = [("tours.html", "Tours"), ("kayaking.html", "Kayaking"), ("gallery.html", "Gallery"), ("contact.html", "Contact")]
+NAV = [("tours.html", "Tours"), ("kayaking.html", "Kayaking & more"), ("gallery.html", "Gallery"), ("contact.html", "Contact")]
 
 
 def wa(msg, label="Book on WhatsApp", cls="btn btn--coral"):
@@ -155,8 +167,8 @@ def footer():
   <div class="foot__grid">
     <div><a class="logo" href="index.html"><span class="script">Kalyani</span><small>Boat Service</small></a><p class="mut" style="margin-top:12px">Shikara tours and kayaking from {SITE["jetty"]}.</p></div>
     <div><h4>Tours</h4><ul>{tours}</ul></div>
-    <div><h4>Contact</h4><ul>{phones}<li><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["jetty"]}</a></li></ul></div>
-    <div><h4>More</h4><ul><li><a href="kayaking.html">Kayaking</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="terms.html">Booking terms</a></li><li><a href="privacy.html">Privacy</a></li></ul></div>
+    <div><h4>Contact</h4><ul>{phones}<li><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["address"]}</a></li></ul></div>
+    <div><h4>More</h4><ul><li><a href="kayaking.html">Kayaking &amp; more</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="terms.html">Booking terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a></li><li><a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></li></ul></div>
   </div>
   <p class="foot__base">© <span id="year">2026</span> Kalyani Boat Service, Alleppey</p>
 </div></footer>
@@ -183,7 +195,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=13">
+<link rel="stylesheet" href="assets/css/style.css?v=14">
 {ld}
 </head>
 <body>
@@ -192,8 +204,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=13"></script>
-<script src="assets/js/main.js?v=13" defer></script>
+<script src="assets/js/data.js?v=14"></script>
+<script src="assets/js/main.js?v=14" defer></script>
 {scripts}
 </body>
 </html>
@@ -262,7 +274,8 @@ BUSINESS = {
     "@context": "https://schema.org", "@type": "LocalBusiness", "name": SITE["name"], "url": SITE["url"],
     "image": SITE["url"] + "/assets/img/og-image.jpg", "telephone": SITE["phones"][0], "email": SITE["email"],
     "priceRange": f"{inr(min(t['price'] for t in TOURS))} – {inr(max(t['price'] for t in TOURS))}",
-    "address": {"@type": "PostalAddress", "streetAddress": "Rajiv Boat Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "addressCountry": "IN"},
+    "address": {"@type": "PostalAddress", "streetAddress": "Near Haveli Backwater Resort, Finishing Point Road, near Rajeev Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "postalCode": "688013", "addressCountry": "IN"},
+    "sameAs": [SITE["facebook"], SITE["instagram"]],
 }
 PRICE_FAQ = [
     ("Where do we board?", f"All tours start and end at {SITE['jetty']}."),
@@ -329,21 +342,21 @@ def home(extra=""):
 </div></section>
 
 <section class="sec band band--soft"><div class="wrap">
-  <div class="head"><h2 class="rv">On <span class="grad grad--kayal">board.</span></h2><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
+  <div class="head"><div><h2 class="rv">On <span class="grad grad--kayal">board.</span></h2><p class="lede rv">Cushioned seating, open sides and a shaded roof. Drinking water and life jackets are on board.</p></div><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
   <div class="bento">
-    <figure class="b1 rv">{img("guests-bow", sizes="(max-width:760px) 100vw, 50vw", pos="50% 35%")}</figure>
-    <figure class="b2 rv">{img("deck-sofa", sizes="(max-width:760px) 50vw, 25vw")}</figure>
-    <figure class="b3 rv">{img("chairs-green", sizes="(max-width:760px) 50vw, 25vw")}</figure>
+    <figure class="b1 rv">{img("guests-seated", sizes="(max-width:760px) 100vw, 50vw")}</figure>
+    <figure class="b2 rv">{img("lunch-banana-leaf", sizes="(max-width:760px) 50vw, 25vw")}</figure>
+    <figure class="b3 rv">{img("deck-sofa", sizes="(max-width:760px) 50vw, 25vw")}</figure>
     <figure class="b4 rv">{img("shikara-kalyani", sizes="(max-width:760px) 50vw, 25vw", pos="50% 62%")}</figure>
-    <figure class="b5 rv">{img("deck-yellow", sizes="(max-width:760px) 50vw, 25vw")}</figure>
+    <figure class="b5 rv">{img("family-sunset", sizes="(max-width:760px) 50vw, 25vw")}</figure>
   </div>
 </div></section>
 
 <section class="sec" id="kayaking"><div class="wrap">
   <div class="kayak rv">
-    <div class="kayak__text"><h2>Kayaking <span class="grad grad--white">too.</span></h2><p>Message us for kayaking timings and rates.</p>
-      <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask about kayaking", "btn btn--white")}<a class="btn btn--glass" href="kayaking.html"><span>See photos</span>{ARROW}</a></div></div>
-    <div class="kayak__pics">{img("kayak-sunset-solo", sizes="300px")}{img("kayak-trees", sizes="300px")}{img("kayak-rainbow", sizes="300px")}</div>
+    <div class="kayak__text"><h2>More on <span class="grad grad--white">the water.</span></h2><p>Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p>
+      <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know timings and rates for kayaking, canoeing or a speedboat ride.", "Ask for rates", "btn btn--white")}<a class="btn btn--glass" href="kayaking.html"><span>See more</span>{ARROW}</a></div></div>
+    <div class="kayak__pics">{img("kayak-sunset-solo", alt="Kayaking", sizes="300px")}{img("canoeing", sizes="300px")}{img("speedboat", sizes="300px")}</div>
   </div>
 </div></section>
 
@@ -354,7 +367,7 @@ def home(extra=""):
 ''' + extra
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 "Shikara tours from Rajiv Boat Jetty, Alleppey: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600, for two. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=13" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=14" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -420,19 +433,27 @@ def tour_page(t):
                 body, "tours.html", schema=schema)
 
 
+RIDES = [
+    ("Kayaking", "kayak-sunset-group", "Paddle through narrow canals lined with coconut palms and see village life up close."),
+    ("Canoeing", "canoeing", "Traditional wooden canoes glide quietly through the backwaters, away from motorboats."),
+    ("Speedboat", "speedboat", "A fast ride across the backwaters, with experienced operators at the helm."),
+]
+
+
 def kayaking():
-    photos = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in ["kayak-sunset-group", "kayak-trees", "kayak-sunset-solo", "kayak-rainbow", "kayak-canal", "kayak-sunrise-group"])
-    body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Kayaking</p>
-  <h1 class="rv">Kayaking <span class="grad grad--kayal">in Alleppey.</span></h1><p class="lede rv">Message us for kayaking timings and rates.</p>
-  <div class="acts rv">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask on WhatsApp", "btn btn--coral btn--lg")}</div></div></section>
+    rides = "".join(f'''<article class="ride rv"><div class="ride__img">{img(p, sizes="(max-width:760px) 100vw, 420px")}</div><div class="ride__body"><h3>{n}</h3><p class="mut">{d}</p>{wa(f"Hi Kalyani Boat Service! I'd like to know {n.lower()} timings and rates.", "Ask for rates", "btn btn--ghost btn--sm")}</div></article>''' for n, p, d in RIDES)
+    photos = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in ["kayak-trees", "kayak-sunset-solo", "kayak-rainbow", "kayak-canal", "kayak-sunrise-group"])
+    body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Kayaking &amp; more</p>
+  <h1 class="rv">More on <span class="grad grad--kayal">the water.</span></h1><p class="lede rv">Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="rides">{rides}</div></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{photos}</div></div></section>'''
-    return page("kayaking.html", "Kayaking in Alleppey | Kalyani Boat Service",
-                "Kayaking with Kalyani Boat Service in Alleppey. Message us on WhatsApp for timings and rates.", body, "kayaking.html", schema=BUSINESS)
+    return page("kayaking.html", "Kayaking, Canoeing & Speedboat in Alleppey | Kalyani Boat Service",
+                "Kayaking, canoeing and speedboat rides on the Alleppey backwaters with Kalyani Boat Service. Message us on WhatsApp for timings and rates.", body, "kayaking.html", schema=BUSINESS)
 
 
 def gallery():
-    order = ["shikara-sunset-bow", "kayak-sunset-group", "guests-bow", "kayak-trees", "deck-sofa", "kayak-rainbow", "shikara-kalyani",
-             "kayak-sunset-solo", "chairs-green", "deck-front", "kayak-canal", "deck-yellow", "chairs-pink", "kayak-sunrise-group", "deck-pink"]
+    order = ["shikara-sunset-bow", "guests-seated", "kayak-sunset-group", "lunch-banana-leaf", "group-bow", "canoeing", "family-sunset", "shikara-kalyani",
+             "speedboat", "kayak-trees", "deck-sofa", "guests-bow", "kayak-rainbow", "shikara-jetty-wide", "seating-interior", "chairs-green", "deck-front", "kayak-sunset-solo", "deck-yellow", "chairs-pink"]
     figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order)
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
   <h1 class="rv">Gallery<span class="grad grad--anthi">.</span></h1></div></section>
@@ -445,7 +466,7 @@ def contact():
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p>
   <h1 class="rv">Get in <span class="grad grad--anthi">touch.</span></h1></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap split split--top">
-  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Boarding point</span><b>{SITE["jetty"]}</b></a></div>
+  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Find us</span><b>{SITE["address"]}</b></a><div class="cline"><span class="mut">Follow us</span><b><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a> · <a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></b></div></div>
   {booking(heading="Send a booking request")}
 </div></section>'''
     return page("contact.html", "Contact & Book | Kalyani Boat Service, Alleppey",
@@ -502,8 +523,8 @@ OUT_SINGLE = ROOT / "site-single"
 
 def single_page():
     """The same homepage as one self-contained page: every link to another page becomes a jump within the page."""
-    order = ["shikara-sunset-bow", "kayak-sunset-group", "guests-bow", "kayak-trees", "deck-sofa", "kayak-rainbow", "shikara-kalyani",
-             "kayak-sunset-solo", "chairs-green", "deck-front", "kayak-canal", "deck-yellow", "chairs-pink", "kayak-sunrise-group", "deck-pink"]
+    order = ["shikara-sunset-bow", "guests-seated", "kayak-sunset-group", "lunch-banana-leaf", "group-bow", "canoeing", "family-sunset", "shikara-kalyani",
+             "speedboat", "kayak-trees", "deck-sofa", "guests-bow", "kayak-rainbow", "shikara-jetty-wide", "seating-interior", "chairs-green", "deck-front", "kayak-sunset-solo", "deck-yellow", "chairs-pink"]
     figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order[:9])
     phones = "".join(f'<a class="cline" href="tel:{p.replace(" ", "")}"><span class="mut">Phone / WhatsApp</span><b>{p}</b></a>' for p in SITE["phones"])
     extra = f"""
@@ -514,7 +535,7 @@ def single_page():
 
 <section class="sec band band--soft" id="contact"><div class="wrap split split--top">
   <div class="rv"><h2>Get in <span class="grad grad--anthi">touch.</span></h2><p class="lede">Call or message us to book, or use the booking form above.</p></div>
-  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Boarding point</span><b>{SITE["jetty"]}</b></a></div>
+  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Find us</span><b>{SITE["address"]}</b></a><div class="cline"><span class="mut">Follow us</span><b><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a> · <a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></b></div></div>
 </div></section>
 
 <section class="sec" id="legal" style="padding-top:0"><div class="wrap"><div class="faq">
@@ -523,7 +544,7 @@ def single_page():
 </div></div></section>
 """
     html = home(extra)
-    html = html.replace('href="kayaking.html"><span>See photos', 'href="#gallery"><span>See photos')
+    html = html.replace('href="kayaking.html"><span>See more', 'href="#gallery"><span>See more')
     html = html.replace(f'<a class="link" href="tours.html">All tours {ARROW}</a>', "")
     for a, b in [('href="tours.html"', 'href="#tours"'), ('href="kayaking.html"', 'href="#kayaking"'), ('href="gallery.html"', 'href="#gallery"'),
                  ('href="contact.html"', 'href="#contact"'), ('href="terms.html"', 'href="#legal"'), ('href="privacy.html"', 'href="#legal"'),

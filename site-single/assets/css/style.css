@@ -320,3 +320,14 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 @media (max-width:900px){.hero{height:auto;min-height:100svh;max-height:none;padding-top:96px}.hero__inner{gap:28px}}
 @media (max-width:900px){.dial{order:-1;max-width:420px}.hero__inner{align-items:start;padding-top:8px}.hero__acts .btn--lg{height:52px;padding:0 20px;font-size:15px}}
 @media (max-width:900px){.hero{align-content:start;padding-top:100px}}
+
+/* more on the water: ride cards */
+.rides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.ride{background:#fff;border-radius:var(--r);padding:10px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.ride__img{border-radius:20px;overflow:hidden;aspect-ratio:4/3}
+.ride__img img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.ride:hover .ride__img img{transform:scale(1.05)}
+.ride__body{padding:16px 10px 10px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;flex:1}
+.ride__body .btn{margin-top:auto}
+@media (max-width:860px){.rides{grid-template-columns:1fr}}
+.head > div .lede{margin-top:12px}

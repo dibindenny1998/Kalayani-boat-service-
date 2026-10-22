@@ -1,6 +1,7 @@
 """Resize the client's photos into web-ready WebP files (plus one JPG for link previews).
 
-Usage: python3 build/images.py <folder with original photos>
+Usage: python3 build/images.py <folder with photos> [<another folder> ...]
+Each photo is looked up in the folders in order.
 Needs Pillow (pip install pillow). Output goes to site/assets/img/.
 """
 import sys
@@ -24,14 +25,32 @@ PHOTOS = {
     "kayak-sunrise-group": "a6b93117-image.jpg",
     "kayak-sunset-group": "10f481ab-image.jpg",
     "kayak-trees": "66581640-image.jpg",
+    # from the client's old website, alleppeyboatcruise.com
+    "guests-seated": "ALLEPPEY-BOAT-CRUISE-ABOUT-US.jpg",
+    "group-bow": "cmp-cover-alleppey-boat-cruise-pramod.jpeg",
+    "family-sunset": "ALLEPPEY-BOAT-CRUISE-GALLERY-1.jpg",
+    "lunch-banana-leaf": "lunch-alleppey-boat-cruise-edited-scaled.jpeg",
+    "canoeing": "canoeing-boat-cruise-edited.jpeg",
+    "speedboat": "speed-boat-cruise.jpeg",
+    "shikara-jetty-wide": "3rd-pic.jpeg",
+    "seating-interior": "ALLEPPEY-BOAT-CRUISE-CONTACT-US-edited.jpg",
 }
 SIZES = {"lg": 1280, "sm": 640}
 
-src = Path(sys.argv[1])
+srcs = [Path(a) for a in sys.argv[1:]]
+
+
+def find(file):
+    for s in srcs:
+        if (s / file).exists():
+            return s / file
+    raise FileNotFoundError(file)
+
+
 out = Path(__file__).resolve().parent.parent / "site/assets/img"
 out.mkdir(parents=True, exist_ok=True)
 for name, file in PHOTOS.items():
-    im = ImageOps.exif_transpose(Image.open(src / file)).convert("RGB")
+    im = ImageOps.exif_transpose(Image.open(find(file))).convert("RGB")
     for tag, px in SIZES.items():
         copy = im.copy()
         copy.thumbnail((px, px))
@@ -39,5 +58,5 @@ for name, file in PHOTOS.items():
     print(name, im.size)
 
 # link-preview image for WhatsApp / Facebook shares
-og = ImageOps.fit(ImageOps.exif_transpose(Image.open(src / PHOTOS["shikara-sunset-bow"])).convert("RGB"), (1200, 630), centering=(0.5, 0.55))
+og = ImageOps.fit(ImageOps.exif_transpose(Image.open(find(PHOTOS["shikara-sunset-bow"]))).convert("RGB"), (1200, 630), centering=(0.5, 0.55))
 og.save(out / "og-image.jpg", "JPEG", quality=82, optimize=True, progressive=True)
