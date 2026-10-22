@@ -23,6 +23,15 @@ Bookings work two ways:
 - **WhatsApp:** every Book button opens WhatsApp with a ready-made message. The enquiry form's **Send on WhatsApp** button adds the tour, date, guests and estimated price.
 - **Email:** the form's **Send by email** button posts to `site/enquiry.php`, which emails the enquiry to the business.
 
+## Two versions
+
+| Version | Folder | Review link |
+|---|---|---|
+| Multi-page site (16 pages) | `site/` | https://mediumseagreen-monkey-262172.hostingersite.com |
+| Single page (same homepage, plus gallery, contact and booking terms on the same page) | `site-single/` | https://salmon-elk-378012.hostingersite.com |
+
+`python3 build/build.py` builds both. Upload whichever folder the client chooses.
+
 ## Upload to Hostinger
 
 1. In hPanel, open **Websites → alleppeyshikaratours.com → File Manager → public_html**.
