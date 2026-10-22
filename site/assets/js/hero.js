@@ -39,7 +39,8 @@
     clock.textContent = hh(hour);
     const on = tours.filter(t => hour >= t.start && hour < t.end).sort((a, b) => b.start - a.start)[0];
     const t = on || tours.filter(t => t.start > hour).sort((a, b) => a.start - b.start)[0] || tours[0];
-    name.textContent = (on ? "" : "Next: ") + t.name; link.href = t.slug + ".html";
+    name.textContent = (on ? "" : "Next: ") + t.name;
+    if (K.single) { link.href = "#book"; link.dataset.pick = t.slug; } else link.href = t.slug + ".html";
     pics.forEach(img => img.classList.toggle("on", hour >= +img.dataset.from && hour < +img.dataset.to));
     wash.style.setProperty("--wash", (WASH.filter(w => w[0] <= hour).pop() || WASH[0])[1]);
   }

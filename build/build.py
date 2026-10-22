@@ -183,7 +183,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=12">
+<link rel="stylesheet" href="assets/css/style.css?v=13">
 {ld}
 </head>
 <body>
@@ -192,8 +192,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=12"></script>
-<script src="assets/js/main.js?v=12" defer></script>
+<script src="assets/js/data.js?v=13"></script>
+<script src="assets/js/main.js?v=13" defer></script>
 {scripts}
 </body>
 </html>
@@ -277,7 +277,7 @@ HERO = [("kayak-sunrise-group", 0, 7.5, "50% 62%"), ("deck-front", 7.5, 10, "50%
 
 
 # ---------------------------------------------------------------- pages
-def home():
+def home(extra=""):
     pics = "".join(f'<img src="assets/img/{n}-lg.webp" alt="" data-from="{a}" data-to="{b}" style="object-position:{p}"' + (' class="on" fetchpriority="high"' if i == 0 else ' loading="lazy"') + ">" for i, (n, a, b, p) in enumerate(HERO))
     body = f'''<section class="hero" id="hero" aria-label="Kalyani Boat Service">
   <div class="hero__pics" aria-hidden="true">{pics}</div>
@@ -339,7 +339,7 @@ def home():
   </div>
 </div></section>
 
-<section class="sec"><div class="wrap">
+<section class="sec" id="kayaking"><div class="wrap">
   <div class="kayak rv">
     <div class="kayak__text"><h2>Kayaking <span class="grad grad--white">too.</span></h2><p>Message us for kayaking timings and rates.</p>
       <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know kayaking timings and rates.", "Ask about kayaking", "btn btn--white")}<a class="btn btn--glass" href="kayaking.html"><span>See photos</span>{ARROW}</a></div></div>
@@ -351,10 +351,10 @@ def home():
   <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Each price is for two guests. Extra guests pay per hour: ₹100 on three-hour tours, ₹150 on the Half Day and Full Day.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>
-'''
+''' + extra
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 "Shikara tours from Rajiv Boat Jetty, Alleppey: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600, for two. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=12" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=13" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -496,5 +496,62 @@ def build():
     print(f"Built {len(pages)} pages into {OUT}")
 
 
+# ---------------------------------------------------------------- single-page version (site-single/)
+OUT_SINGLE = ROOT / "site-single"
+
+
+def single_page():
+    """The same homepage as one self-contained page: every link to another page becomes a jump within the page."""
+    order = ["shikara-sunset-bow", "kayak-sunset-group", "guests-bow", "kayak-trees", "deck-sofa", "kayak-rainbow", "shikara-kalyani",
+             "kayak-sunset-solo", "chairs-green", "deck-front", "kayak-canal", "deck-yellow", "chairs-pink", "kayak-sunrise-group", "deck-pink"]
+    figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order[:9])
+    phones = "".join(f'<a class="cline" href="tel:{p.replace(" ", "")}"><span class="mut">Phone / WhatsApp</span><b>{p}</b></a>' for p in SITE["phones"])
+    extra = f"""
+<section class="sec" id="gallery"><div class="wrap">
+  <div class="head"><h2 class="rv">Gallery<span class="grad grad--anthi">.</span></h2></div>
+  <div class="masonry">{figs}</div>
+</div></section>
+
+<section class="sec band band--soft" id="contact"><div class="wrap split split--top">
+  <div class="rv"><h2>Get in <span class="grad grad--anthi">touch.</span></h2><p class="lede">Call or message us to book, or use the booking form above.</p></div>
+  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Boarding point</span><b>{SITE["jetty"]}</b></a></div>
+</div></section>
+
+<section class="sec" id="legal" style="padding-top:0"><div class="wrap"><div class="faq">
+  <details><summary>Booking terms</summary><div class="prose" style="margin-top:12px">{TERMS}</div></details>
+  <details><summary>Privacy</summary><div class="prose" style="margin-top:12px">{PRIVACY}</div></details>
+</div></div></section>
+"""
+    html = home(extra)
+    html = html.replace('href="kayaking.html"><span>See photos', 'href="#gallery"><span>See photos')
+    html = html.replace(f'<a class="link" href="tours.html">All tours {ARROW}</a>', "")
+    for a, b in [('href="tours.html"', 'href="#tours"'), ('href="kayaking.html"', 'href="#kayaking"'), ('href="gallery.html"', 'href="#gallery"'),
+                 ('href="contact.html"', 'href="#contact"'), ('href="terms.html"', 'href="#legal"'), ('href="privacy.html"', 'href="#legal"'),
+                 ('href="index.html"', 'href="#main"'), ('assets/js/data.js?v=', 'assets/js/data-single.js?v=')]:
+        html = html.replace(a, b)
+    for t in TOURS:
+        html = html.replace(f'href="{t["slug"]}.html"', f'href="#book" data-pick="{t["slug"]}"')
+    return html
+
+
+def build_single():
+    import shutil
+    if OUT_SINGLE.exists():
+        shutil.rmtree(OUT_SINGLE)
+    shutil.copytree(OUT / "assets", OUT_SINGLE / "assets")
+    shutil.copy(OUT / "favicon.svg", OUT_SINGLE / "favicon.svg")
+    (OUT_SINGLE / "index.html").write_text(single_page(), encoding="utf-8")
+    data = {"single": True, "whatsapp": SITE["whatsapp"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
+    (OUT_SINGLE / "assets/js/data-single.js").write_text("/* generated by build/build.py */\nwindow.KALYANI=" + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
+    (OUT_SINGLE / "assets/js/data.js").unlink(missing_ok=True)
+    php = (OUT / "enquiry.php").read_text(encoding="utf-8").replace("'thank-you.html'", "'index.html?sent=1#book'").replace("contact.html?error=1", "index.html?error=1#book").replace("Location: contact.html", "Location: index.html")
+    (OUT_SINGLE / "enquiry.php").write_text(php, encoding="utf-8")
+    ht = (OUT / ".htaccess").read_text(encoding="utf-8").replace("ErrorDocument 404 /404.html", "ErrorDocument 404 /index.html")
+    (OUT_SINGLE / ".htaccess").write_text(ht, encoding="utf-8")
+    (OUT_SINGLE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n", encoding="utf-8")
+    print(f"Built single page into {OUT_SINGLE}")
+
+
 if __name__ == "__main__":
     build()
+    build_single()
