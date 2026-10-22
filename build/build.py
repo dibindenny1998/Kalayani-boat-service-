@@ -183,7 +183,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=8">
+<link rel="stylesheet" href="assets/css/style.css?v=12">
 {ld}
 </head>
 <body>
@@ -192,8 +192,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=8"></script>
-<script src="assets/js/main.js?v=8" defer></script>
+<script src="assets/js/data.js?v=12"></script>
+<script src="assets/js/main.js?v=12" defer></script>
 {scripts}
 </body>
 </html>
@@ -283,16 +283,26 @@ def home():
   <div class="hero__pics" aria-hidden="true">{pics}</div>
   <div class="hero__wash" aria-hidden="true"></div>
   <div class="wrap hero__inner">
-    <h1 class="rv">Alleppey <span class="grad grad--hero">by shikara.</span></h1>
-    <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(1500)} for two.</p>
-    <div class="hero__acts rv">{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--glass btn--lg" href="#tours"><span>See tours</span>{ARROW}</a></div>
+    <div class="hero__text">
+      <h1 class="rv">Alleppey <span class="grad grad--hero">by shikara.</span></h1>
+      <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(1500)} for two.</p>
+      <div class="hero__acts rv">{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--glass btn--lg" href="#tours"><span>See tours</span>{ARROW}</a></div>
+    </div>
+    <div class="dial rv">
+      <svg class="dial__svg" id="dial" viewBox="0 0 600 320" role="slider" tabindex="0" aria-label="Time of day: drag the sun" aria-valuemin="5" aria-valuemax="19.5" aria-valuenow="6">
+        <defs><linearGradient id="pull" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE7A8"/><stop offset=".6" stop-color="#FFC94A"/><stop offset="1" stop-color="#FFB320"/></linearGradient></defs>
+        <line class="dial__hz" x1="10" y1="300" x2="590" y2="300"/>
+        <path class="dial__arc" d="M30 300 A270 250 0 0 1 570 300"/>
+        <path class="dial__pull" id="dpull" d="M30 300 A270 250 0 0 1 30 300"/>
+        <g id="dticks"></g>
+        <circle class="dial__halo" id="dhalo" r="24"/><circle class="dial__sun" id="dsun" r="13"/>
+      </svg>
+      <div class="dial__read">
+        <button type="button" class="dial__play" id="dplay" aria-label="Pause">❚❚</button>
+        <a class="dial__now" id="dnow" href="sunrise-cruise.html"><b id="dclock">06:00</b><span id="dname">Sunrise Cruise</span></a>
+      </div>
+    </div>
   </div>
-  <div class="wrap"><div class="timebar" id="timebar">
-    <button type="button" class="timebar__play" id="tplay" aria-label="Pause">❚❚</button>
-    <div class="timebar__track"><div class="timebar__fill" id="tfill"></div><span class="timebar__sun" id="tsun"></span>
-      <input type="range" id="thour" min="5" max="19.5" step="0.01" value="6" aria-label="Time of day"></div>
-    <a class="timebar__now" id="tnow" href="sunrise-cruise.html"><b id="tclock">06:00</b><span id="tname">Sunrise Cruise</span></a>
-  </div></div>
 </section>
 
 <section class="sec" id="tours"><div class="wrap">
@@ -344,7 +354,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 "Shikara tours from Rajiv Boat Jetty, Alleppey: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600, for two. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=8" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=12" defer></script>', BUSINESS)
 
 
 def tours_page():

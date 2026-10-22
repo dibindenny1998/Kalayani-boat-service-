@@ -118,20 +118,31 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .hero__pics img.on{opacity:1;transform:scale(1)}
 .hero__wash{position:absolute;inset:0;z-index:-2;background:var(--wash,transparent);mix-blend-mode:soft-light;transition:background 1.2s}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,16,14,.28) 0%,rgba(10,16,14,0) 28%,rgba(10,16,14,.15) 50%,rgba(10,16,14,.72) 100%)}
-.hero__inner{width:100%;padding-bottom:28px}
+.hero__inner{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:20px 48px;align-items:end;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .hero h1{max-width:11ch;text-shadow:0 2px 30px rgba(0,0,0,.18)}
 .hero__sub{margin-top:18px;font-size:clamp(17px,1.5vw,21px);color:rgba(255,255,255,.9);max-width:40ch}
 .hero__acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.timebar{display:flex;align-items:center;gap:14px;margin-bottom:calc(24px + env(safe-area-inset-bottom,0px));padding:10px 10px 10px 10px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);max-width:720px}
-.timebar__play{width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:var(--ink);font-size:12px;cursor:pointer;flex:none}
-.timebar__track{position:relative;flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.3)}
-.timebar__fill{position:absolute;inset:0;border-radius:99px;background:linear-gradient(90deg,#FFE7A8,#FFC94A 50%,#FFB320);clip-path:inset(0 calc(100% - var(--p,0%)) 0 0)}
-.timebar__sun{position:absolute;top:50%;left:var(--p,0%);width:22px;height:22px;border-radius:50%;background:#FFE29A;translate:-50% -50%;box-shadow:0 0 0 6px rgba(255,226,154,.28),0 0 24px 6px rgba(255,200,90,.6)}
-.timebar__track input{position:absolute;inset:-14px 0;width:100%;opacity:0;cursor:pointer;margin:0}
-.timebar__now{display:flex;flex-direction:column;line-height:1.15;padding-right:14px;min-width:150px}
-.timebar__now b{font-size:18px;font-variant-numeric:tabular-nums}
-.timebar__now span{font-size:13px;color:rgba(255,255,255,.85)}
-@media (max-width:600px){.timebar__now{min-width:0}.timebar__now span{display:none}.hero h1{font-size:clamp(46px,13vw,64px)}}
+/* the sun dial: the sun travels the arc and a gold line pulls along behind it */
+.dial{position:relative;width:100%;justify-self:end}
+.dial__svg{display:block;width:100%;height:auto;overflow:visible;touch-action:none;cursor:grab;user-select:none}
+.dial__svg:active{cursor:grabbing}
+.dial__svg:focus-visible{outline:none}
+.dial__svg:focus-visible .dial__sun{stroke:#fff;stroke-width:3}
+.dial__hz{stroke:rgba(255,255,255,.35);stroke-width:1}
+.dial__arc{fill:none;stroke:rgba(255,255,255,.55);stroke-width:1.6;stroke-dasharray:2 8;stroke-linecap:round}
+.dial__pull{fill:none;stroke:url(#pull);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,200,90,.6))}
+.dial__tick{stroke:rgba(255,255,255,.6);stroke-width:1.5}
+.dial__hr{font:500 13px var(--font);fill:rgba(255,255,255,.85);text-anchor:middle}
+.dial__dep{fill:#fff;stroke:rgba(255,179,32,.9);stroke-width:2}
+.dial__sun{fill:#FFD36E}
+.dial__halo{fill:#FFD36E;opacity:.28}
+.dial__read{position:absolute;left:50%;bottom:6%;translate:-50% 0;display:flex;align-items:center;gap:12px;padding:8px 18px 8px 8px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);white-space:nowrap}
+.dial__play{width:36px;height:36px;border-radius:50%;border:0;background:#fff;color:var(--ink);font-size:11px;cursor:pointer;flex:none}
+.dial__now{display:flex;flex-direction:column;line-height:1.15}
+.dial__now b{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.dial__now span{font-size:13px;color:rgba(255,255,255,.88)}
+@media (max-width:900px){.hero__inner{grid-template-columns:1fr}.dial{max-width:460px;justify-self:center}}
+@media (max-width:600px){.hero h1{font-size:clamp(46px,13vw,64px)}.dial__hr{font-size:18px}.dial__read{bottom:2%}}
 
 /* ---------- tours: filters + swipe rail ---------- */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
@@ -306,3 +317,6 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .js .rv{opacity:1;transform:none}
 }
+@media (max-width:900px){.hero{height:auto;min-height:100svh;max-height:none;padding-top:96px}.hero__inner{gap:28px}}
+@media (max-width:900px){.dial{order:-1;max-width:420px}.hero__inner{align-items:start;padding-top:8px}.hero__acts .btn--lg{height:52px;padding:0 20px;font-size:15px}}
+@media (max-width:900px){.hero{align-content:start;padding-top:100px}}
