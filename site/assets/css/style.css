@@ -385,3 +385,6 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .rev__cta{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--teal);margin-top:6px}
 .rev__cta svg{width:18px;height:18px;transition:transform .3s var(--ease)}
 .rev:hover .rev__cta svg{transform:translateX(4px)}
+
+.bubbles{color:#00AA6C;letter-spacing:2px;font-size:18px}
+.rev__rank{font-size:14px;color:var(--muted)}

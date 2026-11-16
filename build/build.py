@@ -33,6 +33,11 @@ SITE = {
     # paste the client's review page links here; the Reviews section shows only when at least one is set
     "google_reviews": "https://maps.app.goo.gl/ZbawFzpeCpkCUe2q6",
     "google_rating": "4.8",  # as shown on the Google listing, Nov 2026; update if it changes
+    # as shown on the Tripadvisor listing, Nov 2026; update if they change
+    "tripadvisor_rating": "4.8",
+    "tripadvisor_reviews": 13,
+    "tripadvisor_rank": "#21 of 103 Boat Tours & Water Sports in Alappuzha",
+    "since": 2010,  # from the client's Tripadvisor listing: "We operate Kalyani Boat Service since 2010"
     "tripadvisor": "https://www.tripadvisor.in/Attraction_Review-g608471-d10492322-Reviews-Kalyani_Boat_Service-Alappuzha_Alappuzha_District_Kerala.html",
 }
 
@@ -186,7 +191,7 @@ def footer():
     return f'''<footer class="foot"><div class="wrap">
   <div class="foot__cta"><h2>Ready when <span class="grad grad--anthi">you are.</span></h2><div class="acts" style="margin-top:0">{wa(BOOK, "Chat on WhatsApp", "btn btn--coral btn--lg")}{mail("Email us", "btn btn--ghost btn--lg")}</div></div>
   <div class="foot__grid">
-    <div><a class="logo" href="index.html"><span class="script">Kalyani</span><small>Boat Service</small></a><p class="mut" style="margin-top:12px">Shikara tours and kayaking from {SITE["jetty"]}.</p></div>
+    <div><a class="logo" href="index.html"><span class="script">Kalyani</span><small>Boat Service</small></a><p class="mut" style="margin-top:12px">Shikara tours and kayaking from {SITE["jetty"]}, since {SITE["since"]}.</p></div>
     <div><h4>Tours</h4><ul>{tours}</ul></div>
     <div><h4>Contact</h4><ul>{phones}<li><a href="mailto:{SITE["email"]}">{SITE["email"]}</a></li><li><a href="{SITE["maps"]}" target="_blank" rel="noopener">{SITE["address"]}</a></li></ul></div>
     <div><h4>More</h4><ul><li><a href="kayaking.html">Kayaking &amp; more</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="terms.html">Booking terms</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a></li><li><a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></li></ul></div>
@@ -224,7 +229,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=18">
+<link rel="stylesheet" href="assets/css/style.css?v=19">
 {ld}
 </head>
 <body>
@@ -233,8 +238,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=18"></script>
-<script src="assets/js/main.js?v=18" defer></script>
+<script src="assets/js/data.js?v=19"></script>
+<script src="assets/js/main.js?v=19" defer></script>
 {scripts}
 </body>
 </html>
@@ -323,12 +328,10 @@ HERO = [("deck-front", 0, 9, "50% 55%"), ("shikara-kalyani", 9, 12, "50% 62%"), 
 STARS = '<span class="stars" aria-hidden="true">★★★★★</span>'
 
 
-def rating_badge(cls="badge"):
-    """Google rating link used in the hero and on tour pages."""
-    if not SITE["google_reviews"]:
-        return ""
-    return (f'<a class="{cls}" href="{SITE["google_reviews"]}" target="_blank" rel="noopener" aria-label="Rated {SITE["google_rating"]} out of 5 on Google">'
-            f'{STARS}<b>{SITE["google_rating"]}</b><span>on Google</span></a>')
+def rating_badge(cls="badge", href="index.html#reviews"):
+    """Rating badge for the hero and tour pages; both listings are rated 4.8."""
+    return (f'<a class="{cls}" href="{href}" aria-label="Rated {SITE["google_rating"]} out of 5 on Google and {SITE["tripadvisor_rating"]} on Tripadvisor">'
+            f'{STARS}<b>{SITE["google_rating"]}</b><span>on Google &amp; Tripadvisor</span></a>')
 
 
 def reviews():
@@ -339,12 +342,13 @@ def reviews():
   <span class="rev__cta">Read reviews on Google {ARROW}</span></a>'''
     if SITE["tripadvisor"]:
         cards += f'''<a class="rev rev--ta rv" href="{SITE["tripadvisor"]}" target="_blank" rel="noopener">
-  <span class="rev__src">Tripadvisor</span><span class="rev__score"><b>Kalyani Boat Service</b></span>
+  <span class="rev__src">Tripadvisor</span><span class="rev__score"><b>{SITE["tripadvisor_rating"]}</b><span class="bubbles" aria-hidden="true">●●●●●</span><span class="mut">{SITE["tripadvisor_reviews"]} reviews</span></span>
+  <span class="rev__rank">{escape(SITE["tripadvisor_rank"])}</span>
   <span class="rev__cta">Read reviews on Tripadvisor {ARROW}</span></a>'''
     if not cards:
         return ""
     return f'''<section class="sec" id="reviews"><div class="wrap">
-  <div class="head"><div><h2 class="rv">Loved by guests.</h2><p class="lede rv">See what travellers say about their ride with us, in their own words.</p></div></div>
+  <div class="head"><div><h2 class="rv">Loved by guests.</h2><p class="lede rv">Running shikara rides on the Alleppey backwaters since {SITE["since"]}. Read what travellers say, in their own words.</p></div></div>
   <div class="revs">{cards}</div>
 </div></section>
 '''
@@ -358,7 +362,7 @@ def home():
   <div class="hero__wash" aria-hidden="true"></div>
   <div class="wrap hero__inner">
     <div class="hero__text">
-      {rating_badge("badge rv")}
+      {rating_badge("badge rv", "#reviews")}
       <h1 class="rv">Alleppey <span class="grad grad--hero">by shikara.</span></h1>
       <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(FROM)} for two, {MIN_HOURS} hours.</p>
       <div class="hero__acts rv">{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--glass btn--lg" href="#tours"><span>See tours</span>{ARROW}</a></div>
@@ -432,7 +436,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=18" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=19" defer></script>', BUSINESS)
 
 
 def tours_page():
