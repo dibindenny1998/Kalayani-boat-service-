@@ -63,7 +63,8 @@ python3 build/build.py
 **November 2026 update (now on the site):** starting rate ₹1,800 for two for 3 hours; Full Day Tour 9:00 am – 3:00 pm, 6 hours, ₹3,600; Lunch Cruise 12:00 – 3:00 pm, ₹2,100, traditional Kerala lunch (veg), extra guest ₹150/hour; Regular Cruise ₹1,800; Sunset Cruise ₹1,900; new stops (Panakkal canal, Azhikkal canal, Panakkal lake, Kavangal temples, Zero jetty); Snake Boat model (Chambakulam Chundan) stop removed from every route.
 
 **To confirm after that update:**
-- [ ] **Google and Tripadvisor review links.** Paste them into `SITE["google_reviews"]` and `SITE["tripadvisor"]` in `build/build.py`; the Reviews section appears once one is set.
+- [x] **Google and Tripadvisor review links** added (Google rating 4.8, set in `SITE["google_rating"]`; update it if it changes).
+- [ ] **3–4 real guest quotes** (name, platform, short text) copied from Google or Tripadvisor, to show on the home page.
 - [ ] **Sunrise Cruise price:** set to ₹1,800 to match the ₹1,800 starting rate (the earlier sheet said ₹1,500).
 - [ ] **Half Day Tour and Breakfast Cruise:** not in the latest sheet; still ₹2,300 (8 am – 12 pm) and ₹1,800 (9 am – 12 pm).
 - [ ] **Full Day Tour inclusions:** not in the latest sheet; still breakfast, veg or non-veg lunch, and tea or coffee.

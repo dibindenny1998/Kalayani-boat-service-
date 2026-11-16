@@ -27,12 +27,13 @@ SITE = {
     "jetty": "Rajiv Boat Jetty, Alappuzha",
     # from the client's old website, alleppeyboatcruise.com
     "address": "Near Haveli Backwater Resort, Finishing Point Road, Boat Jetty Road, near Rajeev Jetty, Alappuzha, Kerala 688013",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Haveli+Backwater+Resort+Finishing+Point+Road+Alappuzha",
+    "maps": "https://maps.app.goo.gl/ZbawFzpeCpkCUe2q6",
     "facebook": "https://www.facebook.com/share/1GCZcRCwyP/",
     "instagram": "https://www.instagram.com/k_a_lya_ni__",
     # paste the client's review page links here; the Reviews section shows only when at least one is set
-    "google_reviews": "",
-    "tripadvisor": "",
+    "google_reviews": "https://maps.app.goo.gl/ZbawFzpeCpkCUe2q6",
+    "google_rating": "4.8",  # as shown on the Google listing, Nov 2026; update if it changes
+    "tripadvisor": "https://www.tripadvisor.in/Attraction_Review-g608471-d10492322-Reviews-Kalyani_Boat_Service-Alappuzha_Alappuzha_District_Kerala.html",
 }
 
 # ---------------------------------------------------------------- routes (from the client's price sheet, updated Nov 2026)
@@ -223,7 +224,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=17">
+<link rel="stylesheet" href="assets/css/style.css?v=18">
 {ld}
 </head>
 <body>
@@ -232,8 +233,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=17"></script>
-<script src="assets/js/main.js?v=17" defer></script>
+<script src="assets/js/data.js?v=18"></script>
+<script src="assets/js/main.js?v=18" defer></script>
 {scripts}
 </body>
 </html>
@@ -319,14 +320,31 @@ HERO = [("deck-front", 0, 9, "50% 55%"), ("shikara-kalyani", 9, 12, "50% 62%"), 
         ("shikara-sunset-bow", 15.5, 24, "50% 55%")]
 
 
-def reviews():
-    links = [(SITE["google_reviews"], "Google", "Read our Google reviews"), (SITE["tripadvisor"], "Tripadvisor", "Read our Tripadvisor reviews")]
-    links = [x for x in links if x[0]]
-    if not links:
+STARS = '<span class="stars" aria-hidden="true">★★★★★</span>'
+
+
+def rating_badge(cls="badge"):
+    """Google rating link used in the hero and on tour pages."""
+    if not SITE["google_reviews"]:
         return ""
-    cards = "".join(f'<a class="rev rv" href="{u}" target="_blank" rel="noopener"><span class="rev__name">{n}</span><b>{label}</b><span class="go" aria-hidden="true">{ARROW}</span></a>' for u, n, label in links)
+    return (f'<a class="{cls}" href="{SITE["google_reviews"]}" target="_blank" rel="noopener" aria-label="Rated {SITE["google_rating"]} out of 5 on Google">'
+            f'{STARS}<b>{SITE["google_rating"]}</b><span>on Google</span></a>')
+
+
+def reviews():
+    cards = ""
+    if SITE["google_reviews"]:
+        cards += f'''<a class="rev rev--google rv" href="{SITE["google_reviews"]}" target="_blank" rel="noopener">
+  <span class="rev__src">Google</span><span class="rev__score"><b>{SITE["google_rating"]}</b>{STARS}</span>
+  <span class="rev__cta">Read reviews on Google {ARROW}</span></a>'''
+    if SITE["tripadvisor"]:
+        cards += f'''<a class="rev rev--ta rv" href="{SITE["tripadvisor"]}" target="_blank" rel="noopener">
+  <span class="rev__src">Tripadvisor</span><span class="rev__score"><b>Kalyani Boat Service</b></span>
+  <span class="rev__cta">Read reviews on Tripadvisor {ARROW}</span></a>'''
+    if not cards:
+        return ""
     return f'''<section class="sec" id="reviews"><div class="wrap">
-  <div class="head"><h2 class="rv">What guests say.</h2></div>
+  <div class="head"><div><h2 class="rv">Loved by guests.</h2><p class="lede rv">See what travellers say about their ride with us, in their own words.</p></div></div>
   <div class="revs">{cards}</div>
 </div></section>
 '''
@@ -340,6 +358,7 @@ def home():
   <div class="hero__wash" aria-hidden="true"></div>
   <div class="wrap hero__inner">
     <div class="hero__text">
+      {rating_badge("badge rv")}
       <h1 class="rv">Alleppey <span class="grad grad--hero">by shikara.</span></h1>
       <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(FROM)} for two, {MIN_HOURS} hours.</p>
       <div class="hero__acts rv">{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--glass btn--lg" href="#tours"><span>See tours</span>{ARROW}</a></div>
@@ -366,6 +385,7 @@ def home():
   {tours_rail()}
 </div></section>
 
+{reviews()}
 <section class="sec band band--pakal"><div class="wrap split">
   <div class="rv"><h2>Same lake, two moods.</h2><p class="lede">Drag to compare sunrise and sunset on Vembanad Lake.</p>
     <div class="acts"><a class="btn btn--white" href="sunrise-cruise.html"><span>Sunrise · {inr(TOUR['sunrise-cruise']['price'])}</span></a><a class="btn btn--white" href="sunset-cruise.html"><span>Sunset · {inr(TOUR['sunset-cruise']['price'])}</span></a></div></div>
@@ -405,7 +425,6 @@ def home():
   </div>
 </div></section>
 
-{reviews()}
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
   <div class="rv"><h2>Price for your group.</h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
@@ -413,7 +432,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=17" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=18" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -448,6 +467,7 @@ def tour_page(t):
   <div class="thero__text"><p class="crumbs"><a href="index.html">Home</a> / <a href="tours.html">Tours</a> / {t["name"]}</p>{chip(t)}
     <h1 class="rv">{t["name"]}</h1><p class="lede rv">{escape(t["lead"])}</p>
     <div class="facts rv"><div><span class="mut">Time</span><b>{t["time"]}</b></div><div><span class="mut">Duration</span><b>{t["hours"]} hours</b></div><div><span class="mut">Price for two</span><b class="price">{inr(t["price"])}</b></div><div><span class="mut">Extra guest</span><b>₹{t["extra"]} / hour</b></div></div>
+    {rating_badge("badge badge--light rv")}
     <div class="acts rv">{wa(f"Hi Kalyani Boat Service! I'd like to book the {t['name']} ({t['time']}).", "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--ghost btn--lg" href="#book"><span>Price for your group</span></a></div></div>
   <div class="thero__img rv">{img(t["img"], sizes="(max-width:900px) 100vw, 640px", eager=True)}</div>
 </div></section>
