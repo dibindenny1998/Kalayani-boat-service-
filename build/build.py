@@ -333,7 +333,7 @@ def reviews():
 
 
 # ---------------------------------------------------------------- pages
-def home(extra=""):
+def home():
     pics = "".join(f'<img src="assets/img/{n}-lg.webp" alt="" data-from="{a}" data-to="{b}" style="object-position:{p}"' + (' class="on" fetchpriority="high"' if i == 0 else ' loading="lazy"') + ">" for i, (n, a, b, p) in enumerate(HERO))
     body = f'''<section class="hero" id="hero" aria-label="Kalyani Boat Service">
   <div class="hero__pics" aria-hidden="true">{pics}</div>
@@ -410,7 +410,7 @@ def home(extra=""):
   <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>
-''' + extra
+'''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
                 body, "index.html", '<script src="assets/js/hero.js?v=15" defer></script>', BUSINESS)
@@ -581,63 +581,5 @@ def build():
     print(f"Built {len(pages)} pages into {OUT}")
 
 
-# ---------------------------------------------------------------- single-page version (site-single/)
-OUT_SINGLE = ROOT / "site-single"
-
-
-def single_page():
-    """The same homepage as one self-contained page: every link to another page becomes a jump within the page."""
-    order = ["shikara-sunset-bow", "guests-seated", "kayak-sunset-group", "lunch-banana-leaf", "group-bow", "canoeing", "family-sunset", "shikara-kalyani",
-             "speedboat", "kayak-trees", "deck-sofa", "guests-bow", "kayak-rainbow", "shikara-jetty-wide", "seating-interior", "chairs-green", "deck-front", "kayak-sunset-solo", "deck-yellow", "chairs-pink"]
-    figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order[:9])
-    phones = "".join(f'<a class="cline" href="tel:{p.replace(" ", "")}"><span class="mut">Phone / WhatsApp</span><b>{p}</b></a>' for p in SITE["phones"])
-    extra = f"""
-<section class="sec" id="gallery"><div class="wrap">
-  <div class="head"><h2 class="rv">Gallery<span class="grad grad--anthi">.</span></h2></div>
-  <div class="masonry">{figs}</div>
-</div></section>
-
-<section class="sec band band--soft" id="contact"><div class="wrap split split--top">
-  <div class="rv"><h2>Get in <span class="grad grad--anthi">touch.</span></h2><p class="lede">Call or message us to book, or use the booking form above.</p></div>
-  <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Find us</span><b>{SITE["address"]}</b></a><div class="cline"><span class="mut">Follow us</span><b><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a> · <a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></b></div></div>
-</div></section>
-
-<section class="sec" id="legal" style="padding-top:0"><div class="wrap"><div class="faq">
-  <details><summary>Booking terms</summary><div class="prose" style="margin-top:12px">{TERMS}</div></details>
-  <details><summary>Privacy</summary><div class="prose" style="margin-top:12px">{PRIVACY}</div></details>
-</div></div></section>
-"""
-    html = home(extra)
-    html = html.replace('href="kayaking.html"><span>See more', 'href="#gallery"><span>See more')
-    html = html.replace(f'<a class="link" href="tours.html">All tours {ARROW}</a>', "")
-    for a, b in [('href="tours.html"', 'href="#tours"'), ('href="kayaking.html"', 'href="#kayaking"'), ('href="gallery.html"', 'href="#gallery"'),
-                 ('href="contact.html"', 'href="#contact"'), ('href="terms.html"', 'href="#legal"'), ('href="privacy.html"', 'href="#legal"'),
-                 ('href="index.html"', 'href="#main"'), ('assets/js/data.js?v=', 'assets/js/data-single.js?v=')]:
-        html = html.replace(a, b)
-    for t in TOURS:
-        html = html.replace(f'href="{t["slug"]}.html"', f'href="#book" data-pick="{t["slug"]}"')
-    return html
-
-
-def build_single():
-    import shutil
-    if OUT_SINGLE.exists():
-        shutil.rmtree(OUT_SINGLE)
-    shutil.copytree(OUT / "assets", OUT_SINGLE / "assets")
-    shutil.copy(OUT / "favicon.svg", OUT_SINGLE / "favicon.svg")
-    shutil.copy(OUT / "apple-touch-icon.png", OUT_SINGLE / "apple-touch-icon.png")
-    (OUT_SINGLE / "index.html").write_text(single_page(), encoding="utf-8")
-    data = {"single": True, "whatsapp": SITE["whatsapp"], "email": SITE["email"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
-    (OUT_SINGLE / "assets/js/data-single.js").write_text("/* generated by build/build.py */\nwindow.KALYANI=" + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
-    (OUT_SINGLE / "assets/js/data.js").unlink(missing_ok=True)
-    php = (OUT / "enquiry.php").read_text(encoding="utf-8").replace("'thank-you.html'", "'index.html?sent=1#book'").replace("contact.html?error=1", "index.html?error=1#book").replace("Location: contact.html", "Location: index.html")
-    (OUT_SINGLE / "enquiry.php").write_text(php, encoding="utf-8")
-    ht = (OUT / ".htaccess").read_text(encoding="utf-8").replace("ErrorDocument 404 /404.html", "ErrorDocument 404 /index.html")
-    (OUT_SINGLE / ".htaccess").write_text(ht, encoding="utf-8")
-    (OUT_SINGLE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n", encoding="utf-8")
-    print(f"Built single page into {OUT_SINGLE}")
-
-
 if __name__ == "__main__":
     build()
-    build_single()

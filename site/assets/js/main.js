@@ -115,13 +115,6 @@
     if (new URLSearchParams(location.search).get("error")) say("Sorry, that did not go through. Please check the form, or use WhatsApp.", "err");
   });
 
-  /* single-page site: tour links jump to the booking form with that tour selected */
-  document.addEventListener("click", e => {
-    const a = e.target.closest("[data-pick]"); if (!a) return;
-    $$("[data-calc] [name=tour]").forEach(s => { s.value = a.dataset.pick; s.dispatchEvent(new Event("change")); });
-  });
-  if (new URLSearchParams(location.search).get("sent")) $$("[data-calc] .status").forEach(s => { s.hidden = false; s.className = "status ok"; s.textContent = "Request sent. We will confirm on WhatsApp or by phone."; });
-
   /* floating chat and mail buttons hide over the home hero */
   const fab = $("#fab"), heroEl = $("#hero");
   if (fab && heroEl && "IntersectionObserver" in window) new IntersectionObserver(e => fab.classList.toggle("off", e[0].isIntersecting), { threshold: .3 }).observe(heroEl);
