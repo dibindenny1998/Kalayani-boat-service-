@@ -388,3 +388,8 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 
 .bubbles{color:#00AA6C;letter-spacing:2px;font-size:18px}
 .rev__rank{font-size:14px;color:var(--muted)}
+.rev:hover{transform:none}
+.rev__links{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:6px}
+.rev__links .rev__cta{margin-top:0}
+.rev__cta:hover svg{transform:translateX(4px)}
+.rev__cta--alt{color:var(--muted);font-weight:500;text-decoration:underline;text-underline-offset:3px}

@@ -31,13 +31,14 @@ SITE = {
     "facebook": "https://www.facebook.com/share/1GCZcRCwyP/",
     "instagram": "https://www.instagram.com/k_a_lya_ni__",
     # paste the client's review page links here; the Reviews section shows only when at least one is set
-    "google_reviews": "https://maps.app.goo.gl/ZbawFzpeCpkCUe2q6",
+    "google_reviews": "https://g.co/kgs/qvoXvW",
     "google_rating": "4.8",  # as shown on the Google listing, Nov 2026; update if it changes
     # as shown on the Tripadvisor listing, Nov 2026; update if they change
     "tripadvisor_rating": "4.8",
     "tripadvisor_reviews": 13,
     "tripadvisor_rank": "#21 of 103 Boat Tours & Water Sports in Alappuzha",
     "since": 2010,  # from the client's Tripadvisor listing: "We operate Kalyani Boat Service since 2010"
+    "tripadvisor_write": "https://www.tripadvisor.in/UserReviewEdit-g608471-d10492322-Kalyani_Boat_Service-Alappuzha_Alappuzha_District_Kerala.html",
     "tripadvisor": "https://www.tripadvisor.in/Attraction_Review-g608471-d10492322-Reviews-Kalyani_Boat_Service-Alappuzha_Alappuzha_District_Kerala.html",
 }
 
@@ -229,7 +230,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=19">
+<link rel="stylesheet" href="assets/css/style.css?v=20">
 {ld}
 </head>
 <body>
@@ -238,8 +239,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=19"></script>
-<script src="assets/js/main.js?v=19" defer></script>
+<script src="assets/js/data.js?v=20"></script>
+<script src="assets/js/main.js?v=20" defer></script>
 {scripts}
 </body>
 </html>
@@ -337,14 +338,15 @@ def rating_badge(cls="badge", href="index.html#reviews"):
 def reviews():
     cards = ""
     if SITE["google_reviews"]:
-        cards += f'''<a class="rev rev--google rv" href="{SITE["google_reviews"]}" target="_blank" rel="noopener">
+        cards += f'''<div class="rev rev--google rv">
   <span class="rev__src">Google</span><span class="rev__score"><b>{SITE["google_rating"]}</b>{STARS}</span>
-  <span class="rev__cta">Read reviews on Google {ARROW}</span></a>'''
+  <span class="rev__links"><a class="rev__cta" href="{SITE["google_reviews"]}" target="_blank" rel="noopener">Read reviews on Google {ARROW}</a></span></div>'''
     if SITE["tripadvisor"]:
-        cards += f'''<a class="rev rev--ta rv" href="{SITE["tripadvisor"]}" target="_blank" rel="noopener">
+        cards += f'''<div class="rev rev--ta rv">
   <span class="rev__src">Tripadvisor</span><span class="rev__score"><b>{SITE["tripadvisor_rating"]}</b><span class="bubbles" aria-hidden="true">●●●●●</span><span class="mut">{SITE["tripadvisor_reviews"]} reviews</span></span>
   <span class="rev__rank">{escape(SITE["tripadvisor_rank"])}</span>
-  <span class="rev__cta">Read reviews on Tripadvisor {ARROW}</span></a>'''
+  <span class="rev__links"><a class="rev__cta" href="{SITE["tripadvisor"]}" target="_blank" rel="noopener">Read reviews on Tripadvisor {ARROW}</a>
+  <a class="rev__cta rev__cta--alt" href="{SITE["tripadvisor_write"]}" target="_blank" rel="noopener">Write a review</a></span></div>'''
     if not cards:
         return ""
     return f'''<section class="sec" id="reviews"><div class="wrap">
@@ -436,7 +438,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=19" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=20" defer></script>', BUSINESS)
 
 
 def tours_page():
