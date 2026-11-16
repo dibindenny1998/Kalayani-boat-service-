@@ -73,7 +73,7 @@ python3 build/build.py
 **Content taken from the client's old website (alleppeyboatcruise.com):** full address, Facebook and Instagram links, the on-board amenities (cushioned seating, open sides, shaded roof, drinking water, life jackets), the kayaking, canoeing and speedboat services, and 8 photos (guests, Kerala lunch, canoeing, speedboat and more).
 
 **Differences between the old website and the price sheet. Please confirm:**
-- [ ] **Email:** the old site uses alleppeyboatcruisebykalyani@gmail.com, the price sheet uses alleppeyshikaratours@gmail.com. The new site uses the price sheet's.
+- [x] **Email:** decided: alleppeyshikaratours@gmail.com for the site and booking emails (the old site used alleppeyboatcruisebykalyani@gmail.com).
 - [ ] **Lunch Cruise:** the old site says 11:30 am – 2:30 pm with Kerala lunch; the price sheet says 1:00 – 4:00 pm with tea or coffee. The new site follows the price sheet.
 - [ ] **Brand name:** the old site is "Alleppey Boat Cruise" with a palm-tree logo; the price sheet says "Kalyani Boat Service".
 - [ ] **Houseboat day cruise (11 am – 5 pm)** is on the old site but not on the price sheet, so it is not on the new site.
