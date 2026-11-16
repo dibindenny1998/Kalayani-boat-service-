@@ -30,24 +30,36 @@ SITE = {
     "maps": "https://www.google.com/maps/search/?api=1&query=Haveli+Backwater+Resort+Finishing+Point+Road+Alappuzha",
     "facebook": "https://www.facebook.com/share/1GCZcRCwyP/",
     "instagram": "https://www.instagram.com/k_a_lya_ni__",
+    # paste the client's review page links here; the Reviews section shows only when at least one is set
+    "google_reviews": "",
+    "tripadvisor": "",
 }
 
-# ---------------------------------------------------------------- routes (from the client's price sheet)
-START = ["Rajiv Boat Jetty", "Snake Boat Race starting point", "Snake Boat model",
-         "Snake Boat Race finishing point", "Vembanad Lake", "SAI (Sports Authority of India)", "C Block"]
-END = ["Vilakkumaram", "Back to Rajiv Boat Jetty"]
-VILLAGES = ["Kainakary", "Chavara Bhavan", "Vattakayal", "Pallathurthi"]
-FARMS = ["Narrow canals", "Paddy cultivation below sea level", "Temples", "Duck farming", "Fish hatchery"]
+# ---------------------------------------------------------------- routes (from the client's price sheet, updated Nov 2026)
+# The Snake Boat model (Chambakulam Chundan) stop is skipped on every route, as the client asked.
+JETTY, SBR_START, SBR_FINISH = "Rajiv Boat Jetty", "Snake Boat Race starting point", "Snake Boat Race finishing point"
+LAKE, SAI, BACK = "Vembanad Lake", "SAI (Sports Authority of India)", "Back to Rajiv Boat Jetty"
+BASE = [JETTY, SBR_START, SBR_FINISH, LAKE, SAI, "C Block", "Vilakkumaram", BACK]
 ROUTES = {
-    "base": (START + END, []),
-    "half": (START + VILLAGES + END, VILLAGES),
-    "full": (START + FARMS + VILLAGES + END, FARMS + VILLAGES),
+    "base": BASE,
+    "half": [JETTY, SBR_START, SBR_FINISH, LAKE, SAI, "C Block", "Kainakary", "Chavara Bhavan", "Vattakayal", "Pallathurthi", "Vilakkumaram", BACK],
+    "full": [JETTY, SBR_START, SBR_FINISH, LAKE, SAI, "Panakkal canal", "Narrow canals", "Paddy cultivation below sea level", "Kavangal temples",
+             "Duck farming", "Fish hatchery", "Kainakary", "Chavara Bhavan", "Vattakayal", "Pallathurthi", "Vilakkumaram", BACK],
+    "lunch": [JETTY, SBR_START, "Azhikkal canal", "Panakkal lake", SBR_FINISH, LAKE, SAI, "Vilakkumaram", "Zero jetty", BACK],
+    "sunset": [JETTY, SBR_START, SBR_FINISH, LAKE, SAI, "Panakkal canal", "Vilakkumaram", BACK],
 }
+# every place a guest can see, for the "at a glance" list on the home page
+PLACES = []
+for _r in ROUTES.values():
+    for _s in _r:
+        if _s not in PLACES and _s not in (JETTY, BACK):
+            PLACES.append(_s)
+MIN_HOURS = 3
 
-# ---------------------------------------------------------------- tours (from the client's price sheet)
+# ---------------------------------------------------------------- tours (from the client's price sheet, updated Nov 2026)
 # start/end are hours (15.5 = 3:30 pm); price is for a couple; extra is per extra person per hour.
 TOURS = [
-    dict(slug="sunrise-cruise", name="Sunrise Cruise", start=6, end=9, hours=3, price=1500, extra=100,
+    dict(slug="sunrise-cruise", name="Sunrise Cruise", start=6, end=9, hours=3, price=1800, extra=100,
          sky="pulari", part="morning", img="deck-front", route="base", includes=["Morning tea or coffee"],
          lead="Sunrise on Vembanad Lake, past the Snake Boat Race track. Morning tea or coffee on board.",
          title="Sunrise Shikara Cruise in Alleppey"),
@@ -55,24 +67,23 @@ TOURS = [
          sky="pakal", part="morning", img="shikara-kalyani", route="half", includes=["Kerala breakfast", "Tea or coffee"],
          lead="Four hours out to Kainakary, Chavara Bhavan, Vattakayal and Pallathurthi, with Kerala breakfast.",
          title="Half Day Shikara Tour with Breakfast"),
-    dict(slug="full-day-tour", name="Full Day Tour", start=8, end=16, hours=8, price=4600, extra=150,
+    dict(slug="full-day-tour", name="Full Day Tour", start=9, end=15, hours=6, price=3600, extra=150,
          sky="pakal", part="morning", img="chairs-pink", route="full", includes=["Kerala breakfast", "Lunch, veg or non-veg", "Tea or coffee"],
-         time_label="From 8:00 am · 8 hours",
-         lead="Eight hours through narrow canals, paddy fields below sea level, temples, duck farming and villages. Breakfast and lunch included.",
-         title="Full Day Shikara Tour with Breakfast & Lunch"),
+         lead="Six hours through Panakkal canal, narrow canals, paddy fields below sea level, temples, duck farming and villages.",
+         title="Full Day Shikara Tour in Alleppey"),
     dict(slug="breakfast-cruise", name="Breakfast Cruise", start=9, end=12, hours=3, price=1800, extra=100,
          sky="pakal", part="morning", img="deck-sofa", route="base", includes=["Kerala breakfast", "Tea or coffee"],
          lead="The classic route from 9 am to noon, with Kerala breakfast on board.",
          title="Breakfast Shikara Cruise in Alleppey"),
-    dict(slug="lunch-cruise", name="Lunch Cruise", start=13, end=16, hours=3, price=1800, extra=100,
-         sky="pakal", part="afternoon", img="chairs-green", route="base", includes=["Tea or coffee"],
-         lead="The classic route from 1 pm to 4 pm across Vembanad Lake.",
-         title="Afternoon Lunch Cruise by Shikara"),
-    dict(slug="sunset-cruise", name="Sunset Cruise", start=15.5, end=18.5, hours=3, price=1600, extra=100,
-         sky="anthi", part="evening", img="shikara-sunset-bow", route="base", includes=["Tea or coffee with snacks"],
-         lead="Sunset over Vembanad Lake, with evening tea or coffee and snacks.",
+    dict(slug="lunch-cruise", name="Lunch Cruise", start=12, end=15, hours=3, price=2100, extra=150,
+         sky="pakal", part="afternoon", img="lunch-banana-leaf", route="lunch", includes=["Traditional Kerala lunch (veg)"],
+         lead="Noon to 3 pm through Azhikkal canal and Panakkal lake to Vembanad Lake, with a traditional Kerala lunch on board.",
+         title="Lunch Cruise by Shikara with Kerala Lunch"),
+    dict(slug="sunset-cruise", name="Sunset Cruise", start=15.5, end=18.5, hours=3, price=1900, extra=100,
+         sky="anthi", part="evening", img="shikara-sunset-bow", route="sunset", includes=["Tea or coffee with snacks"],
+         lead="Sunset over Vembanad Lake, by way of Panakkal canal, with evening tea or coffee and snacks.",
          title="Sunset Shikara Cruise on Vembanad Lake"),
-    dict(slug="regular-cruise", name="Regular Cruise", start=None, end=None, hours=3, price=1500, extra=100,
+    dict(slug="regular-cruise", name="Regular Cruise", start=None, end=None, hours=3, price=1800, extra=100,
          sky="kayal", part="any", img="guests-bow", route="base", includes=["Tea or coffee with snacks"],
          lead="Any three hours you choose, on the classic route.",
          title="3-Hour Shikara Cruise at Your Own Time"),
@@ -90,6 +101,9 @@ for t in TOURS:
     t["time"] = t.get("time_label") or (f"{clock(t['start'])} – {clock(t['end'])}" if t["start"] is not None else "Any 3 hours")
     t["hhmm"] = f"{int(t['start']):02d}:{int(round((t['start'] % 1) * 60)):02d}" if t["start"] is not None else "Any time"
 TOUR = {t["slug"]: t for t in TOURS}
+FROM = min(t["price"] for t in TOURS)
+EXTRA_150 = [t["name"] for t in TOURS if t["extra"] == 150]
+EXTRA_RULE = "₹100 per hour on most three-hour tours, and ₹150 per hour on the " + ", ".join(EXTRA_150[:-1]) + " and " + EXTRA_150[-1]
 
 
 def inr(v):
@@ -139,9 +153,15 @@ def img(name, alt=None, sizes="(max-width: 820px) 100vw, 50vw", eager=False, pos
 
 # ---------------------------------------------------------------- shared pieces
 WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
+MAIL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 BOOK = "Hi Kalyani Boat Service! I'd like to book a shikara ride."
 NAV = [("tours.html", "Tours"), ("kayaking.html", "Kayaking & more"), ("gallery.html", "Gallery"), ("contact.html", "Contact")]
+
+
+def mail(label="Email us", cls="btn btn--ghost", subject="Shikara booking enquiry"):
+    from urllib.parse import quote
+    return f'<a class="{cls}" href="mailto:{SITE["email"]}?subject={quote(subject)}">{MAIL_ICON}<span>{label}</span></a>'
 
 
 def wa(msg, label="Book on WhatsApp", cls="btn btn--coral"):
@@ -163,7 +183,7 @@ def footer():
     tours = "".join(f'<li><a href="{t["slug"]}.html">{t["name"]}</a></li>' for t in TOURS)
     phones = "".join(f'<li><a href="tel:{p.replace(" ", "")}">{p}</a></li>' for p in SITE["phones"])
     return f'''<footer class="foot"><div class="wrap">
-  <div class="foot__cta"><h2>Ready when <span class="grad grad--anthi">you are.</span></h2>{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}</div>
+  <div class="foot__cta"><h2>Ready when <span class="grad grad--anthi">you are.</span></h2><div class="acts" style="margin-top:0">{wa(BOOK, "Chat on WhatsApp", "btn btn--coral btn--lg")}{mail("Email us", "btn btn--ghost btn--lg")}</div></div>
   <div class="foot__grid">
     <div><a class="logo" href="index.html"><span class="script">Kalyani</span><small>Boat Service</small></a><p class="mut" style="margin-top:12px">Shikara tours and kayaking from {SITE["jetty"]}.</p></div>
     <div><h4>Tours</h4><ul>{tours}</ul></div>
@@ -172,7 +192,8 @@ def footer():
   </div>
   <p class="foot__base">© <span id="year">2026</span> Kalyani Boat Service, Alleppey</p>
 </div></footer>
-<div class="dock" id="dock"><span><b>From {inr(1500)}</b> for two</span>{wa(BOOK, "Book", "btn btn--coral btn--sm")}</div>'''
+<div class="dock" id="dock"><span><b>From {inr(FROM)}</b> for two · 3 hrs</span><span class="dock__acts">{mail("", "dock__mail")}{wa(BOOK, "Chat", "btn btn--coral btn--sm")}</span></div>
+<div class="fab" id="fab">{mail("", "fab__btn fab__btn--mail")}{wa("Hi Kalyani Boat Service! I have a question about your boat tours.", "", "fab__btn fab__btn--wa")}</div>'''
 
 
 def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-image.jpg", noindex=False, base=False):
@@ -191,11 +212,18 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <meta property="og:type" content="website"><meta property="og:site_name" content="Kalyani Boat Service">
 <meta property="og:title" content="{escape(title)}"><meta property="og:description" content="{escape(desc)}">
 <meta property="og:url" content="{url}"><meta property="og:image" content="{SITE["url"]}/assets/img/{og}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Sunset from the bow of a Kalyani shikara on Vembanad Lake">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{escape(title)}"><meta name="twitter:description" content="{escape(desc)}"><meta name="twitter:image" content="{SITE["url"]}/assets/img/{og}">
+<meta name="keywords" content="shikara ride Alleppey, shikara boat Alappuzha, Alleppey backwater cruise, sunrise cruise Alleppey, sunset cruise Vembanad Lake, Kerala lunch cruise, Rajiv Boat Jetty, kayaking Alleppey">
+<meta name="geo.region" content="IN-KL"><meta name="geo.placename" content="Alappuzha, Kerala">
+<meta name="author" content="Kalyani Boat Service"><meta name="format-detection" content="telephone=yes">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#FFFDF7">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=14">
+<link rel="stylesheet" href="assets/css/style.css?v=15">
 {ld}
 </head>
 <body>
@@ -204,8 +232,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=14"></script>
-<script src="assets/js/main.js?v=14" defer></script>
+<script src="assets/js/data.js?v=15"></script>
+<script src="assets/js/main.js?v=15" defer></script>
 {scripts}
 </body>
 </html>
@@ -231,7 +259,8 @@ def tours_rail():
 
 
 def route_block(t):
-    stops, extra = ROUTES[t["route"]]
+    stops = ROUTES[t["route"]]
+    extra = [s for s in stops if s not in BASE]
     lis = "".join(f'<li class="{"x" if s in extra else ""}"><span class="n">{i + 1:02d}</span>{escape(s)}</li>' for i, s in enumerate(stops))
     return f'<ol class="route rv">{lis}</ol>'
 
@@ -265,7 +294,7 @@ def booking(selected="sunrise-cruise", heading="Book your ride"):
     <span class="mut">Total</span>
     <span class="sum">{inr(t["price"])}</span>
     <p class="sumnote mut">Price for two guests</p>
-    <div class="book__acts"><button type="button" class="btn btn--coral btn--block" data-send="wa">{WA_ICON}<span>Send on WhatsApp</span></button><button type="submit" class="btn btn--ghost btn--block">Send by email</button></div>
+    <div class="book__acts"><button type="button" class="btn btn--coral btn--block" data-send="wa">{WA_ICON}<span>Send on WhatsApp</span></button><button type="button" class="btn btn--ghost btn--block" data-send="mail">{MAIL_ICON}<span>Send by email app</span></button><button type="submit" class="btn btn--ghost btn--block">Send by email</button></div>
   </aside>
 </form>'''
 
@@ -279,14 +308,28 @@ BUSINESS = {
 }
 PRICE_FAQ = [
     ("Where do we board?", f"All tours start and end at {SITE['jetty']}."),
-    ("How is the price calculated?", "Each price is for two guests. Every extra guest adds ₹100 per hour on the three-hour tours and ₹150 per hour on the Half Day and Full Day tours."),
-    ("Can we choose our own time?", f"Yes. The Regular Cruise runs for any three hours you choose, at {inr(1500)} for two."),
+    ("How is the price calculated?", f"Each price is for two guests. Every extra guest adds {EXTRA_RULE}."),
+    ("Can we choose our own time?", f"Yes. The Regular Cruise runs for any three hours you choose, at {inr(TOUR['regular-cruise']['price'])} for two."),
+    ("How long is a ride?", f"At least {MIN_HOURS} hours. Every ride starts and ends at Rajiv Boat Jetty."),
     ("How do we book?", "Send us your tour, date and number of guests on WhatsApp, by phone or with the booking form. We confirm availability."),
 ]
 
 # hero photos, by hour of the day (hour from, hour to, focus)
 HERO = [("kayak-sunrise-group", 0, 7.5, "50% 62%"), ("deck-front", 7.5, 10, "50% 55%"), ("shikara-kalyani", 10, 13, "50% 62%"),
         ("chairs-green", 13, 15.5, "50% 50%"), ("shikara-sunset-bow", 15.5, 18.6, "50% 55%"), ("kayak-sunset-group", 18.6, 24, "50% 60%")]
+
+
+def reviews():
+    links = [(SITE["google_reviews"], "Google", "Read our Google reviews"), (SITE["tripadvisor"], "Tripadvisor", "Read our Tripadvisor reviews")]
+    links = [x for x in links if x[0]]
+    if not links:
+        return ""
+    cards = "".join(f'<a class="rev rv" href="{u}" target="_blank" rel="noopener"><span class="rev__name">{n}</span><b>{label}</b><span class="go" aria-hidden="true">{ARROW}</span></a>' for u, n, label in links)
+    return f'''<section class="sec" id="reviews"><div class="wrap">
+  <div class="head"><h2 class="rv">What guests <span class="grad grad--anthi">say.</span></h2></div>
+  <div class="revs">{cards}</div>
+</div></section>
+'''
 
 
 # ---------------------------------------------------------------- pages
@@ -298,7 +341,7 @@ def home(extra=""):
   <div class="wrap hero__inner">
     <div class="hero__text">
       <h1 class="rv">Alleppey <span class="grad grad--hero">by shikara.</span></h1>
-      <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(1500)} for two.</p>
+      <p class="hero__sub rv">Seven tours from Rajiv Boat Jetty, sunrise to sunset. From {inr(FROM)} for two, {MIN_HOURS} hours.</p>
       <div class="hero__acts rv">{wa(BOOK, "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--glass btn--lg" href="#tours"><span>See tours</span>{ARROW}</a></div>
     </div>
     <div class="dial rv">
@@ -325,7 +368,7 @@ def home(extra=""):
 
 <section class="sec band band--pakal"><div class="wrap split">
   <div class="rv"><h2>Same lake, <span class="grad grad--anthi">two moods.</span></h2><p class="lede">Drag to compare sunrise and sunset on Vembanad Lake.</p>
-    <div class="acts"><a class="btn btn--white" href="sunrise-cruise.html"><span>Sunrise · {inr(1500)}</span></a><a class="btn btn--white" href="sunset-cruise.html"><span>Sunset · {inr(1600)}</span></a></div></div>
+    <div class="acts"><a class="btn btn--white" href="sunrise-cruise.html"><span>Sunrise · {inr(TOUR['sunrise-cruise']['price'])}</span></a><a class="btn btn--white" href="sunset-cruise.html"><span>Sunset · {inr(TOUR['sunset-cruise']['price'])}</span></a></div></div>
   <div class="compare rv" id="compare">
     {img("kayak-sunrise-group", alt="Sunrise on Vembanad Lake", sizes="(max-width:900px) 100vw, 640px", pos="50% 62%")}
     <div class="compare__top">{img("shikara-sunset-bow", alt="Sunset from a Kalyani shikara", sizes="(max-width:900px) 100vw, 640px")}</div>
@@ -336,7 +379,9 @@ def home(extra=""):
 
 <section class="sec"><div class="wrap split split--top">
   <div class="sticky rv"><h2>The <span class="grad grad--anthi">route.</span></h2>
-    <p class="lede">Every tour starts and ends at Rajiv Boat Jetty. The Half Day and Full Day tours go further, to the villages, canals and paddy fields.</p>
+    <p class="lede">Every ride is at least {MIN_HOURS} hours, from Rajiv Boat Jetty and back. This is the classic route; other tours take you further.</p>
+    <h3 style="margin-top:28px">Places on the way</h3>
+    <ul class="places rv">{"".join(f"<li>{escape(s)}</li>" for s in PLACES)}</ul>
     <div class="photo rv">{img("shikara-sunset-bow", sizes="(max-width:900px) 100vw, 560px")}</div></div>
   {route_block(TOUR["sunrise-cruise"])}
 </div></section>
@@ -360,14 +405,15 @@ def home(extra=""):
   </div>
 </div></section>
 
+{reviews()}
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Each price is for two guests. Extra guests pay per hour: ₹100 on three-hour tours, ₹150 on the Half Day and Full Day.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>
 ''' + extra
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
-                "Shikara tours from Rajiv Boat Jetty, Alleppey: Sunrise Cruise ₹1,500, Breakfast Cruise ₹1,800, Half Day ₹2,300, Full Day ₹4,600, Sunset Cruise ₹1,600, for two. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=14" defer></script>', BUSINESS)
+                f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
+                body, "index.html", '<script src="assets/js/hero.js?v=15" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -378,20 +424,20 @@ def tours_page():
   <h1 class="rv">Shikara <span class="grad grad--kayal">tours.</span></h1><p class="lede rv">Seven tours from Rajiv Boat Jetty. Prices are for two guests.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="trows">{rows}</div></div></section>
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Extra guests pay per hour: ₹100 on three-hour tours, ₹150 on the Half Day and Full Day.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>'''
     schema = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "url": f'{SITE["url"]}/{t["slug"]}.html', "name": t["name"]} for i, t in enumerate(TOURS)]}
     return page("tours.html", "Shikara Tours, Timings & Prices | Kalyani Boat Service, Alleppey",
-                "Kalyani shikara tours from Rajiv Boat Jetty with timings and prices for two: Sunrise ₹1,500, Half Day ₹2,300, Full Day ₹4,600, Breakfast ₹1,800, Lunch ₹1,800, Sunset ₹1,600, Regular ₹1,500.",
+                "Kalyani shikara tours from Rajiv Boat Jetty with timings and prices for two: " + ", ".join(f"{x['name']} {inr(x['price'])}" for x in TOURS) + ".",
                 body, "tours.html", schema=schema)
 
 
 def tour_page(t):
     other = [o for o in TOURS if o is not t][:3]
     inc = "".join(f"<li>{escape(i)}</li>" for i in t["includes"])
-    _, extra = ROUTES[t["route"]]
+    extra = [s for s in ROUTES[t["route"]] if s not in BASE]
     route_note = "Highlighted stops are added on this tour." if extra else "The classic route, from Rajiv Boat Jetty and back."
     qas = [
         ("Where do we board?", f"At {SITE['jetty']}. The tour ends there too."),
@@ -424,7 +470,7 @@ def tour_page(t):
     schema = [
         {"@context": "https://schema.org", "@type": "TouristTrip", "name": t["name"], "description": t["lead"], "touristType": "Backwater cruise",
          "provider": {"@type": "LocalBusiness", "name": SITE["name"], "telephone": SITE["phones"][0]},
-         "itinerary": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": s} for i, s in enumerate(ROUTES[t["route"]][0])]},
+         "itinerary": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": s} for i, s in enumerate(ROUTES[t["route"]])]},
          "offers": {"@type": "Offer", "price": t["price"], "priceCurrency": "INR", "description": "Price for two guests", "url": f'{SITE["url"]}/{t["slug"]}.html'}},
         {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qas]},
     ]
@@ -479,7 +525,7 @@ def simple(path, title, desc, h1, html, noindex=False, base=False):
     return page(path, title, desc, body, noindex=noindex, base=base)
 
 
-TERMS = f'''<h2>Prices</h2><ul><li>Each tour price is for two guests.</li><li>Each extra guest is charged per hour: ₹100 per hour on three-hour tours and ₹150 per hour on the Half Day and Full Day tours.</li><li>Prices are in Indian Rupees.</li></ul>
+TERMS = f'''<h2>Prices</h2><ul><li>Each tour price is for two guests.</li><li>Each extra guest is charged {EXTRA_RULE}.</li><li>Every ride is at least {MIN_HOURS} hours.</li><li>Prices are in Indian Rupees.</li></ul>
 <h2>Booking</h2><ul><li>A booking is confirmed when we confirm it to you on WhatsApp or by phone.</li><li>Payment and cancellation terms are shared when we confirm your booking.</li></ul>
 <h2>Boarding</h2><ul><li>All tours start and end at {SITE["jetty"]}.</li></ul>
 <p>Questions? Call {SITE["phones"][0]} or message us on WhatsApp.</p>'''
@@ -487,6 +533,23 @@ TERMS = f'''<h2>Prices</h2><ul><li>Each tour price is for two guests.</li><li>Ea
 PRIVACY = f'''<h2>What we receive</h2><p>When you send a booking request we receive your name, phone number, optional email, tour, date, number of guests and any note you add.</p>
 <h2>How we use it</h2><p>Only to reply to you and arrange your booking. Requests sent by email arrive at {SITE["email"]}. Messages sent on WhatsApp are handled by WhatsApp.</p>
 <h2>Cookies</h2><p>This website does not use tracking or advertising cookies.</p>'''
+
+
+def apple_icon(path):
+    """Home-screen icon for phones: coral gradient, pale sun and the shikara hull, matching favicon.svg."""
+    from PIL import ImageDraw
+    n = 180
+    im = Image.new("RGB", (n, n))
+    top, bot = (214, 62, 26), (255, 138, 107)
+    for y in range(n):
+        k = y / (n - 1)
+        ImageDraw.Draw(im).line([(0, y), (n, y)], fill=tuple(round(top[i] + (bot[i] - top[i]) * k) for i in range(3)))
+    d = ImageDraw.Draw(im)
+    d.ellipse([62, 46, 118, 102], fill=(255, 226, 216))
+    s = n / 64
+    hull = [(10, 44), (48, 44), (54, 40), (56, 34), (59, 36), (58, 41), (54, 48), (46, 53), (18, 53), (12, 50)]
+    d.polygon([(x * s, y * s) for x, y in hull], fill=(22, 32, 29))
+    im.save(path)
 
 
 def build():
@@ -503,10 +566,11 @@ def build():
     }
     for t in TOURS:
         pages[f'{t["slug"]}.html'] = tour_page(t)
+    apple_icon(OUT / "apple-touch-icon.png")
     for name, html in pages.items():
         (OUT / name).write_text(html, encoding="utf-8")
 
-    data = {"whatsapp": SITE["whatsapp"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
+    data = {"whatsapp": SITE["whatsapp"], "email": SITE["email"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
     (OUT / "assets/js/data.js").write_text("/* generated by build/build.py */\nwindow.KALYANI=" + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
     (OUT / "assets/js/tours.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
@@ -561,8 +625,9 @@ def build_single():
         shutil.rmtree(OUT_SINGLE)
     shutil.copytree(OUT / "assets", OUT_SINGLE / "assets")
     shutil.copy(OUT / "favicon.svg", OUT_SINGLE / "favicon.svg")
+    shutil.copy(OUT / "apple-touch-icon.png", OUT_SINGLE / "apple-touch-icon.png")
     (OUT_SINGLE / "index.html").write_text(single_page(), encoding="utf-8")
-    data = {"single": True, "whatsapp": SITE["whatsapp"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
+    data = {"single": True, "whatsapp": SITE["whatsapp"], "email": SITE["email"], "tours": [{k: t[k] for k in ("slug", "name", "start", "end", "hours", "price", "extra", "time")} for t in TOURS]}
     (OUT_SINGLE / "assets/js/data-single.js").write_text("/* generated by build/build.py */\nwindow.KALYANI=" + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
     (OUT_SINGLE / "assets/js/data.js").unlink(missing_ok=True)
     php = (OUT / "enquiry.php").read_text(encoding="utf-8").replace("'thank-you.html'", "'index.html?sent=1#book'").replace("contact.html?error=1", "index.html?error=1#book").replace("Location: contact.html", "Location: index.html")

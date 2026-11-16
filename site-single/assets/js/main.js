@@ -97,6 +97,8 @@
         `Price shown: ${inr(price(t, guests))}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
     };
     $("[data-send=wa]", form).onclick = () => window.open(waLink(summary()), "_blank", "noopener");
+    const mailBtn = $("[data-send=mail]", form);
+    if (mailBtn) mailBtn.onclick = () => { location.href = "mailto:" + K.email + "?subject=" + encodeURIComponent("Shikara booking enquiry") + "&body=" + encodeURIComponent(summary()); };
     form.addEventListener("submit", async e => {
       e.preventDefault();
       if (!form.reportValidity()) return;
@@ -119,6 +121,10 @@
     $$("[data-calc] [name=tour]").forEach(s => { s.value = a.dataset.pick; s.dispatchEvent(new Event("change")); });
   });
   if (new URLSearchParams(location.search).get("sent")) $$("[data-calc] .status").forEach(s => { s.hidden = false; s.className = "status ok"; s.textContent = "Request sent. We will confirm on WhatsApp or by phone."; });
+
+  /* floating chat and mail buttons hide over the home hero */
+  const fab = $("#fab"), heroEl = $("#hero");
+  if (fab && heroEl && "IntersectionObserver" in window) new IntersectionObserver(e => fab.classList.toggle("off", e[0].isIntersecting), { threshold: .3 }).observe(heroEl);
 
   /* mobile booking dock: hidden over the home hero and the footer */
   const dock = $("#dock"), hero = $("#hero"), foot = $(".foot");
