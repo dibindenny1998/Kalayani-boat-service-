@@ -4,17 +4,17 @@
 :root{
   --bg:#FFFDF7; --surface:#FFFFFF; --soft:#F7F3EA;
   --ink:#16201D; --muted:#64706B; --line:rgba(22,32,29,.10);
-  --teal:#0B8277; --coral:#F2542D; --marigold:#FFB320; --sky:#3BA7E0; --paddy:#6CC24A; --lotus:#E8418A;
+  --teal:#0B8277; --coral:#C93A17; --coral-bright:#F2542D; --marigold:#FFB320; --sky:#3BA7E0; --paddy:#6CC24A; --lotus:#E8418A;
   /* single-colour gradients: shades of one hue only */
   --pulari:linear-gradient(120deg,#FFD3E1 0%,#FFB1C8 100%);   /* pink */
   --pakal:linear-gradient(120deg,#D5EEFC 0%,#A8DBF8 100%);    /* blue */
-  --anthi:linear-gradient(120deg,#F2542D 0%,#FF8A6B 100%);    /* coral */
+  --anthi:linear-gradient(120deg,#B8340F 0%,#C93A17 100%);    /* coral, deep enough for white text */
   --kayal:linear-gradient(120deg,#08695F 0%,#0B8277 45%,#2BB5A6 100%); /* teal */
   --gold:linear-gradient(120deg,#E89A00 0%,#FFB320 50%,#FFD36E 100%);  /* marigold */
   /* text versions, deep enough to read on white */
   --t-pulari:linear-gradient(100deg,#D63A6B,#F27199);
   --t-pakal:linear-gradient(100deg,#156FA8,#3BA7E0);
-  --t-anthi:linear-gradient(100deg,#D63E1A,#F2542D 50%,#FF8462);
+  --t-anthi:linear-gradient(100deg,#B8340F,#C93A17 55%,#E0532E);
   --t-kayal:linear-gradient(100deg,#07574F,#0B8277 50%,#21A595);
   --font:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --script:"Yellowtail","Brush Script MT",cursive;
@@ -103,8 +103,8 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .btn--lg{height:58px;padding:0 28px;font-size:16px}
 .btn--sm{height:42px;padding:0 16px;font-size:14px}
 .btn--block{width:100%}
-.btn--coral{background:var(--coral);color:#fff;box-shadow:0 12px 26px -12px rgba(242,84,45,.7)}
-.btn--coral:hover{box-shadow:0 16px 32px -12px rgba(242,84,45,.8)}
+.btn--coral{background:var(--coral);color:#fff;box-shadow:0 12px 26px -12px rgba(201,58,23,.6)}
+.btn--coral:hover{background:#B8340F;box-shadow:0 16px 32px -12px rgba(201,58,23,.7)}
 .btn--ink{background:var(--ink);color:#fff}
 .btn--white{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
 .btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
@@ -269,7 +269,7 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .facts div{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:grid;gap:2px}
 .facts .mut{font-size:13px}
 .facts b{font-size:18px;font-weight:600}
-.facts .price{background:var(--t-anthi);background-clip:text;-webkit-background-clip:text;color:transparent}
+.facts .price{color:var(--coral)}
 @media (max-width:900px){.thero__grid{grid-template-columns:1fr}.thero__img{aspect-ratio:4/3}}
 .ticks{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
 .ticks li{display:flex;gap:12px;align-items:center;font-weight:500}

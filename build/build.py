@@ -223,7 +223,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=16">
+<link rel="stylesheet" href="assets/css/style.css?v=17">
 {ld}
 </head>
 <body>
@@ -232,8 +232,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=16"></script>
-<script src="assets/js/main.js?v=16" defer></script>
+<script src="assets/js/data.js?v=17"></script>
+<script src="assets/js/main.js?v=17" defer></script>
 {scripts}
 </body>
 </html>
@@ -326,7 +326,7 @@ def reviews():
         return ""
     cards = "".join(f'<a class="rev rv" href="{u}" target="_blank" rel="noopener"><span class="rev__name">{n}</span><b>{label}</b><span class="go" aria-hidden="true">{ARROW}</span></a>' for u, n, label in links)
     return f'''<section class="sec" id="reviews"><div class="wrap">
-  <div class="head"><h2 class="rv">What guests <span class="grad grad--anthi">say.</span></h2></div>
+  <div class="head"><h2 class="rv">What guests say.</h2></div>
   <div class="revs">{cards}</div>
 </div></section>
 '''
@@ -367,7 +367,7 @@ def home():
 </div></section>
 
 <section class="sec band band--pakal"><div class="wrap split">
-  <div class="rv"><h2>Same lake, <span class="grad grad--anthi">two moods.</span></h2><p class="lede">Drag to compare sunrise and sunset on Vembanad Lake.</p>
+  <div class="rv"><h2>Same lake, two moods.</h2><p class="lede">Drag to compare sunrise and sunset on Vembanad Lake.</p>
     <div class="acts"><a class="btn btn--white" href="sunrise-cruise.html"><span>Sunrise · {inr(TOUR['sunrise-cruise']['price'])}</span></a><a class="btn btn--white" href="sunset-cruise.html"><span>Sunset · {inr(TOUR['sunset-cruise']['price'])}</span></a></div></div>
   <div class="compare rv" id="compare">
     {img("kayak-sunrise-group", alt="Sunrise on Vembanad Lake", sizes="(max-width:900px) 100vw, 640px", pos="50% 62%")}
@@ -378,7 +378,7 @@ def home():
 </div></section>
 
 <section class="sec"><div class="wrap split split--top">
-  <div class="sticky rv"><h2>The <span class="grad grad--anthi">route.</span></h2>
+  <div class="sticky rv"><h2>The route.</h2>
     <p class="lede">Every ride is at least {MIN_HOURS} hours, from Rajiv Boat Jetty and back. This is the classic route; other tours take you further.</p>
     <h3 style="margin-top:28px">Places on the way</h3>
     <ul class="places rv">{"".join(f"<li>{escape(s)}</li>" for s in PLACES)}</ul>
@@ -387,7 +387,7 @@ def home():
 </div></section>
 
 <section class="sec band band--soft"><div class="wrap">
-  <div class="head"><div><h2 class="rv">On <span class="grad grad--kayal">board.</span></h2><p class="lede rv">Cushioned seating, open sides and a shaded roof. Drinking water and life jackets are on board.</p></div><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
+  <div class="head"><div><h2 class="rv">On board.</h2><p class="lede rv">Cushioned seating, open sides and a shaded roof. Drinking water and life jackets are on board.</p></div><a class="link" href="gallery.html">Gallery {ARROW}</a></div>
   <div class="bento">
     <figure class="b1 rv">{img("guests-seated", sizes="(max-width:760px) 100vw, 50vw")}</figure>
     <figure class="b2 rv">{img("lunch-banana-leaf", sizes="(max-width:760px) 50vw, 25vw")}</figure>
@@ -399,7 +399,7 @@ def home():
 
 <section class="sec" id="kayaking"><div class="wrap">
   <div class="kayak rv">
-    <div class="kayak__text"><h2>More on <span class="grad grad--white">the water.</span></h2><p>Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p>
+    <div class="kayak__text"><h2>More on the water.</h2><p>Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p>
       <div class="acts">{wa("Hi Kalyani Boat Service! I'd like to know timings and rates for kayaking, canoeing or a speedboat ride.", "Ask for rates", "btn btn--white")}<a class="btn btn--glass" href="kayaking.html"><span>See more</span>{ARROW}</a></div></div>
     <div class="kayak__pics">{img("kayak-sunset-solo", alt="Kayaking", sizes="300px")}{img("canoeing", sizes="300px")}{img("speedboat", sizes="300px")}</div>
   </div>
@@ -407,13 +407,13 @@ def home():
 
 {reviews()}
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for your group.</h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=16" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=17" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -421,10 +421,10 @@ def tours_page():
   <span class="trow__main"><b>{t["name"]}</b><span class="mut">{t["time"]} · {t["hours"]} hours · {escape(", ".join(t["includes"]))}</span></span>
   <span class="trow__price"><b>{inr(t["price"])}</b><span class="mut">for two</span></span><span class="go" aria-hidden="true">{ARROW}</span></a>''' for t in TOURS)
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Tours</p>
-  <h1 class="rv">Shikara <span class="grad grad--kayal">tours.</span></h1><p class="lede rv">Seven tours from Rajiv Boat Jetty. Prices are for two guests.</p></div></section>
+  <h1 class="rv">Shikara tours.</h1><p class="lede rv">Seven tours from Rajiv Boat Jetty. Prices are for two guests.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="trows">{rows}</div></div></section>
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for <span class="grad grad--anthi">your group.</span></h2><p class="lede">Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for your group.</h2><p class="lede">Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>'''
     schema = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
@@ -453,7 +453,7 @@ def tour_page(t):
 </div></section>
 
 <section class="sec"><div class="wrap split split--top">
-  <div class="rv"><h2>The <span class="grad grad--anthi">route.</span></h2><p class="lede">{route_note}</p>
+  <div class="rv"><h2>The route.</h2><p class="lede">{route_note}</p>
     <div class="incl rv"><h3>Included</h3><ul class="ticks">{inc}</ul>
       <h3>On board</h3><ul class="ticks"><li>Cushioned seating, open sides and a shaded roof</li><li>Drinking water and life jackets</li></ul></div>
     <div class="photo rv">{img("guests-seated" if t["img"] != "guests-seated" else "deck-sofa", sizes="(max-width:900px) 100vw, 560px")}</div></div>
@@ -461,12 +461,12 @@ def tour_page(t):
 </div></section>
 
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Book this <span class="grad grad--anthi">tour.</span></h2>{faq(qas)}</div>
+  <div class="rv"><h2>Book this tour.</h2>{faq(qas)}</div>
   {booking(t["slug"])}
 </div></section>
 
 <section class="sec"><div class="wrap">
-  <div class="head"><h2 class="rv">More <span class="grad grad--kayal">tours.</span></h2><a class="link" href="tours.html">All tours {ARROW}</a></div>
+  <div class="head"><h2 class="rv">More tours.</h2><a class="link" href="tours.html">All tours {ARROW}</a></div>
   <div class="rail">{"".join(card(o) for o in other)}</div>
 </div></section>'''
     schema = [
@@ -492,7 +492,7 @@ def kayaking():
     rides = "".join(f'''<article class="ride rv"><div class="ride__img">{img(p, sizes="(max-width:760px) 100vw, 420px")}</div><div class="ride__body"><h3>{n}</h3><p class="mut">{d}</p>{wa(f"Hi Kalyani Boat Service! I'd like to know {n.lower()} timings and rates.", "Ask for rates", "btn btn--ghost btn--sm")}</div></article>''' for n, p, d in RIDES)
     photos = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in ["kayak-trees", "kayak-sunset-solo", "kayak-rainbow", "kayak-canal", "kayak-sunrise-group"])
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Kayaking &amp; more</p>
-  <h1 class="rv">More on <span class="grad grad--kayal">the water.</span></h1><p class="lede rv">Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p></div></section>
+  <h1 class="rv">More on the water.</h1><p class="lede rv">Kayaking, canoeing and speedboat rides. Message us for timings and rates.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="rides">{rides}</div></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{photos}</div></div></section>'''
     return page("kayaking.html", "Kayaking, Canoeing & Speedboat in Alleppey | Kalyani Boat Service",
@@ -504,7 +504,7 @@ def gallery():
              "speedboat", "kayak-trees", "deck-sofa", "guests-bow", "kayak-rainbow", "shikara-jetty-wide", "seating-interior", "chairs-green", "deck-front", "kayak-sunset-solo", "deck-yellow", "chairs-pink"]
     figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order)
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
-  <h1 class="rv">Gallery<span class="grad grad--anthi">.</span></h1></div></section>
+  <h1 class="rv">Gallery.</h1></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{figs}</div></div></section>'''
     return page("gallery.html", "Gallery | Kalyani Boat Service, Alleppey", "Photos of Kalyani shikaras and kayaking in Alleppey.", body, "gallery.html")
 
@@ -512,7 +512,7 @@ def gallery():
 def contact():
     phones = "".join(f'<a class="cline" href="tel:{p.replace(" ", "")}"><span class="mut">Phone / WhatsApp</span><b>{p}</b></a>' for p in SITE["phones"])
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p>
-  <h1 class="rv">Get in <span class="grad grad--anthi">touch.</span></h1></div></section>
+  <h1 class="rv">Get in touch.</h1></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap split split--top">
   <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Find us</span><b>{SITE["address"]}</b></a><div class="cline"><span class="mut">Follow us</span><b><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a> · <a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></b></div></div>
   {booking(heading="Send a booking request")}
