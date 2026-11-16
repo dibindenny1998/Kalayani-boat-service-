@@ -24,7 +24,7 @@
   const rv = $$(".rv");
   if (still || !("IntersectionObserver" in window)) rv.forEach(e => e.classList.add("in"));
   else {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12, rootMargin: "0px 0px -6% 0px" });
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0, rootMargin: "0px 0px 15% 0px" });
     rv.forEach((e, i) => { if (e.getBoundingClientRect().top < innerHeight) setTimeout(() => e.classList.add("in"), 80 * (i % 6)); else io.observe(e); });
   }
 
@@ -116,15 +116,19 @@
   });
 
   /* floating chat and mail buttons hide over the home hero */
-  const fab = $("#fab"), heroEl = $("#hero");
-  if (fab && heroEl && "IntersectionObserver" in window) new IntersectionObserver(e => fab.classList.toggle("off", e[0].isIntersecting), { threshold: .3 }).observe(heroEl);
+  const fab = $("#fab");
+  if (fab && "IntersectionObserver" in window) {
+    const over = new Set();
+    const watch = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? over.add(e.target) : over.delete(e.target)); fab.classList.toggle("off", over.size > 0); }, { threshold: .05 });
+    [$("#hero"), ...$$("[data-calc]"), $(".foot")].filter(Boolean).forEach(el => watch.observe(el));
+  }
 
   /* mobile booking dock: hidden over the home hero and the footer */
   const dock = $("#dock"), hero = $("#hero"), foot = $(".foot");
   if (dock && "IntersectionObserver" in window) {
     const seen = new Set();
     const io = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); dock.classList.toggle("off", seen.size > 0); }, { threshold: .15 });
-    [hero, foot].filter(Boolean).forEach(el => io.observe(el));
+    [hero, foot, ...$$("[data-calc]")].filter(Boolean).forEach(el => io.observe(el));
   }
   const yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
 })();

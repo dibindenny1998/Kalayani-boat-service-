@@ -223,7 +223,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=15">
+<link rel="stylesheet" href="assets/css/style.css?v=16">
 {ld}
 </head>
 <body>
@@ -232,8 +232,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=15"></script>
-<script src="assets/js/main.js?v=15" defer></script>
+<script src="assets/js/data.js?v=16"></script>
+<script src="assets/js/main.js?v=16" defer></script>
 {scripts}
 </body>
 </html>
@@ -315,8 +315,8 @@ PRICE_FAQ = [
 ]
 
 # hero photos, by hour of the day (hour from, hour to, focus)
-HERO = [("kayak-sunrise-group", 0, 7.5, "50% 62%"), ("deck-front", 7.5, 10, "50% 55%"), ("shikara-kalyani", 10, 13, "50% 62%"),
-        ("chairs-green", 13, 15.5, "50% 50%"), ("shikara-sunset-bow", 15.5, 18.6, "50% 55%"), ("kayak-sunset-group", 18.6, 24, "50% 60%")]
+HERO = [("deck-front", 0, 9, "50% 55%"), ("shikara-kalyani", 9, 12, "50% 62%"), ("guests-seated", 12, 15.5, "50% 45%"),
+        ("shikara-sunset-bow", 15.5, 24, "50% 55%")]
 
 
 def reviews():
@@ -413,7 +413,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=15" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=16" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -454,7 +454,9 @@ def tour_page(t):
 
 <section class="sec"><div class="wrap split split--top">
   <div class="rv"><h2>The <span class="grad grad--anthi">route.</span></h2><p class="lede">{route_note}</p>
-    <h3 style="margin-top:36px">Included</h3><ul class="ticks">{inc}</ul></div>
+    <div class="incl rv"><h3>Included</h3><ul class="ticks">{inc}</ul>
+      <h3>On board</h3><ul class="ticks"><li>Cushioned seating, open sides and a shaded roof</li><li>Drinking water and life jackets</li></ul></div>
+    <div class="photo rv">{img("guests-seated" if t["img"] != "guests-seated" else "deck-sofa", sizes="(max-width:900px) 100vw, 560px")}</div></div>
   {route_block(t)}
 </div></section>
 
