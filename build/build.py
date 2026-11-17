@@ -61,6 +61,10 @@ for _r in ROUTES.values():
     for _s in _r:
         if _s not in PLACES and _s not in (JETTY, BACK):
             PLACES.append(_s)
+# destinations that belong in the places list but are not one stop on a route
+for _extra in ("Kuttanad area",):
+    if _extra not in PLACES:
+        PLACES.insert(PLACES.index("Vembanad Lake") + 1 if "Vembanad Lake" in PLACES else len(PLACES), _extra)
 MIN_HOURS = 3
 
 # ---------------------------------------------------------------- tours (from the client's price sheet, updated Nov 2026)
@@ -230,7 +234,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=20">
+<link rel="stylesheet" href="assets/css/style.css?v=21">
 {ld}
 </head>
 <body>
@@ -239,8 +243,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=20"></script>
-<script src="assets/js/main.js?v=20" defer></script>
+<script src="assets/js/data.js?v=21"></script>
+<script src="assets/js/main.js?v=21" defer></script>
 {scripts}
 </body>
 </html>
@@ -438,7 +442,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=20" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=21" defer></script>', BUSINESS)
 
 
 def tours_page():
