@@ -393,3 +393,13 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .rev__links .rev__cta{margin-top:0}
 .rev__cta:hover svg{transform:translateX(4px)}
 .rev__cta--alt{color:var(--muted);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+
+/* mobile hero: whole photo on top (boat fully visible), fading into the content below */
+@media (max-width:900px){
+.hero{background:#121a17;padding-top:clamp(318px,86vw,420px);align-content:start}
+.hero__pics{position:absolute;top:0;left:0;right:0;height:clamp(410px,120vw,580px);z-index:-3;-webkit-mask-image:linear-gradient(#000 64%,transparent);mask-image:linear-gradient(#000 64%,transparent)}
+.hero__pics img{object-position:22% 55%!important}
+.hero::after{background:linear-gradient(180deg,rgba(10,16,14,.4) 0,rgba(10,16,14,0) 20%)}
+.hero__inner{padding-top:0;gap:22px}
+.dial{margin-top:-4px;max-width:340px}
+}
