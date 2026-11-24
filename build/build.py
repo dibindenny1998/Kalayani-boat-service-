@@ -234,7 +234,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=24">
+<link rel="stylesheet" href="assets/css/style.css?v=25">
 {ld}
 </head>
 <body>
@@ -243,8 +243,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=24"></script>
-<script src="assets/js/main.js?v=24" defer></script>
+<script src="assets/js/data.js?v=25"></script>
+<script src="assets/js/main.js?v=25" defer></script>
 {scripts}
 </body>
 </html>
@@ -326,8 +326,8 @@ PRICE_FAQ = [
 ]
 
 # hero photos, by hour of the day (hour from, hour to, focus)
-HERO = [("deck-front", 0, 9, "50% 55%"), ("shikara-kalyani", 9, 12, "50% 62%"), ("guests-seated", 12, 15.5, "50% 45%"),
-        ("shikara-sunset-bow", 15.5, 24, "50% 55%")]
+# temporary AI images (build/hero_ai.py); the client's real photos were: deck-front, shikara-kalyani, guests-seated, shikara-sunset-bow
+HERO = [("hero-sunrise", 0, 9.5, "30% 60%"), ("hero-midday", 9.5, 15.5, "30% 60%"), ("hero-sunset", 15.5, 24, "30% 60%")]
 
 
 STARS = '<span class="stars" aria-hidden="true">★★★★★</span>'
@@ -442,7 +442,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=24" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=25" defer></script>', BUSINESS)
 
 
 def tours_page():
