@@ -71,7 +71,7 @@ MIN_HOURS = 3
 # ---------------------------------------------------------------- tours (from the client's price sheet, updated Nov 2026)
 # start/end are hours (15.5 = 3:30 pm); price is for a couple; extra is per extra person per hour.
 TOURS = [
-    dict(slug="sunrise-cruise", name="Sunrise Cruise", start=6, end=9, hours=3, price=1800, extra=100,
+    dict(slug="sunrise-cruise", name="Sunrise Cruise", start=6, end=9, hours=3, price=1800, extra=150,
          sky="pulari", part="morning", img="deck-front", route="base", includes=["Morning tea or coffee"],
          lead="Sunrise on Vembanad Lake, past the Snake Boat Race track. Morning tea or coffee on board.",
          title="Sunrise Shikara Cruise in Alleppey"),
@@ -83,7 +83,7 @@ TOURS = [
          sky="pakal", part="morning", img="chairs-pink", route="full", includes=["Kerala breakfast", "Lunch, veg or non-veg", "Tea or coffee"],
          lead="Six hours through Panakkal canal, narrow canals, paddy fields below sea level, temples, duck farming and villages.",
          title="Full Day Shikara Tour in Alleppey"),
-    dict(slug="breakfast-cruise", name="Breakfast Cruise", start=9, end=12, hours=3, price=1800, extra=100,
+    dict(slug="breakfast-cruise", name="Breakfast Cruise", start=9, end=12, hours=3, price=1800, extra=150,
          sky="pakal", part="morning", img="deck-sofa", route="base", includes=["Kerala breakfast", "Tea or coffee"],
          lead="The classic route from 9 am to noon, with Kerala breakfast on board.",
          title="Breakfast Shikara Cruise in Alleppey"),
@@ -91,11 +91,11 @@ TOURS = [
          sky="pakal", part="afternoon", img="lunch-banana-leaf", route="lunch", includes=["Traditional Kerala lunch (veg)"],
          lead="Noon to 3 pm through Azhikkal canal and Panakkal lake to Vembanad Lake, with a traditional Kerala lunch on board.",
          title="Lunch Cruise by Shikara with Kerala Lunch"),
-    dict(slug="sunset-cruise", name="Sunset Cruise", start=15.5, end=18.5, hours=3, price=1900, extra=100,
+    dict(slug="sunset-cruise", name="Sunset Cruise", start=15.5, end=18.5, hours=3, price=1900, extra=150,
          sky="anthi", part="evening", img="shikara-sunset-bow", route="sunset", includes=["Tea or coffee with snacks"],
          lead="Sunset over Vembanad Lake, by way of Panakkal canal, with evening tea or coffee and snacks.",
          title="Sunset Shikara Cruise on Vembanad Lake"),
-    dict(slug="regular-cruise", name="Regular Cruise", start=None, end=None, hours=3, price=1800, extra=100,
+    dict(slug="regular-cruise", name="Regular Cruise", start=None, end=None, hours=3, price=1800, extra=150,
          sky="kayal", part="any", img="guests-bow", route="base", includes=["Tea or coffee with snacks"],
          lead="Any three hours you choose, on the classic route.",
          title="3-Hour Shikara Cruise at Your Own Time"),
@@ -114,8 +114,7 @@ for t in TOURS:
     t["hhmm"] = f"{int(t['start']):02d}:{int(round((t['start'] % 1) * 60)):02d}" if t["start"] is not None else "Any time"
 TOUR = {t["slug"]: t for t in TOURS}
 FROM = min(t["price"] for t in TOURS)
-EXTRA_150 = [t["name"] for t in TOURS if t["extra"] == 150]
-EXTRA_RULE = "₹100 per hour on most three-hour tours, and ₹150 per hour on the " + ", ".join(EXTRA_150[:-1]) + " and " + EXTRA_150[-1]
+EXTRA_RULE = "₹150 per hour on every shikara tour"
 
 
 def inr(v):
@@ -243,7 +242,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=29">
+<link rel="stylesheet" href="assets/css/style.css?v=30">
 {ld}
 </head>
 <body>
@@ -252,8 +251,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=29"></script>
-<script src="assets/js/main.js?v=29" defer></script>
+<script src="assets/js/data.js?v=30"></script>
+<script src="assets/js/main.js?v=30" defer></script>
 {scripts}
 </body>
 </html>
@@ -455,7 +454,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two: sunrise, lunch, sunset and full-day tours on Vembanad Lake. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=29" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=30" defer></script>', BUSINESS)
 
 
 def tours_page():
