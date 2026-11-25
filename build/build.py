@@ -8,6 +8,7 @@ Needs Python 3.8+ and Pillow (for image sizes): pip install pillow
 Content rule: everything below comes from the client (price sheet, phone numbers, email, photos).
 Anything not confirmed by the client is listed in README.md under "Still to confirm" and kept off the site.
 """
+import datetime
 import json
 from html import escape
 from pathlib import Path
@@ -210,6 +211,14 @@ def footer():
 def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-image.jpg", noindex=False, base=False):
     url = SITE["url"] + "/" + ("" if path == "index.html" else path)
     ld = f'<script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>' if schema else ""
+    if path == "index.html":
+        ld += '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "name": SITE["name"], "url": SITE["url"], "inLanguage": "en-IN"}, ensure_ascii=False) + "</script>"
+    elif not noindex:
+        trail = [("Home", SITE["url"] + "/")]
+        if path in {x["slug"] + ".html" for x in TOURS}:
+            trail.append(("Tours", SITE["url"] + "/tours.html"))
+        trail.append((title.split(" | ")[0].replace("&amp;", "&"), url))
+        ld += '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(trail)]}, ensure_ascii=False) + "</script>"
     robots = '<meta name="robots" content="noindex">' if noindex else ""
     return f'''<!doctype html>
 <html lang="en">
@@ -234,7 +243,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=27">
+<link rel="stylesheet" href="assets/css/style.css?v=28">
 {ld}
 </head>
 <body>
@@ -243,8 +252,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer()}
-<script src="assets/js/data.js?v=27"></script>
-<script src="assets/js/main.js?v=27" defer></script>
+<script src="assets/js/data.js?v=28"></script>
+<script src="assets/js/main.js?v=28" defer></script>
 {scripts}
 </body>
 </html>
@@ -315,7 +324,10 @@ BUSINESS = {
     "image": SITE["url"] + "/assets/img/og-image.jpg", "telephone": SITE["phones"][0], "email": SITE["email"],
     "priceRange": f"{inr(min(t['price'] for t in TOURS))} – {inr(max(t['price'] for t in TOURS))}",
     "address": {"@type": "PostalAddress", "streetAddress": "Near Haveli Backwater Resort, Finishing Point Road, near Rajeev Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "postalCode": "688013", "addressCountry": "IN"},
-    "sameAs": [SITE["facebook"], SITE["instagram"]],
+    "sameAs": [u for u in (SITE["facebook"], SITE["instagram"], SITE["tripadvisor"], SITE["google_reviews"]) if u],
+    "@id": SITE["url"] + "/#business", "foundingDate": str(SITE["since"]), "hasMap": SITE["maps"],
+    "description": "Shikara tours, kayaking, canoeing and speedboat rides on the Alleppey backwaters and Vembanad Lake, from Rajiv Boat Jetty.",
+    "areaServed": ["Alappuzha", "Alleppey", "Vembanad Lake", "Kuttanad"],
 }
 PRICE_FAQ = [
     ("Where do we board?", f"All tours start and end at {SITE['jetty']}."),
@@ -441,8 +453,8 @@ def home():
 </div></section>
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
-                f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two (3 hours): sunrise, breakfast, lunch, sunset, half-day and full-day tours on Vembanad Lake. Kayaking, canoeing and speedboat too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=27" defer></script>', BUSINESS)
+                f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two: sunrise, lunch, sunset and full-day tours on Vembanad Lake. Kayaking too.",
+                body, "index.html", '<script src="assets/js/hero.js?v=28" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -459,7 +471,7 @@ def tours_page():
     schema = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "url": f'{SITE["url"]}/{t["slug"]}.html', "name": t["name"]} for i, t in enumerate(TOURS)]}
     return page("tours.html", "Shikara Tours, Timings & Prices | Kalyani Boat Service, Alleppey",
-                "Kalyani shikara tours from Rajiv Boat Jetty with timings and prices for two: " + ", ".join(f"{x['name']} {inr(x['price'])}" for x in TOURS) + ".",
+                f"Shikara tours from Rajiv Boat Jetty, Alleppey: timings and prices for two, from {inr(FROM)}. Sunrise, breakfast, lunch, sunset, half-day and full-day.",
                 body, "tours.html", schema=schema)
 
 
@@ -536,7 +548,7 @@ def gallery():
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
   <h1 class="rv">Gallery.</h1></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{figs}</div></div></section>'''
-    return page("gallery.html", "Gallery | Kalyani Boat Service, Alleppey", "Photos of Kalyani shikaras and kayaking in Alleppey.", body, "gallery.html")
+    return page("gallery.html", "Gallery | Kalyani Boat Service, Alleppey", "Photos of shikara rides, Kerala lunch, sunsets and kayaking with Kalyani Boat Service on the Alleppey backwaters.", body, "gallery.html")
 
 
 def contact():
@@ -548,7 +560,7 @@ def contact():
   {booking(heading="Send a booking request")}
 </div></section>'''
     return page("contact.html", "Contact & Book | Kalyani Boat Service, Alleppey",
-                "Book a shikara tour in Alleppey. Call or WhatsApp +91 98473 86262 or +91 97477 98412.", body, "contact.html", schema=BUSINESS)
+                "Book a shikara tour in Alleppey. Call or WhatsApp +91 98473 86262 or +91 97477 98412, or send an enquiry. Rajiv Boat Jetty, Alappuzha.", body, "contact.html", schema=BUSINESS)
 
 
 def simple(path, title, desc, h1, html, noindex=False, base=False):
@@ -607,9 +619,9 @@ def build():
     (OUT / "assets/js/tours.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
     urls = [p for p in pages if p not in ("404.html", "thank-you.html")]
-    sm = "".join(f'<url><loc>{SITE["url"]}/{"" if p == "index.html" else p}</loc></url>' for p in urls)
+    sm = "".join(f'<url><loc>{SITE["url"]}/{"" if p == "index.html" else p}</loc><lastmod>{datetime.date.today().isoformat()}</lastmod></url>' for p in urls)
     (OUT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>\n', encoding="utf-8")
-    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE['url']}/sitemap.xml\n", encoding="utf-8")
+    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /enquiry.php\nSitemap: {SITE['url']}/sitemap.xml\n", encoding="utf-8")
     print(f"Built {len(pages)} pages into {OUT}")
 
 

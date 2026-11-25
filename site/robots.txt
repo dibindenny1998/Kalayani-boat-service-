@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /enquiry.php
 Sitemap: https://alleppeyshikaratours.com/sitemap.xml
