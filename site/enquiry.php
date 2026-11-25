@@ -36,9 +36,10 @@ if ($field('website') !== '') finish(true);
 $started = (int)$field('started') / 1000;
 if ($started > 0 && time() - $started < 3) finish(true);
 
-$tours = json_decode((string)@file_get_contents(__DIR__ . '/assets/js/tours.json'), true)['tours'] ?? [];
+$data = json_decode((string)@file_get_contents(__DIR__ . '/assets/js/tours.json'), true) ?: [];
 $tour = null;
-foreach ($tours as $t) if ($t['slug'] === $field('tour')) $tour = $t;
+foreach ($data['tours'] ?? [] as $t) if ($t['slug'] === $field('tour')) $tour = $t;
+foreach ($data['rides'] ?? [] as $r) if ($r['slug'] === $field('tour')) $tour = ['name' => $r['name'], 'time' => 'rates on request', 'price' => null];
 
 $name    = $field('name', 80);
 $phone   = $field('phone', 30);
@@ -52,12 +53,12 @@ if ($name === '' || !preg_match('/^[+0-9 ()-]{7,20}$/', $phone)) finish(false, '
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) finish(false, 'Please choose a date.');
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) finish(false, 'Please check your email address.');
 
-$total = $tour['price'] + max(0, $guests - 2) * $tour['extra'] * $tour['hours'];
+$total = $tour['price'] === null ? null : $tour['price'] + max(0, $guests - 2) * $tour['extra'] * $tour['hours'];
 $body = "New enquiry from alleppeyshikaratours.com\n\n"
     . "Tour:    {$tour['name']} ({$tour['time']})\n"
     . "Date:    $date\n"
     . "Guests:  $guests\n"
-    . "Price:   Rs " . number_format($total) . " (estimate shown on the website)\n\n"
+    . "Price:   " . ($total === null ? "on request, please send the rate and timings" : "Rs " . number_format($total) . " (estimate shown on the website)") . "\n\n"
     . "Name:    $name\n"
     . "Phone:   $phone\n"
     . "Email:   " . ($email ?: '-') . "\n\n"

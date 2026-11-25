@@ -70,8 +70,15 @@
   $$("[data-calc]").forEach(form => {
     const sel = $("[name=tour]", form), out = $("output", form), sum = $(".sum", form), note = $(".sumnote", form), date = $("[name=date]", form);
     let guests = 2, shown = 0, raf;
+    const ride = () => K.rides.find(r => r.slug === sel.value);
     const tour = () => K.tours.find(t => t.slug === sel.value) || K.tours[0];
     const update = () => {
+      const r = ride();
+      if (r) {
+        out.value = guests; out.textContent = guests; $("[name=guests]", form).value = guests;
+        cancelAnimationFrame(raf); shown = 0; sum.textContent = "On request"; note.textContent = "We reply with the rate and timings for " + r.name.toLowerCase() + ".";
+        return;
+      }
       const t = tour(), v = price(t, guests), extra = Math.max(0, guests - 2);
       out.value = guests; out.textContent = guests; $("[name=guests]", form).value = guests;
       note.textContent = extra ? `${inr(t.price)} for two + ${extra} × ₹${t.extra} × ${t.hours} hours` : "Price for two guests";
@@ -85,14 +92,15 @@
     $("[data-step='1']", form).onclick = () => { if (guests < 30) { guests++; update(); } };
     sel.addEventListener("change", update);
     const want = new URLSearchParams(location.search).get("tour");
-    if (want && K.tours.some(t => t.slug === want)) sel.value = want;
+    if (want && (K.tours.some(t => t.slug === want) || K.rides.some(r => r.slug === want))) sel.value = want;
     date.min = new Date().toISOString().slice(0, 10);
     update();
 
     const status = $(".status", form);
     const say = (msg, kind) => { status.hidden = false; status.className = "status " + (kind || ""); status.textContent = msg; };
     const summary = () => {
-      const f = new FormData(form), t = tour();
+      const f = new FormData(form), r = ride(), t = tour();
+      if (r) return [`Hi Kalyani Boat Service! I'd like to enquire about ${r.name.toLowerCase()}:`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`, "Please share the rate and timings.", f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
       return [`Hi Kalyani Boat Service! I'd like to book:`, `Tour: ${t.name} (${t.time})`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`,
         `Price shown: ${inr(price(t, guests))}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
     };
