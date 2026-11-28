@@ -33,6 +33,7 @@ SITE = {
     "instagram": "https://www.instagram.com/k_a_lya_ni__",
     # paste the client's review page links here; the Reviews section shows only when at least one is set
     "google_reviews": "https://g.co/kgs/qvoXvW",
+    "ga4": "G-1MRZT56ZF6",  # Google Analytics 4 measurement ID (client's account)
     "google_rating": "4.8",  # as shown on the Google listing, Nov 2026; update if it changes
     # as shown on the Tripadvisor listing, Nov 2026; update if they change
     "tripadvisor_rating": "4.8",
@@ -245,7 +246,9 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=33">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+<script async src="https://www.googletagmanager.com/gtag/js?id={SITE["ga4"]}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag("js",new Date());gtag("config","{SITE["ga4"]}");</script>
 {ld}
 </head>
 <body>
@@ -254,8 +257,8 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 {body}
 </main>
 {footer(path)}
-<script src="assets/js/data.js?v=33"></script>
-<script src="assets/js/main.js?v=33" defer></script>
+<script src="assets/js/data.js?v=34"></script>
+<script src="assets/js/main.js?v=34" defer></script>
 {scripts}
 </body>
 </html>
@@ -468,7 +471,7 @@ def home():
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two: sunrise, lunch, sunset and full-day tours on Vembanad Lake. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=33" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=34" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -597,7 +600,7 @@ TERMS = f'''<h2>Prices</h2><ul><li>Each tour price is for two guests.</li><li>Ea
 
 PRIVACY = f'''<h2>What we receive</h2><p>When you send a booking request we receive your name, phone number, optional email, tour, date, number of guests and any note you add.</p>
 <h2>How we use it</h2><p>Only to reply to you and arrange your booking. Requests sent by email arrive at {SITE["email"]}. Messages sent on WhatsApp are handled by WhatsApp.</p>
-<h2>Cookies</h2><p>This website does not use tracking or advertising cookies. The map on the Contact page loads from Google only when you tap Show map; Google's privacy policy then applies.</p>'''
+<h2>Visitor statistics and cookies</h2><p>We use Google Analytics to understand how visitors use this website: for example, how many people visit, which pages they open, and whether they tap the WhatsApp, call or booking buttons. Google Analytics sets cookies and receives information such as your approximate location, device and browser. We do not use advertising cookies, and we do not send your name, phone number or booking details to Google Analytics. You can block these cookies in your browser settings, or with Google's opt-out add-on at tools.google.com/dlpage/gaoptout. Google's privacy policy applies to the data Google receives.</p><p>The map on the Contact page loads from Google only when you tap Show map.</p>'''
 
 
 def apple_icon(path):

@@ -17,6 +17,20 @@
     document.addEventListener("click", e => { if (!e.target.closest(".bar")) set(false); });
   }
 
+  /* Google Analytics events: WhatsApp, call, email, map and review clicks (no personal details are sent) */
+  const track = (name, params) => { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); };
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a"); if (!a) return;
+    const h = a.getAttribute("href") || "";
+    const where = a.closest(".top") ? "header" : a.closest(".hero") ? "hero" : a.closest(".dock, .fab") ? "sticky_bar" : a.closest(".foot") ? "footer" : "page";
+    const page = location.pathname.replace(/^\//, "") || "index.html";
+    if (a.hasAttribute("data-wa") || h.includes("wa.me")) track("whatsapp_click", { link_location: where, page });
+    else if (h.startsWith("tel:")) track("phone_click", { link_location: where, page });
+    else if (h.startsWith("mailto:")) track("email_click", { link_location: where, page });
+    else if (/maps\.app|google\.com\/maps/.test(h)) track("map_click", { page });
+    else if (/tripadvisor|g\.co\/kgs/.test(h)) track("review_link_click", { platform: h.includes("tripadvisor") ? "tripadvisor" : "google" });
+  }, true);
+
   /* every [data-wa] link opens WhatsApp with its own message */
   $$("[data-wa]").forEach(a => { a.href = waLink(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
 
@@ -117,9 +131,10 @@
       return [`Hi Kalyani Boat Service! I'd like to book:`, `Tour: ${t.name} (${t.time})`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`,
         `Price shown: ${inr(price(t, guests, withFood()))}${guests > 2 && withFood() ? " (extra guests with food)" : ""}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
     };
-    $("[data-send=wa]", form).onclick = () => window.open(waLink(summary()), "_blank", "noopener");
+    const lead = method => { const r = ride(), t = tour(); track("generate_lead", r ? { method, tour: r.slug, guests } : { method, tour: t.slug, guests, value: price(t, guests, withFood()), currency: "INR" }); };
+    $("[data-send=wa]", form).onclick = () => { lead("whatsapp_form"); window.open(waLink(summary()), "_blank", "noopener"); };
     const mailBtn = $("[data-send=mail]", form);
-    if (mailBtn) mailBtn.onclick = () => { location.href = "mailto:" + K.email + "?subject=" + encodeURIComponent("Shikara booking enquiry") + "&body=" + encodeURIComponent(summary()); };
+    if (mailBtn) mailBtn.onclick = () => { lead("email_app"); location.href = "mailto:" + K.email + "?subject=" + encodeURIComponent("Shikara booking enquiry") + "&body=" + encodeURIComponent(summary()); };
     form.addEventListener("submit", async e => {
       e.preventDefault();
       if (!form.reportValidity()) return;
@@ -127,7 +142,7 @@
       try {
         const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
         const data = await res.json().catch(() => ({}));
-        if (res.ok && data.ok) { say("Request sent. We will confirm on WhatsApp or by phone.", "ok"); form.reset(); guests = 2; update(); }
+        if (res.ok && data.ok) { lead("email_form"); say("Request sent. We will confirm on WhatsApp or by phone.", "ok"); form.reset(); guests = 2; update(); }
         else say(data.error || "Sorry, that did not go through. Please use WhatsApp or call us.", "err");
       } catch { say("Sorry, that did not go through. Please use WhatsApp or call us.", "err"); }
       btn.disabled = false;
