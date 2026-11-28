@@ -66,22 +66,27 @@
   });
 
   /* booking: price for two, plus each extra guest per hour */
-  const price = (t, g) => t.price + Math.max(0, g - 2) * t.extra * t.hours;
+  const rate = (t, food) => (food && t.extra_food) ? t.extra_food : t.extra;
+  const price = (t, g, food) => t.price + Math.max(0, g - 2) * rate(t, food) * t.hours;
   $$("[data-calc]").forEach(form => {
     const sel = $("[name=tour]", form), out = $("output", form), sum = $(".sum", form), note = $(".sumnote", form), date = $("[name=date]", form);
     let guests = 2, shown = 0, raf;
     const ride = () => K.rides.find(r => r.slug === sel.value);
+    const foodField = $("[data-foodfield]", form), foodSel = foodField && $("select", foodField);
+    const withFood = () => !!(foodSel && foodSel.value === "1" && tour().extra_food);
     const tour = () => K.tours.find(t => t.slug === sel.value) || K.tours[0];
     const update = () => {
       const r = ride();
       if (r) {
+        if (foodField) foodField.hidden = true;
         out.value = guests; out.textContent = guests; $("[name=guests]", form).value = guests;
         cancelAnimationFrame(raf); shown = 0; sum.textContent = "On request"; note.textContent = "We reply with the rate and timings for " + r.name.toLowerCase() + ".";
         return;
       }
-      const t = tour(), v = price(t, guests), extra = Math.max(0, guests - 2);
+      const t = tour(), food = withFood(), v = price(t, guests, food), extra = Math.max(0, guests - 2);
+      if (foodField) foodField.hidden = !(t.extra_food && extra);
       out.value = guests; out.textContent = guests; $("[name=guests]", form).value = guests;
-      note.textContent = extra ? `${inr(t.price)} for two + ${extra} × ₹${t.extra} × ${t.hours} hours` : "Price for two guests";
+      note.textContent = extra ? `${inr(t.price)} for two + ${extra} × ₹${rate(t, food)} × ${t.hours} hours${food ? " (with food)" : ""}` : "Price for two guests";
       cancelAnimationFrame(raf);
       if (still || !shown) { shown = v; sum.textContent = inr(v); return; }
       const from = shown, st = performance.now();
@@ -91,6 +96,7 @@
     $("[data-step='-1']", form).onclick = () => { if (guests > 1) { guests--; update(); } };
     $("[data-step='1']", form).onclick = () => { if (guests < 30) { guests++; update(); } };
     sel.addEventListener("change", update);
+    if (foodSel) foodSel.addEventListener("change", update);
     const want = new URLSearchParams(location.search).get("tour");
     if (want && (K.tours.some(t => t.slug === want) || K.rides.some(r => r.slug === want))) sel.value = want;
     date.min = new Date().toISOString().slice(0, 10);
@@ -102,7 +108,7 @@
       const f = new FormData(form), r = ride(), t = tour();
       if (r) return [`Hi Kalyani Boat Service! I'd like to enquire about ${r.name.toLowerCase()}:`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`, "Please share the rate and timings.", f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
       return [`Hi Kalyani Boat Service! I'd like to book:`, `Tour: ${t.name} (${t.time})`, f.get("date") ? `Date: ${f.get("date")}` : "", `Guests: ${guests}`,
-        `Price shown: ${inr(price(t, guests))}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
+        `Price shown: ${inr(price(t, guests, withFood()))}${guests > 2 && withFood() ? " (extra guests with food)" : ""}`, f.get("name") ? `Name: ${f.get("name")}` : "", f.get("phone") ? `Phone: ${f.get("phone")}` : "", f.get("message") ? `Note: ${f.get("message")}` : ""].filter(Boolean).join("\n");
     };
     $("[data-send=wa]", form).onclick = () => window.open(waLink(summary()), "_blank", "noopener");
     const mailBtn = $("[data-send=mail]", form);

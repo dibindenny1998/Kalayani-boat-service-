@@ -53,12 +53,14 @@ if ($name === '' || !preg_match('/^[+0-9 ()-]{7,20}$/', $phone)) finish(false, '
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) finish(false, 'Please choose a date.');
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) finish(false, 'Please check your email address.');
 
-$total = $tour['price'] === null ? null : $tour['price'] + max(0, $guests - 2) * $tour['extra'] * $tour['hours'];
+$food = $field('extra_food') === '1' && !empty($tour['extra_food']);
+$rate = $food ? $tour['extra_food'] : ($tour['extra'] ?? 0);
+$total = $tour['price'] === null ? null : $tour['price'] + max(0, $guests - 2) * $rate * $tour['hours'];
 $body = "New enquiry from alleppeyshikaratours.com\n\n"
     . "Tour:    {$tour['name']} ({$tour['time']})\n"
     . "Date:    $date\n"
     . "Guests:  $guests\n"
-    . "Price:   " . ($total === null ? "on request, please send the rate and timings" : "Rs " . number_format($total) . " (estimate shown on the website)") . "\n\n"
+    . "Price:   " . ($total === null ? "on request, please send the rate and timings" : "Rs " . number_format($total) . " (estimate shown on the website" . ($food && $guests > 2 ? "; extra guests with food" : "") . ")") . "\n\n"
     . "Name:    $name\n"
     . "Phone:   $phone\n"
     . "Email:   " . ($email ?: '-') . "\n\n"
