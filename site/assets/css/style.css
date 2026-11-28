@@ -403,3 +403,32 @@ h3{font-size:clamp(20px,1.6vw,24px);line-height:1.2;letter-spacing:-.015em}
 .hero__inner{padding-top:0;gap:22px}
 .dial{margin-top:-4px;max-width:340px}
 }
+
+/* price table */
+.ptable{width:100%;border-collapse:collapse;margin:22px 0 26px;background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);font-size:15px}
+.ptable th,.ptable td{padding:13px 16px;text-align:left;border-bottom:1px solid rgba(22,32,29,.07);vertical-align:top}
+.ptable thead th{font-size:13px;font-weight:600;color:var(--muted);background:rgba(22,32,29,.03)}
+.ptable tbody th{font-weight:600}
+.ptable tbody th a{color:inherit}
+.ptable tbody th small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:2px}
+.ptable td:nth-child(2){font-weight:600;white-space:nowrap}
+.ptable tr:last-child th,.ptable tr:last-child td{border-bottom:0}
+@media (max-width:480px){.ptable{font-size:14px}.ptable th,.ptable td{padding:11px 10px}}
+/* mobile dock: price on two tidy lines */
+.dock__txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.dock__txt b{font-size:17px;white-space:nowrap}
+.dock__txt small{font-size:12px;opacity:.75;white-space:nowrap}
+/* gallery captions + filters */
+.masonry figure{position:relative}
+.masonry figcaption{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);padding:6px 11px;border-radius:999px;background:rgba(22,32,29,.62);color:#fff;font-size:13px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.masonry figure[hidden]{display:none}
+.wrap > .filters{margin-bottom:18px}
+/* contact map */
+.mapbox{border-radius:var(--r);overflow:hidden;background:#fff;box-shadow:var(--shadow);min-height:220px}
+.mapbox__cover{padding:26px 28px;display:flex;flex-direction:column;gap:4px}
+.mapbox.on{min-height:0}
+.mapbox iframe{display:block;width:100%;height:380px;border:0}
+/* dial hint */
+.dial{position:relative}
+.dial__hint{position:absolute;top:2px;right:4px;font-size:12px;letter-spacing:.02em;color:rgba(255,255,255,.85);background:rgba(0,0,0,.22);padding:4px 10px;border-radius:999px;pointer-events:none}
+@media (max-width:900px){.dial__hint{top:auto;bottom:-20px;left:50%;right:auto;transform:translateX(-50%);background:none;padding:0;font-size:11.5px;color:rgba(255,255,255,.7);white-space:nowrap}}

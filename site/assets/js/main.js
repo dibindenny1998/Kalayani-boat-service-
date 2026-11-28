@@ -34,10 +34,17 @@
     f.addEventListener("click", e => {
       const b = e.target.closest(".filter"); if (!b) return;
       $$(".filter", f).forEach(x => x.classList.toggle("on", x === b));
-      $$(".card", rail).forEach(c => { c.hidden = !(b.dataset.f === "all" || c.dataset.part === b.dataset.f); if (!c.hidden) c.classList.add("in"); });
-      rail.scrollTo({ left: 0, behavior: still ? "auto" : "smooth" });
+      $$(".card, figure", rail).forEach(c => { c.hidden = !(b.dataset.f === "all" || c.dataset.part === b.dataset.f); if (!c.hidden) c.classList.add("in"); });
+      if (rail.classList.contains("rail")) rail.scrollTo({ left: 0, behavior: still ? "auto" : "smooth" });
     });
   });
+
+  /* contact map: load Google Maps only when asked */
+  $$("[data-showmap]").forEach(b => b.addEventListener("click", () => {
+    const box = b.closest("[data-map]"), f = document.createElement("iframe");
+    f.src = box.dataset.map; f.title = "Map to Rajiv Boat Jetty"; f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
+    box.innerHTML = ""; box.appendChild(f); box.classList.add("on");
+  }));
 
   /* rails can be dragged with a mouse */
   $$(".rail").forEach(r => {

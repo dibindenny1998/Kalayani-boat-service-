@@ -27,7 +27,7 @@ SITE = {
     "email": "alleppeyshikaratours@gmail.com",
     "jetty": "Rajiv Boat Jetty, Alappuzha",
     # from the client's old website, alleppeyboatcruise.com
-    "address": "Near Haveli Backwater Resort, Finishing Point Road, Boat Jetty Road, near Rajeev Jetty, Alappuzha, Kerala 688013",
+    "address": "Near Haveli Backwater Resort, Finishing Point Road, Boat Jetty Road, near Rajiv Boat Jetty, Alappuzha, Kerala 688013",
     "maps": "https://maps.app.goo.gl/ZbawFzpeCpkCUe2q6",
     "facebook": "https://www.facebook.com/share/1GCZcRCwyP/",
     "instagram": "https://www.instagram.com/k_a_lya_ni__",
@@ -96,8 +96,8 @@ TOURS = [
          lead="Sunset over Vembanad Lake, by way of Panakkal canal, with evening tea or coffee and snacks.",
          title="Sunset Shikara Cruise on Vembanad Lake"),
     dict(slug="regular-cruise", name="Regular Cruise", start=None, end=None, hours=3, price=1800, extra=150,
-         sky="kayal", part="any", img="guests-bow", route="base", includes=["Tea or coffee with snacks"],
-         lead="Any three hours you choose, on the classic route.",
+         sky="kayal", part="any", img="guests-bow", route="base", includes=["Shikara ride only, no food"],
+         lead="Any three hours you choose, on the classic route. Boat ride only, no food.",
          title="3-Hour Shikara Cruise at Your Own Time"),
 ]
 PARTS = [("all", "All"), ("morning", "Morning"), ("afternoon", "Afternoon"), ("evening", "Evening"), ("any", "Any time")]
@@ -115,7 +115,7 @@ for t in TOURS:
 TOUR = {t["slug"]: t for t in TOURS}
 FROM = min(t["price"] for t in TOURS)
 FOOD_TOURS = [x["name"] for x in TOURS if x.get("extra_food")]
-EXTRA_RULE = "₹150 per person per hour without food, and ₹250 per person per hour with food on the " + ", ".join(FOOD_TOURS[:-1]) + " and " + FOOD_TOURS[-1] + " (other tours: ₹150 per hour)"
+EXTRA_RULE = "₹150 per person per hour, or ₹250 per person per hour with food on the " + ", ".join(FOOD_TOURS[:-1]) + " and " + FOOD_TOURS[-1]
 
 
 def inr(v):
@@ -191,7 +191,9 @@ def header(current):
 </div></header>'''
 
 
-def footer():
+def footer(path=""):
+    tt = next((x for x in TOURS if x["slug"] + ".html" == path), None)
+    dock = f"<b>{inr(tt['price'])}</b><small>for two · {tt['hours']} hours</small>" if tt else f"<b>From {inr(FROM)}</b><small>for two · 3 hours</small>"
     tours = "".join(f'<li><a href="{t["slug"]}.html">{t["name"]}</a></li>' for t in TOURS)
     phones = "".join(f'<li><a href="tel:{p.replace(" ", "")}">{p}</a></li>' for p in SITE["phones"])
     return f'''<footer class="foot"><div class="wrap">
@@ -204,7 +206,7 @@ def footer():
   </div>
   <p class="foot__base">© <span id="year">2026</span> Kalyani Boat Service, Alleppey</p>
 </div></footer>
-<div class="dock" id="dock"><span><b>From {inr(FROM)}</b> for two · 3 hrs</span><span class="dock__acts">{mail("", "dock__mail")}{wa(BOOK, "Chat", "btn btn--coral btn--sm")}</span></div>
+<div class="dock" id="dock"><span class="dock__txt">{dock}</span><span class="dock__acts">{mail("", "dock__mail")}{wa(BOOK, "Chat", "btn btn--coral btn--sm")}</span></div>
 <div class="fab" id="fab">{mail("", "fab__btn fab__btn--mail")}{wa("Hi Kalyani Boat Service! I have a question about your boat tours.", "", "fab__btn fab__btn--wa")}</div>'''
 
 
@@ -243,7 +245,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=31">
+<link rel="stylesheet" href="assets/css/style.css?v=33">
 {ld}
 </head>
 <body>
@@ -251,9 +253,9 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <main id="main">
 {body}
 </main>
-{footer()}
-<script src="assets/js/data.js?v=31"></script>
-<script src="assets/js/main.js?v=31" defer></script>
+{footer(path)}
+<script src="assets/js/data.js?v=33"></script>
+<script src="assets/js/main.js?v=33" defer></script>
 {scripts}
 </body>
 </html>
@@ -283,6 +285,15 @@ def route_block(t):
     extra = [s for s in stops if s not in BASE]
     lis = "".join(f'<li class="{"x" if s in extra else ""}"><span class="n">{i + 1:02d}</span>{escape(s)}</li>' for i, s in enumerate(stops))
     return f'<ol class="route rv">{lis}</ol>'
+
+
+def extra_label(t):
+    return f"₹{t['extra']}" + (f" · ₹{t['extra_food']} with food" if t.get("extra_food") else "")
+
+
+def price_table():
+    rows = "".join(f'<tr><th scope="row"><a href="{t["slug"]}.html">{t["name"]}</a><small>{t["hours"]} hours</small></th><td>{inr(t["price"])}</td><td>{extra_label(t)}</td></tr>' for t in TOURS)
+    return f'''<table class="ptable rv"><thead><tr><th scope="col">Tour</th><th scope="col">For two</th><th scope="col">Each extra guest, per hour</th></tr></thead><tbody>{rows}</tbody></table>'''
 
 
 def faq(items):
@@ -325,7 +336,7 @@ BUSINESS = {
     "@context": "https://schema.org", "@type": "LocalBusiness", "name": SITE["name"], "url": SITE["url"],
     "image": SITE["url"] + "/assets/img/og-image.jpg", "telephone": SITE["phones"][0], "email": SITE["email"],
     "priceRange": f"{inr(min(t['price'] for t in TOURS))} – {inr(max(t['price'] for t in TOURS))}",
-    "address": {"@type": "PostalAddress", "streetAddress": "Near Haveli Backwater Resort, Finishing Point Road, near Rajeev Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "postalCode": "688013", "addressCountry": "IN"},
+    "address": {"@type": "PostalAddress", "streetAddress": "Near Haveli Backwater Resort, Finishing Point Road, near Rajiv Boat Jetty", "addressLocality": "Alappuzha", "addressRegion": "Kerala", "postalCode": "688013", "addressCountry": "IN"},
     "sameAs": [u for u in (SITE["facebook"], SITE["instagram"], SITE["tripadvisor"], SITE["google_reviews"]) if u],
     "@id": SITE["url"] + "/#business", "foundingDate": str(SITE["since"]), "hasMap": SITE["maps"],
     "description": "Shikara tours, kayaking, canoeing and speedboat rides on the Alleppey backwaters and Vembanad Lake, from Rajiv Boat Jetty.",
@@ -396,6 +407,7 @@ def home():
         <g id="dticks"></g>
         <circle class="dial__halo" id="dhalo" r="24"/><circle class="dial__sun" id="dsun" r="13"/>
       </svg>
+      <span class="dial__hint" aria-hidden="true">Drag the sun ⟷</span>
       <div class="dial__read">
         <button type="button" class="dial__play" id="dplay" aria-label="Pause">❚❚</button>
         <a class="dial__now" id="dnow" href="sunrise-cruise.html"><b id="dclock">06:00</b><span id="dname">Sunrise Cruise</span></a>
@@ -450,13 +462,13 @@ def home():
 </div></section>
 
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for your group.</h2><p class="lede">Each price is for two guests. Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for your group.</h2><p class="lede">Each price is for two guests. Extra guests are charged by the hour.</p>{price_table()}{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>
 '''
     return page("index.html", "Kalyani Boat Service | Shikara Tours & Kayaking in Alleppey",
                 f"Shikara rides from Rajiv Boat Jetty, Alleppey, from {inr(FROM)} for two: sunrise, lunch, sunset and full-day tours on Vembanad Lake. Kayaking too.",
-                body, "index.html", '<script src="assets/js/hero.js?v=31" defer></script>', BUSINESS)
+                body, "index.html", '<script src="assets/js/hero.js?v=33" defer></script>', BUSINESS)
 
 
 def tours_page():
@@ -467,7 +479,7 @@ def tours_page():
   <h1 class="rv">Shikara tours.</h1><p class="lede rv">Seven tours from Rajiv Boat Jetty. Prices are for two guests.</p></div></section>
 <section class="sec" style="padding-top:0"><div class="wrap"><div class="trows">{rows}</div></div></section>
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
-  <div class="rv"><h2>Price for your group.</h2><p class="lede">Extra guests pay {EXTRA_RULE}.</p>{faq(PRICE_FAQ)}</div>
+  <div class="rv"><h2>Price for your group.</h2><p class="lede">Each price is for two guests. Extra guests are charged by the hour.</p>{price_table()}{faq(PRICE_FAQ)}</div>
   {booking()}
 </div></section>'''
     schema = {"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
@@ -484,24 +496,24 @@ def tour_page(t):
     route_note = "Highlighted stops are added on this tour." if extra else "The classic route, from Rajiv Boat Jetty and back."
     qas = [
         ("Where do we board?", f"At {SITE['jetty']}. The tour ends there too."),
-        ("How much for more than two guests?", f"{inr(t['price'])} covers two guests. Each extra guest adds ₹{t['extra']} per hour without food, which is ₹{t['extra'] * t['hours']} per person on this {t['hours']}-hour tour." + (f" With food it is ₹{t['extra_food']} per hour, which is ₹{t['extra_food'] * t['hours']} per person." if t.get("extra_food") else "")),
+        ("How much for more than two guests?", f"{inr(t['price'])} covers two guests. Each extra guest adds ₹{t['extra']} per hour without food, which is {inr(t['extra'] * t['hours'])} per person on this {t['hours']}-hour tour." + (f" With food it is ₹{t['extra_food']} per hour, which is {inr(t['extra_food'] * t['hours'])} per person." if t.get("extra_food") else "")),
         ("How do we book?", "Send us your date and number of guests on WhatsApp, by phone or with the form below. We confirm availability."),
     ]
     body = f'''<section class="thero"><div class="wrap thero__grid">
   <div class="thero__text"><p class="crumbs"><a href="index.html">Home</a> / <a href="tours.html">Tours</a> / {t["name"]}</p>{chip(t)}
     <h1 class="rv">{t["name"]}</h1><p class="lede rv">{escape(t["lead"])}</p>
-    <div class="facts rv"><div><span class="mut">Time</span><b>{t["time"]}</b></div><div><span class="mut">Duration</span><b>{t["hours"]} hours</b></div><div><span class="mut">Price for two</span><b class="price">{inr(t["price"])}</b></div><div><span class="mut">Extra guest</span><b>₹{t["extra"]} / hour</b></div></div>
+    <div class="facts rv"><div><span class="mut">Time</span><b>{t["time"]}</b></div><div><span class="mut">Duration</span><b>{t["hours"]} hours</b></div><div><span class="mut">Price for two</span><b class="price">{inr(t["price"])}</b></div><div><span class="mut">Extra guest / hour</span><b>{extra_label(t)}</b></div></div>
     {rating_badge("badge badge--light rv")}
     <div class="acts rv">{wa(f"Hi Kalyani Boat Service! I'd like to book the {t['name']} ({t['time']}).", "Book on WhatsApp", "btn btn--coral btn--lg")}<a class="btn btn--ghost btn--lg" href="#book"><span>Price for your group</span></a></div></div>
   <div class="thero__img rv">{img(t["img"], sizes="(max-width:900px) 100vw, 640px", eager=True)}</div>
 </div></section>
 
 <section class="sec"><div class="wrap split split--top">
-  <div class="rv"><h2>The route.</h2><p class="lede">{route_note}</p>
+  <div class="rv"><h2>What's included.</h2>
     <div class="incl rv"><h3>Included</h3><ul class="ticks">{inc}</ul>
       <h3>On board</h3><ul class="ticks"><li>Cushioned seating, open sides and a shaded roof</li><li>Drinking water and life jackets</li></ul></div>
     <div class="photo rv">{img("guests-seated" if t["img"] != "guests-seated" else "deck-sofa", sizes="(max-width:900px) 100vw, 560px")}</div></div>
-  {route_block(t)}
+  <div><h2 class="rv">The route.</h2><p class="lede rv">{route_note}</p>{route_block(t)}</div>
 </div></section>
 
 <section class="sec band band--soft" id="book"><div class="wrap split split--top">
@@ -547,10 +559,12 @@ def kayaking():
 def gallery():
     order = ["shikara-sunset-bow", "guests-seated", "kayak-sunset-group", "lunch-banana-leaf", "group-bow", "canoeing", "family-sunset", "shikara-kalyani",
              "speedboat", "kayak-trees", "deck-sofa", "guests-bow", "kayak-rainbow", "shikara-jetty-wide", "seating-interior", "chairs-green", "deck-front", "kayak-sunset-solo", "deck-yellow", "chairs-pink"]
-    figs = "".join(f'<figure class="rv">{img(n, sizes="(max-width:700px) 100vw, 420px")}</figure>' for n in order)
+    kind = lambda n: "water" if n.startswith(("kayak", "canoe", "speed")) else "guests" if n.startswith(("guests", "group", "family", "lunch")) else "boat"
+    figs = "".join(f'<figure class="rv" data-part="{kind(n)}">{img(n, sizes="(max-width:700px) 100vw, 420px")}<figcaption>{escape(CAPTIONS[n])}</figcaption></figure>' for n in order)
+    chips = "".join(f'<button type="button" class="filter{" on" if k == "all" else ""}" data-f="{k}">{l}</button>' for k, l in (("all", "All"), ("boat", "The shikara"), ("guests", "Guests & food"), ("water", "Kayaking & more")))
     body = f'''<section class="phead"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Gallery</p>
   <h1 class="rv">Gallery.</h1></div></section>
-<section class="sec" style="padding-top:0"><div class="wrap"><div class="masonry">{figs}</div></div></section>'''
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="filters" role="group" aria-label="Filter photos">{chips}</div><div class="masonry">{figs}</div></div></section>'''
     return page("gallery.html", "Gallery | Kalyani Boat Service, Alleppey", "Photos of shikara rides, Kerala lunch, sunsets and kayaking with Kalyani Boat Service on the Alleppey backwaters.", body, "gallery.html")
 
 
@@ -561,7 +575,11 @@ def contact():
 <section class="sec" style="padding-top:0"><div class="wrap split split--top">
   <div class="clines rv">{phones}<a class="cline" href="mailto:{SITE["email"]}"><span class="mut">Email</span><b>{SITE["email"]}</b></a><a class="cline" href="{SITE["maps"]}" target="_blank" rel="noopener"><span class="mut">Find us</span><b>{SITE["address"]}</b></a><div class="cline"><span class="mut">Follow us</span><b><a href="{SITE["instagram"]}" target="_blank" rel="noopener">Instagram</a> · <a href="{SITE["facebook"]}" target="_blank" rel="noopener">Facebook</a></b></div></div>
   {booking(heading="Send a booking request")}
-</div></section>'''
+</div></section>
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="mapbox rv" data-map="https://www.google.com/maps?q=Kalyani+Boat+Service,+Finishing+Point+Road,+Alappuzha&output=embed">
+  <div class="mapbox__cover"><b>Rajiv Boat Jetty, Alappuzha</b><span class="mut">{escape(SITE["address"])}</span>
+  <div class="acts" style="margin-top:14px"><button type="button" class="btn btn--coral" data-showmap>Show map</button><a class="btn btn--ghost" href="{SITE["maps"]}" target="_blank" rel="noopener"><span>Open in Google Maps</span></a></div>
+  <p class="mut" style="font-size:13px;margin-top:10px">The map is loaded from Google when you tap Show map.</p></div></div></div></section>'''
     return page("contact.html", "Contact & Book | Kalyani Boat Service, Alleppey",
                 "Book a shikara tour in Alleppey. Call or WhatsApp +91 98473 86262 or +91 97477 98412, or send an enquiry. Rajiv Boat Jetty, Alappuzha.", body, "contact.html", schema=BUSINESS)
 
@@ -579,7 +597,7 @@ TERMS = f'''<h2>Prices</h2><ul><li>Each tour price is for two guests.</li><li>Ea
 
 PRIVACY = f'''<h2>What we receive</h2><p>When you send a booking request we receive your name, phone number, optional email, tour, date, number of guests and any note you add.</p>
 <h2>How we use it</h2><p>Only to reply to you and arrange your booking. Requests sent by email arrive at {SITE["email"]}. Messages sent on WhatsApp are handled by WhatsApp.</p>
-<h2>Cookies</h2><p>This website does not use tracking or advertising cookies.</p>'''
+<h2>Cookies</h2><p>This website does not use tracking or advertising cookies. The map on the Contact page loads from Google only when you tap Show map; Google's privacy policy then applies.</p>'''
 
 
 def apple_icon(path):
