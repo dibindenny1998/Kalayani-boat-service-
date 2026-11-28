@@ -248,7 +248,7 @@ def page(path, title, desc, body, current=None, scripts="", schema=None, og="og-
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Yellowtail&display=swap">
 <link rel="stylesheet" href="assets/css/style.css?v=34">
 <script async src="https://www.googletagmanager.com/gtag/js?id={SITE["ga4"]}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag("js",new Date());gtag("config","{SITE["ga4"]}");</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag("js",new Date());gtag("config","{SITE["ga4"]}",{{allow_google_signals:false,allow_ad_personalization_signals:false}});</script>
 {ld}
 </head>
 <body>
